@@ -1,7 +1,14 @@
 import React from "react";
+import TopSection from "../pages/TopSection";
+import PropertyList from "../pages/PropertyList";
 
-function Home() {
-  return <main><p>Welcome to the homepage!</p></main>;
-}
+const Home = () => {
+  return (
+    <div>
+      <TopSection />
+      <PropertyList />
+    </div>
+  );
+};
 
 export default Home;
