@@ -21,8 +21,51 @@ const allProperties = [
     location: [40.758, -73.9855], // Another location
     details: "838 Keap Street, 720m², 1 Bed, 3 Baths",
   },
+  {
+    id: 3,
+    name: "Modern City Loft",
+    price: "$150,000",
+    location: [40.7306, -73.9352], // Near Brooklyn, New York
+    details: "203 Grand Street, 450m², 2 Beds, 2 Baths",
+  },
+  {
+    id: 4,
+    name: "Stylish Downtown Condo",
+    price: "$95,000",
+    location: [40.7484, -73.9857], // Near Empire State Building, NYC
+    details: "350 5th Ave, 300m², 1 Bed, 1 Bath",
+  },
+  {
+    id: 5,
+    name: "Charming Penthouse",
+    price: "$200,000",
+    location: [40.7357, -73.9912], // Greenwich Village, NYC
+    details: "150 Waverly Place, 500m², 3 Beds, 2 Baths",
+  },
+  {
+    id: 6,
+    name: "Luxury Riverside Home",
+    price: "$300,000",
+    location: [40.7359, -74.0055], // Near Hudson River, NYC
+    details: "123 Riverside Drive, 700m², 4 Beds, 3 Baths",
+  },
+  {
+    id: 7,
+    name: "Bright Studio Apartment",
+    price: "$78,000",
+    location: [40.7321, -73.9914], // East Village, NYC
+    details: "120 E 9th St, 250m², 1 Bed, 1 Bath",
+  },
+  {
+    id: 8,
+    name: "Spacious Family Home",
+    price: "$145,000",
+    location: [40.7472, -73.9797], // Near Penn Station, NYC
+    details: "215 W 34th St, 600m², 3 Beds, 2 Baths",
+  },
   // Add more properties as needed
 ];
+
 
 const RealEstateMap = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
@@ -42,7 +85,7 @@ const RealEstateMap = () => {
     if (event.target.value !== "all") {
       const minPrice = parseInt(event.target.value.split('-')[0].replace('$', '').replace(',', ''));
       const maxPrice = event.target.value === 'above-1000000' ? Infinity : parseInt(event.target.value.split('-')[1].replace('$', '').replace(',', ''));
-      
+
       filtered = allProperties.filter((property) => {
         const price = parseInt(property.price.replace('$', '').replace(',', ''));
         return price >= minPrice && price <= maxPrice;
@@ -75,7 +118,7 @@ const RealEstateMap = () => {
       >
         {/* Tile Layer */}
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        
+
         {/* Markers for Properties */}
         {filteredProperties.map((property) => (
           <Marker
@@ -97,15 +140,6 @@ const RealEstateMap = () => {
           </Marker>
         ))}
       </MapContainer>
-
-      {/* Display selected property details */}
-      {selectedProperty && (
-        <div className="property-details">
-          <h3>{selectedProperty.name}</h3>
-          <p>{selectedProperty.details}</p>
-          <p><strong>Price:</strong> {selectedProperty.price}</p>
-        </div>
-      )}
     </div>
   );
 };
