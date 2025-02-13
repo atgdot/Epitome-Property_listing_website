@@ -35,14 +35,14 @@ const TopSection = () => {
 
       {/* Featured Builders */}
       <div className="w-full py-10 px-5">
-      <h2 className="text-3xl font-bold text-center mb-6">Featured Builders</h2>
+      <h2 className="text-3xl font-bold text-center pb-6">Featured Builders</h2>
       
       <div className="border-t border-orange-500">
-        <div className="flex justify-center gap-6 py-6 overflow-x-auto">
+        <div className="grid lg:grid-cols-5 lg:px-20 justify-center gap-6 py-6 ">
           {builders.map((builder) => (
             <div
               key={builder.id}
-              className="bg-white p-6 rounded-xl shadow-md flex items-center justify-center w-40 h-40"
+              className="bg-white p-6 rounded-xl shadow-md border-[2px] border-gray-400 flex items-center justify-center w-40 h-40"
             >
               <img src={builder.logo} alt={builder.name} className="h-16 w-auto" />
             </div>
