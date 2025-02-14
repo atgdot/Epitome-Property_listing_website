@@ -95,9 +95,18 @@ const RealEstateMap = () => {
   };
 
   return (
-    <div style={{ position: "relative" }}>
-      {/* Filter Dropdown */}
-      <div style={{ position: "absolute", top: "10px", left: "60px", zIndex: 1000, background: "#fff", padding: "10px", borderRadius: "5px" }}>
+    <div>
+      <div
+        style={{
+          position: "absolute",
+          top: "100px",
+          left: "60px",
+          background: "#fff",
+          padding: "10px",
+          zIndex:"50",
+          borderRadius: "5px"
+        }}
+      >
         <label htmlFor="price-filter">Filter by price:</label>
         <select id="price-filter" value={priceFilter} onChange={handleFilterChange}>
           <option value="all">All</option>
@@ -107,40 +116,37 @@ const RealEstateMap = () => {
         </select>
       </div>
 
-      {/* Map Container */}
-      <MapContainer
-        center={[40.73061, -73.935242]}
-        zoom={12}
-        style={{ height: "500px", width: "100%" }}
-        scrollWheelZoom={false}  // Disable scroll zoom
-        touchZoom={false} // Disable touch zoom (two-finger zoom)
-        gestureHandling={true} // Allow gesture handling
-      >
-        {/* Tile Layer */}
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      {/* Ensure the map does not interfere with the Navbar */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <MapContainer
+          center={[40.73061, -73.935242]}
+          zoom={12}
+          style={{ height: "500px", width: "100%" }}
+          scrollWheelZoom={false}
+          touchZoom={false}
+          gestureHandling={true}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-        {/* Markers for Properties */}
-        {filteredProperties.map((property) => (
-          <Marker
-            key={property.id}
-            position={property.location}
-            eventHandlers={{
-              click: () => {
-                setSelectedProperty(property);
-              },
-            }}
-          >
-            <Popup>
-              <strong>{property.name}</strong>
-              <br />
-              {property.details}
-              <br />
-              <span style={{ color: "blue" }}>{property.price}</span>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+          {filteredProperties.map((property) => (
+            <Marker
+              key={property.id}
+              position={property.location}
+              eventHandlers={{ click: () => setSelectedProperty(property) }}
+            >
+              <Popup>
+                <strong>{property.name}</strong>
+                <br />
+                {property.details}
+                <br />
+                <span style={{ color: "blue" }}>{property.price}</span>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
     </div>
+
   );
 };
 

@@ -4,6 +4,8 @@ import PropertyList from "../pages/PropertyList";
 import Leaflet from "./Leaflet"
 import WhyChooseUs from "./WhyChooseUs";
 import OurServices from "./OurServices";
+import Testimonial from "./Testimonial";
+import Contact from "./Contact";
 
 const Home = () => {
   return (
@@ -13,6 +15,8 @@ const Home = () => {
       <PropertyList />
       <WhyChooseUs/>
       <OurServices/>
+      <Testimonial/>
+      <Contact/>
     </div>
   );
 };

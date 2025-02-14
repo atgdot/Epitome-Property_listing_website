@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { CSSTransition } from "react-transition-group";
+import { Link } from "react-router-dom";
 
 // Property Data for each category
 const allProperties = {
@@ -144,9 +145,11 @@ const PropertyList = () => {
               <p className="text-orange-500 font-semibold">{property.price}</p>
               <p className="text-gray-500 text-sm">🏠 {property.type}</p>
               <p className="text-gray-500 text-sm">📍 {property.location}</p>
-              <button className="mt-4 w-full bg-gradient-to-r from-orange-500 via-[#ffddc1] to-orange-500 text-white font-bold py-2 rounded-lg">
-                Visit Property Details
-              </button>
+              <Link to="/indiabulls">
+                <button className="mt-4 w-full bg-gradient-to-r from-orange-500 via-[#ffddc1] to-orange-500 text-white font-bold py-2 rounded-lg">
+                  Visit Property Details
+                </button>
+              </Link>
 
 
             </div>

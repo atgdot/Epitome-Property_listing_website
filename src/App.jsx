@@ -1,15 +1,30 @@
 import React from "react";
-import Header from "./components/Header";
-import Home from "./components/Home";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import "./index.css"
+import Home from "./components/Home";
+import IndiaBulls from "./pages/IndiaBulls";
+import "./index.css";
+
+function Layout() {
+  const location = useLocation();
+  const hideNavbarRoutes = ["/indiabulls"];
+
+  return (
+    <>
+      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/indiabulls" element={<IndiaBulls />} />
+      </Routes>
+    </>
+  );
+}
+
 function App() {
   return (
-    <div>
-      <Navbar/>
-      {/* <Header /> */}
-      <Home />
-    </div>
+    <Router>
+      <Layout />
+    </Router>
   );
 }
 
