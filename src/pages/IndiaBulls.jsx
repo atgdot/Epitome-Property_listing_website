@@ -25,13 +25,7 @@ const IndiaBulls = () => {
         </div>
       </nav>
 
-      {/* IndiaBulls Page Content */}
-      <div className="text-center mt-10">
-        <h2 className="text-3xl font-semibold text-gray-800">Welcome to IndiaBulls</h2>
-        <p className="text-lg text-gray-600 mt-4">
-          Here you can find information about property investments and more.
-        </p>
-      </div>
+     
     </>
   );
 };

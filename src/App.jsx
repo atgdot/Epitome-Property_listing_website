@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import IndiaBulls from "./pages/IndiaBulls";
 import "./index.css";
+import Property from "./pages/Property";
 
 function Layout() {
   const location = useLocation();
@@ -14,7 +15,7 @@ function Layout() {
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/indiabulls" element={<IndiaBulls />} />
+        <Route path="/property" element={<Property />} />
       </Routes>
     </>
   );
