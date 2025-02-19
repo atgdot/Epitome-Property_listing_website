@@ -95,7 +95,7 @@ const RealEstateMap = () => {
   };
 
   return (
-    <div>
+    <div className="font-lato">
       <div
         style={{
           position: "absolute",

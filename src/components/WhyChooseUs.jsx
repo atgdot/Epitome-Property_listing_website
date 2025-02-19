@@ -41,7 +41,7 @@ const features = [
 const WhyChooseUs = () => {
   return (
     <div className="w-full py-16">
-      <h2 className="text-3xl font-bold text-center mb-8">Why Choose Us</h2>
+      <h2 className="text-4xl font-medium text-center mb-8">Why Choose Us</h2>
 
       {/* Container for images and text */}
       <div className="flex flex-col items-center">

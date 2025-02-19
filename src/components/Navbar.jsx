@@ -19,19 +19,19 @@ const Navbar = () => {
       <div className="hidden md:flex space-x-10">
         <a 
           href="#" 
-          className="text-lg font-medium text-orange-500 hover:text-orange-600 transition-transform duration-200 hover:scale-105"
+          className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
         >
           Resale
         </a>
         <a 
           href="#" 
-          className="text-lg font-medium text-orange-500 hover:text-orange-600 transition-transform duration-200 hover:scale-105"
+          className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
         >
           Rental
         </a>
         <a 
           href="#" 
-          className="text-lg font-medium text-orange-500 hover:text-orange-600 transition-transform duration-200 hover:scale-105"
+          className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
         >
           Projects
         </a>
@@ -39,12 +39,12 @@ const Navbar = () => {
 
       {/* Desktop Enquiry & Search */}
       <div className="hidden md:flex items-center space-x-6">
-        <a href="#" className="text-lg font-medium text-black hover:text-gray-700 transition-colors duration-200">
+        <a href="#" className="text-lg font-lato text-black hover:text-gray-700 transition-colors duration-200">
           Enquire Now
         </a>
         <FontAwesomeIcon 
           icon={faSearch} 
-          className="text-xl text-black hover:text-gray-700 transition-colors duration-200 cursor-pointer" 
+          className="text-2xl text-black hover:text-gray-700 transition-colors duration-200 cursor-pointer" 
         />
       </div>
 
