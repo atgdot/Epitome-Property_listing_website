@@ -5,6 +5,9 @@ import Home from "./components/Home";
 import IndiaBulls from "./pages/IndiaBulls";
 import "./index.css";
 import Property from "./pages/Property";
+import Projects from "./components/Projects";
+import PropertyListing from "./components/PropertyListing";
+import PropertyDetails from "./components/PropertyDetails";
 
 function Layout() {
   const location = useLocation();
@@ -16,6 +19,10 @@ function Layout() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/property" element={<Property />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/PropertyListing" element={<PropertyListing />} />
+        <Route path="/PropertyDetails" element={<PropertyDetails />} />
+       
       </Routes>
     </>
   );

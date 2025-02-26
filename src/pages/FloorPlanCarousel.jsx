@@ -7,17 +7,17 @@ const floorPlans = [
     {
         title: "3 BHK - Aurum",
         size: "2444 - 2447 SQFT",
-        image: "/images/aurum.png",
+        image: "https://imagizer.imageshack.com/img923/3641/kpznjg.png",
     },
     {
         title: "3 BHK - Vantage",
         size: "2570 - 2572 SQFT",
-        image: "/images/vantage.png",
+        image: "https://imagizer.imageshack.com/img923/3641/kpznjg.png",
     },
     {
         title: "4 BHK - Crest",
         size: "3579 SQFT",
-        image: "/images/crest.png",
+        image: "https://imagizer.imageshack.com/img923/3641/kpznjg.png",
     },
 ];
 
@@ -91,23 +91,23 @@ const FloorPlanCarousel = () => {
     };
 
     return (
-        <div className="max-w-screen-xl mx-auto p-4">
+        <div className="max-w-8xl mx-auto p-4">
             <div className="flex justify-center my-4">
-                <div className="flex items-center w-full max-w-lg">
-                    <div className="flex-1 border-t border-gray-400"></div>
-                    <p className="mx-2 px-2 text-gray-600 whitespace-nowrap">How Much</p>
-                    <div className="flex-1 border-t border-gray-400"></div>
+                <div className="flex items-center w-60">
+                    <div className="flex-1 border-t border-black"></div>
+                    <p className="mx-1 text-black whitespace-nowrap">Floor Plan</p>
+                    <div className="flex-1 border-t border-black"></div>
                 </div>
             </div>
 
-            <h2 className="text-center text-2xl font-bold mb-6">
+            <h2 className="text-center text-2xl font-semibold mb-6">
                 Indiabulls Estate Club Floor Plan
             </h2>
 
             <Slider {...settings}>
                 {floorPlans.map((plan, index) => (
                     <div key={index} className="p-4">
-                        <div className="bg-white shadow-lg rounded-lg overflow-hidden border border-[#043268]">
+                        <div className=" bg-white shadow-lg rounded-lg overflow-hidden border border-[#043268]">
                             <img
                                 src={plan.image}
                                 alt={plan.title}

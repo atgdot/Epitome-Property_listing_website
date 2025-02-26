@@ -8,6 +8,9 @@ const TopSection = () => {
     { id: 3, name: "DLF", logo: "/dlf-logo.png" },
     { id: 4, name: "DLF", logo: "/dlf-logo.png" },
     { id: 5, name: "DLF", logo: "/dlf-logo.png" },
+    { id: 6, name: "DLF", logo: "/dlf-logo.png" },
+   
+    
   ];
 
   const property = {
@@ -38,7 +41,7 @@ const TopSection = () => {
         <h2 className="text-3xl font-semibold text-center pb-6">Featured Builders</h2>
 
         <div className="border-t border-b mt-2 mb-2 border-[#043268] ">
-          <div className="grid grid-cols-2 lg:grid-cols-5 lg:px-20 justify-center gap-6 py-6 ">
+          <div className="grid grid-cols-2 lg:grid-cols-6 lg:px-20 justify-center gap-6 py-6 ">
             {builders.map((builder) => (
               <div
                 key={builder.id}

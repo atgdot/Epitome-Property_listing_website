@@ -22,25 +22,23 @@ const RealEstateUI = () => {
           />
       
           {/* Floating Download Brochure Button */}
-          <h3 className="absolute right-[-77px] top-1/2 rotate-90 transform -translate-y-1/2 bg-gray-800 text-white font-bold px-4 py-2 rounded-md shadow-md whitespace-nowrap">
+          <h3 className="absolute right-[-70px] top-1/2 rotate-90 transform -translate-y-1/2 bg-gray-800 text-white font-bold px-4 py-2 rounded-md shadow-md whitespace-nowrap">
             Download Brochure
           </h3>
       
           {/* Project Details Section */}
-          <div className="absolute bottom-0 w-full bg-blue-900 text-white py-4 flex justify-around text-center">
+          <div className="absolute bottom-0 w-full bg-blue-900 text-white py-4 flex flex-wrap justify-around text-center px-4 md:flex-nowrap">
             {projectData.details.map((item, index) => (
               <InfoCard key={index} icon={item.icon} title={item.title} subtitle={item.subtitle} />
             ))}
           </div>
         </div>
       );
-      
-      
 };
 
 const InfoCard = ({ icon: Icon, title, subtitle }) => {
   return (
-    <div className="flex flex-col items-center text-white  ">
+    <div className="flex flex-col items-center text-white w-1/2 mb-4 md:w-auto">
       <Icon className="text-2xl mb-2" />
       <h3 className="text-lg font-bold">{title}</h3>
       <p className="text-sm">{subtitle}</p>

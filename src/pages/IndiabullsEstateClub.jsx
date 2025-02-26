@@ -1,26 +1,29 @@
 import React from "react";
 import { FaWhatsapp, FaPhone } from "react-icons/fa";
 
+
 const IndiabullsEstateClub = () => {
+
+    const image="https://imagizer.imageshack.com/img924/7416/ZyVtFR.png";
     return (
-        <div className="flex flex-col md:flex-row items-center bg-white p-6 md:p-12 rounded-lg shadow-lg">
+        <div className="max-w-8xl flex flex-col md:flex-row items-center bg-white p-6 md:p-12 rounded-lg shadow-lg">
             {/* Left Side - Image */}
             <div className="w-full md:w-1/2">
                 <img
-                    src="/your-image.jpg"
+                    src={image}
                     alt="Indiabulls Estate Club"
                     className="rounded-lg shadow-md w-full h-auto"
                 />
             </div>
 
             {/* Right Side - Text Content */}
-            <div className="w-full md:w-1/2 mt-6 md:mt-0 md:pl-8">
+            <div className="w-full md:w-1/2 mt-2 md:mt-0 md:pl-8">
                 {/* Title Section with Icons */}
                 <div className="flex items-center justify-between">
                     {/* Title */}
                     <div className="flex items-center ">
-                        <div className="border-t-2 border-black w-8"></div>
-                        <h3 className="text-gray-500 uppercase tracking-wider text-sm font-semibold">
+                        <div className="border-t-1 border-black w-18"></div>
+                        <h3 className="text-black text-md font-normal">
                             About Project
                         </h3>
                     </div>
@@ -42,7 +45,7 @@ const IndiabullsEstateClub = () => {
                     </div>
                 </div>
 
-                <h2 className="text-2xl font-bold text-gray-900 ">
+                <h2 className="text-2xl font-semibold text-gray-900 ">
                     Indiabulls Estate Club
                 </h2>
                 <p className="text-gray-700 mt-2 leading-relaxed">

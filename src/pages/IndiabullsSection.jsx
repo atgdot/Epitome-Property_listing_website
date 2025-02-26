@@ -12,18 +12,18 @@ const indiabullsData = {
         name: "Indiabulls Estate Club",
         location: "Gurugram, Haryana",
         price: "₹ 4.31 Cr - 12.26 Cr",
-        image: "/estate-club.jpg",
-        galleryIcon: "/image-icon.png",
-        linkIcon: "/external-link.png",
+        image: "https://imagizer.imageshack.com/img923/1580/SsEjkC.png",
+        galleryIcon: "https://imagizer.imageshack.com/img924/1651/96mkmc.png",
+        linkIcon: "https://imagizer.imageshack.com/img924/8210/fRc1BR.png",
       },
       {
         id: 2,
         name: "Indiabulls Centrum Park",
         location: "Gurugram, Haryana",
         price: "₹ 1.2 Cr - 2.6 Cr",
-        image: "/centrum-park.jpg",
-        galleryIcon: "/image-icon.png",
-        linkIcon: "/external-link.png",
+        image: "https://imagizer.imageshack.com/img924/5426/ds1i94.png",
+        galleryIcon: "https://imagizer.imageshack.com/img924/1651/96mkmc.png",
+        linkIcon: "https://imagizer.imageshack.com/img924/8210/fRc1BR.png",
       },
     ],
   };
@@ -34,10 +34,10 @@ const indiabullsData = {
         {/* About Indiabulls Section */}
         <div className="flex justify-between items-start">
           <div className="max-w-2xl">
-            <h3 className="text-gray-600 text-lg font-semibold mb-1">
+            <h3 className="text-black text-lg  mb-1">
               ──────── Builder
             </h3>
-            <h2 className="text-3xl font-bold mb-3">{indiabullsData.about.title}</h2>
+            <h2 className="text-2xl font-semibold mb-3">{indiabullsData.about.title}</h2>
             <p className="text-gray-600">{indiabullsData.about.description}</p>
           </div>
           <div>
@@ -50,11 +50,11 @@ const indiabullsData = {
         </div>
   
         {/* Properties Section */}
-        <div className="mt-10">
-          <h3 className="text-gray-600 text-lg font-semibold mb-1">
+        <div className="mt-8">
+          <h3 className="text-black text-lg  mb-1">
             ──────── Others
           </h3>
-          <h2 className="text-3xl font-bold mb-6">Properties by Indiabulls</h2>
+          <h2 className="text-2xl font-semibold mb-2">Properties by Indiabulls</h2>
   
           <div className="flex flex-row gap-4">
             {indiabullsData.properties.map((property) => (
@@ -62,12 +62,12 @@ const indiabullsData = {
                 <img
                   src={property.image}
                   alt={property.name}
-                  className="w-full h-30 object-cover"
+                  className="w-70 p-2 h-40  rounded-lg  object-cover"
                 />
-                <div className="p-4">
+                <div className="p-2">
                   <h3 className="text-lg font-semibold">{property.name}</h3>
                   <p className="text-gray-500 text-sm">{property.location}</p>
-                  <p className="text-lg font-bold mt-2">{property.price}</p>
+                  <p className="text-lg font-bold ">{property.price}</p>
                 </div>
                 <div className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md">
                   <img src={property.galleryIcon} alt="Gallery" className="w-6 h-6" />

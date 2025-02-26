@@ -18,19 +18,19 @@ const Navbar = () => {
       {/* Desktop Navigation Links */}
       <div className="hidden md:flex space-x-10">
         <a 
-          href="#" 
+          href="/PropertyListing" 
           className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
         >
           Resale
         </a>
         <a 
-          href="#" 
+          href="/PropertyListing" 
           className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
         >
           Rental
         </a>
         <a 
-          href="#" 
+         href="/projects" 
           className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
         >
           Projects
@@ -72,20 +72,20 @@ const Navbar = () => {
       >
         <div className="flex flex-col items-center py-4 space-y-4">
           <a 
-            href="#" 
-            className="text-lg font-medium text-orange-500 hover:text-orange-600 transition-transform duration-200 hover:scale-105"
+            href="/PropertyListing" 
+            className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
           >
             Resale
           </a>
           <a 
-            href="#" 
-            className="text-lg font-medium text-orange-500 hover:text-orange-600 transition-transform duration-200 hover:scale-105"
+            href="PropertyListing" 
+            className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
           >
             Rental
           </a>
           <a 
-            href="#" 
-            className="text-lg font-medium text-orange-500 hover:text-orange-600 transition-transform duration-200 hover:scale-105"
+            href="/projects" 
+            className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
           >
             Projects
           </a>

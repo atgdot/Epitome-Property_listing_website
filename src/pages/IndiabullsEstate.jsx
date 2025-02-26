@@ -16,17 +16,17 @@ const IndiabullsEstate = () => {
     ];
 
     return (
-        <div className="min-h-screen flex flex-col items-center bg-gray-100 p-6">
+        <div className=" min-h-screen flex flex-col items-center bg-gray-100 p-6">
             {/* Small Heading */}
-            <div className="flex items-center w-full max-w-lg my-4">
-                <div className="flex-1 border-t border-gray-400"></div>
-                <p className="mx-2 px-2 border-gray-400 text-gray-600">How Much</p>
-                <div className="flex-1 max-w-lg border-t border-gray-400"></div>
+            <div className="flex items-center w-full max-w-60 my-4">
+                <div className="flex-1 border-t border-black"></div>
+                <p className="mx-1 text-black">How Much</p>
+                <div className="flex-1 max-w-lg border-t border-black"></div>
             </div>
             {/* Heading */}
-            <h2 className="text-2xl  mb-6  pb-2 text-center">Indiabulls Estate Club Size & Price</h2>
+            <h2 className="text-2xl font-semibold mb-6  pb-2 text-center">Indiabulls Estate Club Size & Price</h2>
             {/* Main Container */}
-            <div className="w-full max-w-6xl bg-white shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row">
+            <div className="w-full max-w-8xl bg-white shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row">
                 {/* Left Section */}
                 <div className="w-full md:w-1/2 bg-blue-900 text-white p-8">
                     <div className="grid grid-cols-2 gap-6">
@@ -52,7 +52,7 @@ const IndiabullsEstate = () => {
                 {/* Right Section */}
                 <div className="w-full md:w-1/2">
                     <img
-                        src="/your-image-path.jpg"
+                        src="https://imagizer.imageshack.com/img922/4815/iDRFVk.png"
                         alt="Indiabulls Estate"
                         className="w-full h-full object-cover"
                     />

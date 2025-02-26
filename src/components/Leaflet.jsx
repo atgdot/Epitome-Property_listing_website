@@ -144,7 +144,11 @@ const RealEstateMap = () => {
             </Marker>
           ))}
         </MapContainer>
+        <div className="mt-6 flex items-center justify-center">
+        <img src="\NEW LAUNCHED 1.png" alt="" />
+        </div>
       </div>
+      
     </div>
 
   );

@@ -36,11 +36,12 @@ const features = [
 const Amenities = () => {
   return (
     <div className="max-w-7xl mx-auto py-10">
+
       <div className="flex justify-center my-4">
-        <div className="flex items-center w-full max-w-lg">
-          <div className="flex-1 border-t border-gray-400"></div>
-          <p className="mx-2 px-2 text-gray-600 whitespace-nowrap">Project Facilities</p>
-          <div className="flex-1 border-t border-gray-400"></div>
+        <div className="flex items-center w-60">
+          <div className="flex-1 border-t border-black"></div>
+          <p className="mx-1 text-black whitespace-nowrap">Project Facilities</p>
+          <div className="flex-1 border-t border-black"></div>
         </div>
       </div>
       <h2 className="text-2xl font-semibold text-center mb-6">
