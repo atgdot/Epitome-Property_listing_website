@@ -8,6 +8,7 @@ import Property from "./pages/Property";
 import Projects from "./components/Projects";
 import PropertyListing from "./components/PropertyListing";
 import PropertyDetails from "./components/PropertyDetails";
+import Footer from "./components/Footer";
 
 function Layout() {
   const location = useLocation();
@@ -22,8 +23,8 @@ function Layout() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/PropertyListing" element={<PropertyListing />} />
         <Route path="/PropertyDetails" element={<PropertyDetails />} />
-       
       </Routes>
+      <Footer />
     </>
   );
 }

@@ -6,64 +6,122 @@ import "leaflet-gesture-handling/dist/leaflet-gesture-handling.css";
 import L from "leaflet";
 
 // Example property data
+// const allProperties = [
+//   {
+//     id: 1,
+//     name: "Big Luxury Apartment",
+//     price: "$83,000",
+//     location: [40.7128, -74.006], // New York (example)
+//     details: "859 Stuart Street, 356m², 2 Beds, 1 Bath",
+//   },
+//   {
+//     id: 2,
+//     name: "Cozy Design Studio",
+//     price: "$125,000",
+//     location: [40.758, -73.9855], // Another location
+//     details: "838 Keap Street, 720m², 1 Bed, 3 Baths",
+//   },
+//   {
+//     id: 3,
+//     name: "Modern City Loft",
+//     price: "$150,000",
+//     location: [40.7306, -73.9352], // Near Brooklyn, New York
+//     details: "203 Grand Street, 450m², 2 Beds, 2 Baths",
+//   },
+//   {
+//     id: 4,
+//     name: "Stylish Downtown Condo",
+//     price: "$95,000",
+//     location: [40.7484, -73.9857], // Near Empire State Building, NYC
+//     details: "350 5th Ave, 300m², 1 Bed, 1 Bath",
+//   },
+//   {
+//     id: 5,
+//     name: "Charming Penthouse",
+//     price: "$200,000",
+//     location: [40.7357, -73.9912], // Greenwich Village, NYC
+//     details: "150 Waverly Place, 500m², 3 Beds, 2 Baths",
+//   },
+//   {
+//     id: 6,
+//     name: "Luxury Riverside Home",
+//     price: "$300,000",
+//     location: [40.7359, -74.0055], // Near Hudson River, NYC
+//     details: "123 Riverside Drive, 700m², 4 Beds, 3 Baths",
+//   },
+//   {
+//     id: 7,
+//     name: "Bright Studio Apartment",
+//     price: "$78,000",
+//     location: [40.7321, -73.9914], // East Village, NYC
+//     details: "120 E 9th St, 250m², 1 Bed, 1 Bath",
+//   },
+//   {
+//     id: 8,
+//     name: "Spacious Family Home",
+//     price: "$145,000",
+//     location: [40.7472, -73.9797], // Near Penn Station, NYC
+//     details: "215 W 34th St, 600m², 3 Beds, 2 Baths",
+//   },
+//   // Add more properties as needed
+// ];
 const allProperties = [
   {
     id: 1,
-    name: "Big Luxury Apartment",
+    name: "DLF Luxury Apartment",
     price: "$83,000",
-    location: [40.7128, -74.006], // New York (example)
-    details: "859 Stuart Street, 356m², 2 Beds, 1 Bath",
+    location: [28.4595, 77.0266], // DLF Phase, Gurugram
+    details: "DLF Phase 3, 1800 sqft, 3 BHK, 2 Baths",
   },
   {
     id: 2,
-    name: "Cozy Design Studio",
+    name: "Sector 56 Cozy Flat",
     price: "$125,000",
-    location: [40.758, -73.9855], // Another location
-    details: "838 Keap Street, 720m², 1 Bed, 3 Baths",
+    location: [28.4325, 77.0728], // Sector 56, Gurugram
+    details: "Sector 56, 1250 sqft, 2 BHK, 2 Baths",
   },
   {
     id: 3,
-    name: "Modern City Loft",
+    name: "Sohna Road Modern Condo",
     price: "$150,000",
-    location: [40.7306, -73.9352], // Near Brooklyn, New York
-    details: "203 Grand Street, 450m², 2 Beds, 2 Baths",
+    location: [28.4147, 77.0314], // Sohna Road, Gurugram
+    details: "Sohna Road, 1600 sqft, 3 BHK, 3 Baths",
   },
   {
     id: 4,
-    name: "Stylish Downtown Condo",
+    name: "Golf Course View Apartment",
     price: "$95,000",
-    location: [40.7484, -73.9857], // Near Empire State Building, NYC
-    details: "350 5th Ave, 300m², 1 Bed, 1 Bath",
+    location: [28.4501, 77.1124], // Golf Course Road, Gurugram
+    details: "Golf Course Road, 2200 sqft, 4 BHK, 3 Baths",
   },
   {
     id: 5,
-    name: "Charming Penthouse",
+    name: "Penthouse in Cyber City",
     price: "$200,000",
-    location: [40.7357, -73.9912], // Greenwich Village, NYC
-    details: "150 Waverly Place, 500m², 3 Beds, 2 Baths",
+    location: [28.4946, 77.0883], // Cyber City, Gurugram
+    details: "Cyber City, 2500 sqft, 4 BHK, 3 Baths",
   },
   {
     id: 6,
-    name: "Luxury Riverside Home",
+    name: "Independent Villa, Palam Vihar",
     price: "$300,000",
-    location: [40.7359, -74.0055], // Near Hudson River, NYC
-    details: "123 Riverside Drive, 700m², 4 Beds, 3 Baths",
+    location: [28.5197, 77.0455], // Palam Vihar, Gurugram
+    details: "Palam Vihar, 2800 sqft, 5 BHK, 4 Baths",
   },
   {
     id: 7,
-    name: "Bright Studio Apartment",
+    name: "Budget Studio in Sector 47",
     price: "$78,000",
-    location: [40.7321, -73.9914], // East Village, NYC
-    details: "120 E 9th St, 250m², 1 Bed, 1 Bath",
+    location: [28.4312, 77.0368], // Sector 47, Gurugram
+    details: "Sector 47, 750 sqft, 1 BHK, 1 Bath",
   },
   {
     id: 8,
-    name: "Spacious Family Home",
+    name: "Luxury Apartment in MG Road",
     price: "$145,000",
-    location: [40.7472, -73.9797], // Near Penn Station, NYC
-    details: "215 W 34th St, 600m², 3 Beds, 2 Baths",
+    location: [28.4816, 77.0738], // MG Road, Gurugram
+    details: "MG Road, 2000 sqft, 3 BHK, 3 Baths",
   },
-  // Add more properties as needed
 ];
 
 
@@ -119,7 +177,7 @@ const RealEstateMap = () => {
       {/* Ensure the map does not interfere with the Navbar */}
       <div style={{ position: "relative", zIndex: 1 }}>
         <MapContainer
-          center={[40.73061, -73.935242]}
+          center={[28.4595, 77.0266]}
           zoom={12}
           style={{ height: "500px", width: "100%" }}
           scrollWheelZoom={false}

@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="relative flex justify-between items-center px-10 lg:px-20 py-4 shadow-md bg-white">
       {/* Logo Section */}
       <div className="flex items-center space-x-2">
-        <img src="/logo.png" alt="Logo" className="h-14 w-44" />
+        <img onClick={()=>navigate('/')} src="/logo.png" alt="Logo" className="h-14 w-44 cursor-pointer" />
         <div className="text-xl font-semibold text-gray-800">
           {/* Logo text if needed */}
         </div>
