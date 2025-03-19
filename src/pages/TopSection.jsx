@@ -1,7 +1,71 @@
-import React from "react";
+import React, { useState } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { CSSTransition } from "react-transition-group";
+import { Link } from "react-router-dom";
+
+// Property Data for each category
+const allProperties = {
+  trending: Array(8).fill({
+    title: "Signature Global Twin Tower DXP",
+    price: "₹ 4.86 - 8 Cr",
+    type: "Residential Flats",
+    location: "Sector 88B, Dwarka Expressway",
+    image: "/propertyi.png", // Replace with actual image path
+  }),
+  featured: Array(6).fill({
+    title: "Signature Global Tower A1",
+    price: "₹ 3.56 - 6 Cr",
+    type: "Commercial Flats",
+    location: "Sector 85, Gurgaon",
+    image: "/propertyi.png", // Replace with actual image path
+  }),
+  upcoming: Array(5).fill({
+    title: "Signature Global Heights",
+    price: "₹ 2.86 - 5 Cr",
+    type: "Residential Flats",
+    location: "Sector 99, Noida",
+    image: "/propertyi.png", // Replace with actual image path
+  }),
+  commercial: Array(7).fill({
+    title: "Signature Global Commercial Park",
+    price: "₹ 6.86 - 12 Cr",
+    type: "Commercial Property",
+    location: "Sector 114, Delhi",
+    image: "/propertyi.png", // Replace with actual image path
+  }),
+  affordable: Array(4).fill({
+    title: "Affordable Homes Dwarka",
+    price: "₹ 1.86 - 3 Cr",
+    type: "Residential Flats",
+    location: "Sector 76, Noida",
+    image: "/propertyi.png", // Replace with actual image path
+  }),
+  sco: Array(3).fill({
+    title: "Signature SCO Plots",
+    price: "₹ 7.86 - 10 Cr",
+    type: "Commercial Plots",
+    location: "Sector 23, Gurgaon",
+    image: "/propertyi.png", // Replace with actual image path
+  }),
+  budget: Array(5).fill({
+    title: "Budget Flats Sector 77",
+    price: "₹ 1.1 - 2 Cr",
+    type: "Residential Flats",
+    location: "Sector 77, Gurgaon",
+    image: "/propertyi.png", // Replace with actual image path
+  }),
+  luxury: Array(6).fill({
+    title: "Luxury Villas Noida",
+    price: "₹ 10.86 - 20 Cr",
+    type: "Luxury Villas",
+    location: "Sector 42, Noida",
+    image: "/propertyi.png", // Replace with actual image path
+  }),
+};
 
 const TopSection = () => {
-
   const builders = [
     { id: 1, name: "DLF", logo: "/dlf-logo.png" },
     { id: 2, name: "DLF", logo: "/dlf-logo.png" },
@@ -9,110 +73,129 @@ const TopSection = () => {
     { id: 4, name: "DLF", logo: "/dlf-logo.png" },
     { id: 5, name: "DLF", logo: "/dlf-logo.png" },
     { id: 6, name: "DLF", logo: "/dlf-logo.png" },
-   
-    
+    { id: 7, name: "DLF", logo: "/dlf-logo.png" },
+    { id: 8, name: "DLF", logo: "/dlf-logo.png" },
+    { id: 9, name: "DLF", logo: "/dlf-logo.png" },
+    { id: 10, name: "DLF", logo: "/dlf-logo.png" },
   ];
 
-  const property = {
-    title: "Conscient ParQ",
-    description:
-      "At Parq we believe life is for living. This urban oasis provides a sanctuary to those seeking luxury and security in every aspect of their home and community. Thoughtfully planned to meet the highest standard of affluent living with a wealth of amenities, you will never want to leave this naturally inspired haven.",
-    location: "Gurugram",
-    unitType: "4 BHK",
-    price: "2.6 - 3.51 Cr",
-    images: [
-      "https://imagizer.imageshack.com/img923/1429/jd3kvn.png",
-      "https://imagizer.imageshack.com/img922/4862/dP3boW.png",
-      "https://imagizer.imageshack.com/img922/5365/c1N1dm.png",
-      "https://imagizer.imageshack.com/img923/1354/AB92WJ.png",
+  const [selectedCategory, setSelectedCategory] = useState("trending");
+  const [properties, setProperties] = useState(allProperties[selectedCategory]);
+
+  // Handle button clicks to filter properties by category
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setProperties(allProperties[category]);
+  };
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
     ],
   };
 
   return (
     <div>
-      {/* Header */}
-
-
-      {/* Search Filter & Map */}
-
-
       {/* Featured Builders */}
       <div className="w-full py-10 px-5">
         <h2 className="text-3xl font-semibold text-center pb-6">Featured Builders</h2>
 
-        <div className="border-t border-b mt-2 mb-2 border-[#043268] ">
-          <div className="grid grid-cols-2 lg:grid-cols-6 lg:px-20 justify-center gap-6 py-6 ">
+        <div className="border-t border-b mt-2 mb-2 border-[#043268]">
+          <Slider {...sliderSettings}>
             {builders.map((builder) => (
               <div
                 key={builder.id}
-                className="bg-white py-6 px-3 rounded-xl shadow-md border-[2px] border-gray-400 flex items-center justify-center w-40 h-40"
+                className="bg-white py-6 px-3 rounded-xl shadow-md border-[2px] border-gray-400 flex items-center justify-center w-40 h-40 mx-2"
               >
                 <img src={builder.logo} alt={builder.name} className="h-16 w-auto" />
               </div>
             ))}
-          </div>
+          </Slider>
         </div>
       </div>
 
-
-      {/* Trending Properties */}
-      <div className="w-full py-2 px-5">
-        {/* Title */}
+      {/* Property List */}
+      <div className="min-h-screen lg:max-w-7xl mx-auto p-10">
         <h2 className="text-3xl font-semibold text-center mb-6">
-          <span className="text-[#043268]">Trending</span> Properties in Gurugram
+          Our <span className="text-[#043268]">New Age</span> Properties
         </h2>
 
-        {/* Card Container */}
-        <div className="bg-white border lg:w-[80%] border-gray-200 shadow-xl rounded-xl p-6 flex flex-col lg:flex-row items-center justify-between  mx-auto">
-
-
-          <div className="grid grid-cols-4  sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 w-full">
-            <img src={property.images[0]} alt="Property Image 1" className="rounded-xl object-cover col-span-2 row-span-2" />
-            <img src={property.images[1]} alt="Property Image 2" className="rounded-xl object-cover" />
-            <img src={property.images[2]} alt="Property Image 3" className="rounded-xl object-cover" />
-            <img src={property.images[3]} alt="Property Image 4" className="rounded-xl object-cover" />
-          </div>
-
-
-          {/* Right: Details Section */}
-          <div className="w-full lg:w-1/2 lg:pl-8 mt-4 lg:mt-0">
-            <h3 className="text-xl font-semibold mb-2">{property.title}</h3>
-            <p className="text-gray-600 text-sm mb-4">{property.description}</p>
-
-            {/* Info Icons */}
-            <div className="flex gap-6 mb-6 flex-wrap justify-between sm:justify-start">
-              <div className="flex flex-col items-center">
-                <span className=" p-3 rounded-full">
-                  <img src="/location.png" alt="" />
-                </span>
-                <p className="font-semibold">{property.location}</p>
-                <p className="text-gray-500 text-xs">Location</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className=" p-3 rounded-full">
-                  <img src="/home.png" alt="" />
-                </span>
-                <p className="font-semibold">{property.unitType}</p>
-                <p className="text-gray-500 text-xs">Unit Type</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className=" p-3 rounded-full">
-                  <img src="/rupees.png" alt="" />
-                </span>
-                <p className="font-semibold">{property.price}</p>
-                <p className="text-gray-500 text-xs">Price</p>
-              </div>
-            </div>
-
-            {/* Explore Button */}
-            <button className="bg-[#043268] text-white px-6 py-2 rounded-lg font-semibold w-full sm:w-auto">
-              Explore Now
+        <div className="flex justify-center gap-2 mb-6 lg:max-w-6xl overflow-x-auto ">
+          {/* Category Selector Buttons */}
+          {Object.keys(allProperties).map((category) => (
+            <button
+              key={category}
+              onClick={() => handleCategoryChange(category)}
+              className={`px-4 py-2 rounded-full hover:cursor-pointer ${selectedCategory === category ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'}`}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
             </button>
-          </div>
+          ))}
+        </div>
 
+        {/* Transition on Category Change */}
+        <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {properties.map((property, index) => (
+              <div key={index} className="bg-white rounded-4xl border-[2px] border-gray-300 overflow-hidden p-4 border border-gray-200">
+                <img src={property.image} alt={property.title} className="w-full h-40 object-cover rounded-lg" />
+                <h3 className="text-xl font-medium mt-4 mb-1">{property.title}</h3>
+                <p className="text-[#043268] font-semibold">{property.price}</p>
+                <p className="text-gray-900 text-sm flex items-center ">
+                  <span className="p-3 rounded-full">
+                    <img src="/a.png" alt="" className="w-3 h-3" />
+                  </span>
+                  {property.type}
+                </p>
+                <p className="text-gray-900 text-sm flex items-center">
+                  <span className="p-3 rounded-full">
+                    <img src="/b.png" alt="" className="w-3 h-3" />
+                  </span>
+                  {property.location}
+                </p>
+                <Link to="/property">
+                  <button className="mt-4 w-full hover:cursor-pointer bg-[#043268] text-white font-bold py-2 rounded-lg">
+                    Visit Property Details
+                  </button>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </CSSTransition>
+
+        <div className="w-full flex mt-10">
+          <button className="text-[#043268] px-16 py-4 font-semibold border-2 border-[#043268] hover:bg-orange-[#043268] hover:cursor-pointer px-6 py-2 rounded-full mx-auto ">
+            View All Listings
+          </button>
         </div>
       </div>
-
     </div>
   );
 };

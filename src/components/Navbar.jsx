@@ -5,49 +5,32 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
   return (
-    <nav className="relative flex justify-between items-center px-10 lg:px-20 py-4 shadow-md bg-white">
+    <nav className="relative flex justify-between items-center px-10 lg:px-20 py-4 shadow-md bg-blue-900">
       {/* Logo Section */}
       <div className="flex items-center space-x-2">
-        <img onClick={()=>navigate('/')} src="/logo.png" alt="Logo" className="h-14 w-44 cursor-pointer" />
-        <div className="text-xl font-semibold text-gray-800">
-          {/* Logo text if needed */}
-        </div>
+        <img onClick={() => navigate('/')} src="/logo.png" alt="Logo" className="h-14 w-44 cursor-pointer" />
       </div>
 
-      {/* Desktop Navigation Links */}
-      <div className="hidden md:flex space-x-10">
-        <a 
-          href="/PropertyListing" 
-          className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-        >
-          Resale
-        </a>
-        <a 
-          href="/PropertyListing" 
-          className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-        >
-          Rental
-        </a>
-        <a 
-         href="/projects" 
-          className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-        >
-          Projects
-        </a>
-      </div>
-
-      {/* Desktop Enquiry & Search */}
-      <div className="hidden md:flex items-center space-x-6">
-        <a href="#" className="text-lg font-lato text-black hover:text-gray-700 transition-colors duration-200">
-          Enquire Now
-        </a>
-        <FontAwesomeIcon 
-          icon={faSearch} 
-          className="text-2xl text-black hover:text-gray-700 transition-colors duration-200 cursor-pointer" 
+            {/* Search Bar */}
+      <div className="flex items-center w-full max-w-md bg-white rounded-full py-2 px-3">
+        <FontAwesomeIcon icon={faSearch} className="text-gray-400" />
+        <input
+          type="text"
+          placeholder="Search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full bg-transparent border-0 focus:outline-none placeholder-gray-400 ml-2"
         />
+      </div>
+
+      {/* Contact Section */}
+      <div className="hidden md:flex items-center">
+        <span className="text-white text-lg">Call Us: </span>
+        <span className="text-white text-lg font-semibold">9599204040</span>
       </div>
 
       {/* Mobile Menu Button */}
@@ -65,34 +48,6 @@ const Navbar = () => {
           </svg>
         )}
       </button>
-
-      {/* Mobile Menu Dropdown */}
-      <div 
-        className={`md:hidden absolute top-full left-0 right-0 bg-white shadow-md overflow-hidden z-100 transition-all duration-300 ease-in-out ${
-          isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="flex flex-col items-center py-4 space-y-4">
-          <a 
-            href="/PropertyListing" 
-            className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-          >
-            Resale
-          </a>
-          <a 
-            href="PropertyListing" 
-            className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-          >
-            Rental
-          </a>
-          <a 
-            href="/projects" 
-            className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-          >
-            Projects
-          </a>
-        </div>
-      </div>
     </nav>
   );
 };
