@@ -1,97 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="relative flex justify-between items-center px-10 lg:px-20 py-4 shadow-md bg-white">
-      {/* Logo Section */}
+    <nav className={`sticky top-0 z-50 flex justify-between items-center px-10 lg:px-20 py-4 shadow-md transition-colors duration-500 ${isScrolled ? "bg-blue-900" : "bg-white"}`}>
+      {/* Logo */}
       <div className="flex items-center space-x-2">
-        <img onClick={()=>navigate('/')} src="/logo.png" alt="Logo" className="h-14 w-44 cursor-pointer" />
-        <div className="text-xl font-semibold text-gray-800">
-          {/* Logo text if needed */}
-        </div>
+        <img onClick={() => navigate('/')} src="/logo.png" alt="Logo" className="h-14 w-44 cursor-pointer" />
       </div>
 
-      {/* Desktop Navigation Links */}
-      <div className="hidden md:flex space-x-10">
-        <a 
-          href="/PropertyListing" 
-          className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-        >
-          Resale
-        </a>
-        <a 
-          href="/PropertyListing" 
-          className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-        >
-          Rental
-        </a>
-        <a 
-         href="/projects" 
-          className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-        >
-          Projects
-        </a>
-      </div>
-
-      {/* Desktop Enquiry & Search */}
-      <div className="hidden md:flex items-center space-x-6">
-        <a href="#" className="text-lg font-lato text-black hover:text-gray-700 transition-colors duration-200">
-          Enquire Now
-        </a>
-        <FontAwesomeIcon 
-          icon={faSearch} 
-          className="text-2xl text-black hover:text-gray-700 transition-colors duration-200 cursor-pointer" 
+      {/* Search Bar */}
+      <div className="flex items-center w-full max-w-lg bg-gray-100 rounded-full py-3 px-4">
+        <FontAwesomeIcon icon={faSearch} className={`${isScrolled ? "text-gray-400" : "text-gray-500"}`} />
+        <input
+          type="text"
+          placeholder="Search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className={`w-full bg-transparent border-0 focus:outline-none placeholder-gray-500 ml-2 text-lg ${isScrolled ? "text-white" : "text-gray-800"}`}
         />
       </div>
 
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-      >
-        {isMenuOpen ? (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        )}
-      </button>
-
-      {/* Mobile Menu Dropdown */}
-      <div 
-        className={`md:hidden absolute top-full left-0 right-0 bg-white shadow-md overflow-hidden z-100 transition-all duration-300 ease-in-out ${
-          isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="flex flex-col items-center py-4 space-y-4">
-          <a 
-            href="/PropertyListing" 
-            className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-          >
-            Resale
-          </a>
-          <a 
-            href="PropertyListing" 
-            className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-          >
-            Rental
-          </a>
-          <a 
-            href="/projects" 
-            className="text-lg font-medium text-[#043268] hover:text-[#043268] transition-transform duration-200 hover:scale-105"
-          >
-            Projects
-          </a>
-        </div>
+      {/* Buttons */}
+      <div className="hidden md:flex items-center space-x-4">
+        <button className={`px-4 py-2 rounded-lg ${isScrolled ? "bg-white text-blue-900 hover:bg-gray-100" : "bg-blue-900 text-white hover:bg-blue-800"}`} onClick={() => alert("Contact Us clicked!")}>
+          Contact Us
+        </button>
+        <button className={`px-3 py-1 rounded-lg text-sm ${isScrolled ? "bg-white text-blue-900 hover:bg-gray-100" : "bg-blue-900 text-white hover:bg-blue-800"}`} onClick={() => navigate('/admin-dashboard')}>
+          Admin
+        </button>
       </div>
     </nav>
   );
