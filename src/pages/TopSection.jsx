@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 // Property Data for each category
 const allProperties = {
-  trending: Array(8).fill({
+  residential: Array(8).fill({
     title: "Signature Global Twin Tower DXP",
     price: "₹ 4.86 - 8 Cr",
     type: "Residential Flats",
@@ -79,7 +79,7 @@ const TopSection = () => {
     { id: 10, name: "DLF", logo: "/dlf-logo.png" },
   ];
 
-  const [selectedCategory, setSelectedCategory] = useState("trending");
+  const [selectedCategory, setSelectedCategory] = useState("residential");
   const [properties, setProperties] = useState(allProperties[selectedCategory]);
 
   // Handle button clicks to filter properties by category
@@ -88,11 +88,12 @@ const TopSection = () => {
     setProperties(allProperties[category]);
   };
 
-  const sliderSettings = {
+  // Slider settings for Featured Builders (all DLF logos in a single row)
+  const buildersSliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 5,
+    slidesToShow: builders.length, // Show all builders in a single row
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
@@ -100,14 +101,14 @@ const TopSection = () => {
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 4,
+          slidesToShow: 6, // Show fewer slides on smaller screens
           slidesToScroll: 1,
         },
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 3,
+          slidesToShow: 4,
           slidesToScroll: 1,
         },
       },
@@ -121,6 +122,44 @@ const TopSection = () => {
     ],
   };
 
+  // Slider settings for Properties
+  const propertiesSliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: selectedCategory === "residential" ? 4 : 4, // Adjust slidesToShow as needed
+    slidesToScroll: 1,
+    rows: selectedCategory === "residential" ? 2 : 1, // 2 rows for Residential, 1 row for others
+    autoplay: true,
+    autoplaySpeed: 3000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: selectedCategory === "residential" ? 3 : 3,
+          slidesToScroll: 1,
+          rows: selectedCategory === "residential" ? 2 : 1,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: selectedCategory === "residential" ? 2 : 2,
+          slidesToScroll: 1,
+          rows: selectedCategory === "residential" ? 2 : 1,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          rows: selectedCategory === "residential" ? 2 : 1,
+        },
+      },
+    ],
+  };
+
   return (
     <div>
       {/* Featured Builders */}
@@ -128,7 +167,7 @@ const TopSection = () => {
         <h2 className="text-3xl font-semibold text-center pb-6">Featured Builders</h2>
 
         <div className="border-t border-b mt-2 mb-2 border-[#043268]">
-          <Slider {...sliderSettings}>
+          <Slider {...buildersSliderSettings}>
             {builders.map((builder) => (
               <div
                 key={builder.id}
@@ -147,22 +186,78 @@ const TopSection = () => {
           Our <span className="text-[#043268]">New Age</span> Properties
         </h2>
 
-        <div className="flex justify-center gap-2 mb-6 lg:max-w-6xl overflow-x-auto ">
+        <div className="flex justify-center gap-2 mb-6 lg:max-w-6xl overflow-x-auto">
           {/* Category Selector Buttons */}
-          {Object.keys(allProperties).map((category) => (
-            <button
-              key={category}
-              onClick={() => handleCategoryChange(category)}
-              className={`px-4 py-2 rounded-full hover:cursor-pointer ${selectedCategory === category ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'}`}
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </button>
-          ))}
+          <button
+            onClick={() => handleCategoryChange("residential")}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === "residential" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
+            }`}
+          >
+            Recomonded
+          </button>
+
+          <button
+            onClick={() => handleCategoryChange("featured")}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === "featured" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
+            }`}
+          >
+            Featured
+          </button>
+          <button
+            onClick={() => handleCategoryChange("upcoming")}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === "upcoming" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
+            }`}
+          >
+            Upcoming
+          </button>
+          <button
+            onClick={() => handleCategoryChange("commercial")}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === "commercial" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
+            }`}
+          >
+            Commercial
+          </button>
+          <button
+            onClick={() => handleCategoryChange("affordable")}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === "affordable" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
+            }`}
+          >
+            Affordable
+          </button>
+          <button
+            onClick={() => handleCategoryChange("sco")}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === "sco" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
+            }`}
+          >
+            SCO
+          </button>
+          <button
+            onClick={() => handleCategoryChange("budget")}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === "budget" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
+            }`}
+          >
+            Budget
+          </button>
+          <button
+            onClick={() => handleCategoryChange("luxury")}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === "luxury" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
+            }`}
+          >
+            Luxury
+          </button>
         </div>
 
         {/* Transition on Category Change */}
         <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <Slider {...propertiesSliderSettings}>
             {properties.map((property, index) => (
               <div key={index} className="bg-white rounded-4xl border-[2px] border-gray-300 overflow-hidden p-4 border border-gray-200">
                 <img src={property.image} alt={property.title} className="w-full h-40 object-cover rounded-lg" />
@@ -187,7 +282,7 @@ const TopSection = () => {
                 </Link>
               </div>
             ))}
-          </div>
+          </Slider>
         </CSSTransition>
 
         <div className="w-full flex mt-10">

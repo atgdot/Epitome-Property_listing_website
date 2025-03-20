@@ -17,7 +17,7 @@ const RealEstateMap = () => {
   // Array of banner images
   const bannerImages = [
     `/NEW LAUNCHED 1.png`,
-    `/unsplash_hGV2TfOh0ns.png` // New image added here
+    `/NEW LAUNCHED 2.png` // New image added here
   ];
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const RealEstateMap = () => {
         <MapContainer
           center={[28.4595, 77.0266]}
           zoom={12}
-          style={{ height: "500px", width: "85%" }}
+          style={{ height: "500px", width: "100%" }}
           scrollWheelZoom={false}
           touchZoom={false}
           gestureHandling={true}
@@ -101,9 +101,20 @@ const RealEstateMap = () => {
         display: "flex",
         justifyContent: "center", // Center the banner horizontally
         marginTop: "20px", // Add margin to separate from the map
-        zIndex: 5000
+        zIndex: 5000,
+        width: "100%", // Set a fixed width for the banner container
+        height: "300px", // Set a fixed height for the banner container
+        overflow: "hidden" // Ensure the image doesn't overflow the container
       }}>
-        <img src={bannerImages[currentBanner]} alt="Banner" style={{ maxWidth: "100%", height: "auto" }} />
+        <img 
+          src={bannerImages[currentBanner]} 
+          alt="Banner" 
+          style={{ 
+            width: "50%", // Ensure the image takes up the full width of the container
+            height: "60%", // Ensure the image takes up the full height of the container
+            objectFit: "cover" // Ensure the image covers the container without distorting aspect ratio
+          }} 
+        />
       </div>
     </div>
   );
