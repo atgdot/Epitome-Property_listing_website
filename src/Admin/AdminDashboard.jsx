@@ -1,3 +1,4 @@
+// AdminDashboard.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
@@ -7,34 +8,8 @@ import { MdEdit } from "react-icons/md";
 import { CSSTransition } from "react-transition-group";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import UserManagement from "../components/UserManagement";
+import AdminProperty from "../components/AdminProperty";
 
-
-
-const renderStars = (count) => {
-  return [...Array(5)].map((_, i) => (
-    <FaStar
-      key={i}
-      className={`text-${i < count ? 'yellow-400' : 'gray-300'} inline-block`}
-    />
-  ));
-};
-
-const properties = Array.from({length: 9}, () => ({
-  id: Math.random(),
-  category: "Luxury Apartment",
-  city: "New York",
-  title: "Signature Global Twin Tower DXP",
-  price: "₹ 4.86 - 8 Cr",
-  image: "propertyi.png",
-  status: "Available",
-  description: "A luxurious high-rise offering stunning city views and premium amenities.",
-  rentalYield: "5.2%",
-  area: "3,500 sqft",
-  currentRental: "₹ 2.5 Lakh/month",
-  tenure: "Freehold",
-  tenant: "Corporate Tenant",
-  sector: "Downtown"
-}));
 
 const reviews = [
   {
@@ -161,271 +136,16 @@ const AdminDashboard = () => {
               <p className="text-gray-600">Monthly: -2.46%</p>
             </div>
           </div>
-
         );
+
       case "Property":
-        return (
-          <div>
-            <h1 className="text-3xl font-semibold text-center mb-6">Properties</h1>
-            <div className="flex justify-between items-center mb-6">
-              <button className="flex items-center px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
-                <FiFilter className="mr-2" /> Filter
-              </button>
-              <div className="flex border rounded-lg bg-white w-80 overflow-hidden">
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="px-4 py-2 w-full outline-none"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button className="px-4 py-2 bg-blue-700 text-white flex items-center">
-                  <FaSearch />
-                </button>
-              </div>
-              <div className="flex items-center gap-2">
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={selectedAll}
-                    onChange={() => setSelectedAll(!selectedAll)}
-                    className="w-4 h-4"
-                  />
-                  <span className="ml-2">Select All</span>
-                </label>
-                <button className="flex items-center gap-1 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
-                  <MdEdit /> Edit
-                </button>
-              </div>
-            </div>
+        return <AdminProperty />;
 
-            <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {properties.map((property) => (
-                  <div key={property.id} className="bg-white rounded-2xl border-2 border-gray-200 p-5 shadow-lg">
-                    <div className="mb-4">
-                      <div className="flex justify-between items-center font-bold">
-                        <span className="text-[#043268]">{property.category}</span>
-                        <span className="text-gray-600">{property.city}</span>
-                      </div>
-                      <div className="h-[2px] bg-gray-300 my-2"></div>
-                    </div>
-
-                    <div className="mb-4">
-                      <img
-                        src={property.image}
-                        alt={property.title}
-                        className="w-full h-48 object-cover rounded-xl"
-                      />
-                    </div>
-
-                    <div className="text-sm font-semibold text-[#043268] mb-2">
-                      {property.status}
-                    </div>
-
-                    <h3 className="text-xl font-bold mb-2">{property.title}</h3>
-
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {property.description}
-                    </p>
-
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="text-[17px] font-bold">{property.price}</div>
-                      <div className="text-right">
-                        <div className="text-[13px] text-gray-600 font-medium">
-                          Avg. Rental Yield: 
-                          <span className="text-[17px] font-bold text-[#043268]">
-                            {property.rentalYield}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <ul className="space-y-2 mb-4">
-                      <li className="flex justify-between text-sm">
-                        <span className="text-gray-600">Area:</span>
-                        <span>{property.area}</span>
-                      </li>
-                      <li className="flex justify-between text-sm">
-                        <span className="text-gray-600">Current Rental:</span>
-                        <span>{property.currentRental}</span>
-                      </li>
-                      <li className="flex justify-between text-sm">
-                        <span className="text-gray-600">Tenure:</span>
-                        <span>{property.tenure}</span>
-                      </li>
-                      <li className="flex justify-between text-sm">
-                        <span className="text-gray-600">Tenant:</span>
-                        <span>{property.tenant}</span>
-                      </li>
-                      <li className="flex justify-between text-sm">
-                        <span className="text-gray-600">Location:</span>
-                        <span>{property.sector}</span>
-                      </li>
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </CSSTransition>
-          </div>
-        );
       case "User":
         return <UserManagement />;
-      
-        
-      case "Transactions":
-        return (
-          <div>
-            <h1 className="text-2xl font-bold mb-6">Transactions</h1>
-            <div className="bg-white p-4 rounded-lg shadow-lg">
-              <h2 className="text-lg font-semibold">Total Balance</h2>
-              <p className="text-2xl font-bold">$240,399</p>
-              <p className="text-gray-600">Account Type: Debit Card **** **** **** 2598</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-lg mt-6">
-              <h2 className="text-lg font-semibold">All Accounts</h2>
-              <p className="text-2xl font-bold">$25,000</p>
-              <button className="mt-3 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">
-                Next
-              </button>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-lg mt-6">
-              <h2 className="text-lg font-semibold">Statistics</h2>
-              <div className="mt-4">
-                <h3 className="text-md font-semibold">Weekly Comparison</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={barChartData}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="visitors" fill="#8884d8" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-lg mt-6">
-              <h2 className="text-lg font-semibold">Goals</h2>
-              <p className="text-2xl font-bold">$20,000</p>
-              <p className="text-gray-600">Target Achieved: $12,500</p>
-              <p className="text-gray-600">This month Target: $20,000</p>
-              <div className="mt-4">
-                <h3 className="text-md font-semibold">May, 2023</h3>
-                <div className="flex justify-between mt-2">
-                  <span>$0</span>
-                  <span>$0</span>
-                  <span>$12K</span>
-                </div>
-                <p className="text-gray-600">Target vs Achievement</p>
-              </div>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-lg mt-6">
-              <h2 className="text-lg font-semibold">Recent Transactions</h2>
-              <button className="mt-3 w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-800 transition">
-                View All
-              </button>
-              <table className="w-full mt-4">
-                <thead>
-                  <tr>
-                    <th className="text-left">Type</th>
-                    <th className="text-left">Amount</th>
-                    <th className="text-left">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Profit</td>
-                    <td>$16,000.00</td>
-                    <td>17 May 2023</td>
-                  </tr>
-                  <tr>
-                    <td>Profit</td>
-                    <td>$20,000.00</td>
-                    <td>17 May 2023</td>
-                  </tr>
-                  <tr>
-                    <td>Salaries</td>
-                    <td>$10,000.00</td>
-                    <td>17 May 2023</td>
-                  </tr>
-                  <tr>
-                    <td>Rental Property</td>
-                    <td>$1,200.00</td>
-                    <td>17 May 2023</td>
-                  </tr>
-                  <tr>
-                    <td>Laptops</td>
-                    <td>$12,000.00</td>
-                    <td>17 May 2023</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-        );
-       
-        case "Reviews":
-  return (
-    <div className="max-w-3xl mx-auto p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-bold mb-6 text-center">User Reviews</h2>
-
-      {/* Total Reviews and Average Rating */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h3 className="text-xl font-bold mb-4">Total Reviews</h3>
-        <p className="text-2xl font-bold mb-4">1,200</p>
-        <div className="flex items-center mb-4">
-          <span className="text-2xl font-bold mr-2">4.4</span>
-          <div className="flex text-yellow-400">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <span key={index}>★</span>
-            ))}
-          </div>
-          <span className="text-gray-500 ml-2">32 reviews</span>
-        </div>
-      </div>
-
-      {/* Star Distribution */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h3 className="text-xl font-bold mb-4">Rating Breakdown</h3>
-        <div className="space-y-2">
-          {[5, 4, 3, 2, 1].map((stars) => (
-            <div key={stars} className="flex items-center">
-              <span className="w-8">{stars} ★</span>
-              <div className="flex-1 bg-gray-200 h-2 rounded mx-2">
-                <div
-                  className="bg-yellow-400 h-2 rounded"
-                  style={{ width: `${(stars / 5) * 100}%` }}
-                ></div>
-              </div>
-              <span className="w-8 text-right">0</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Individual Reviews */}
-      <div className="space-y-4">
-        {reviews.map((review) => (
-          <div key={review.id} className="bg-white p-4 rounded-lg shadow-md">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold">{review.author}</h3>
-              <span className="text-gray-500">{review.role}</span>
-            </div>
-
-            {/* Star Rating */}
-            <div className="flex text-yellow-500 mb-2">
-              {Array.from({ length: review.stars }).map((_, index) => (
-                <span key={index}>★</span>
-              ))}
-            </div>
-
-            <p className="text-gray-700">{review.comment}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+      case "Reviews":
+        return <Reviews reviews={reviews} />; // Use the new Reviews component
 
       default:
         return null;
@@ -435,9 +155,11 @@ const AdminDashboard = () => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <aside className="w-64 bg-blue-900 text-white p-6 fixed h-full">
-        <h1 className="text-2xl font-bold mb-6">Epitome</h1>
+        <div className="flex items-center space-x-2 mt-[-10px]">
+          <img onClick={() => navigate('/')} src="/logo.png" alt="Logo" className="h-10 w-32 cursor-pointer" />
+        </div>
         <nav className="space-y-4">
-          {["Dashboard", "Property", "User", "Transactions", "Reviews"].map((item) => (
+          {["Dashboard", "Property", "User", "Reviews"].map((item) => (
             <button
               key={item}
               onClick={() => setSelectedTab(item)}
