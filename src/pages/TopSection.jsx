@@ -67,15 +67,15 @@ const allProperties = {
 
 const TopSection = () => {
   const builders = [
-    { id: 1, name: "DLF", logo: "/dlf-logo.png" },
-    { id: 2, name: "DLF", logo: "/dlf-logo.png" },
-    { id: 3, name: "DLF", logo: "/dlf-logo.png" },
-    { id: 4, name: "DLF", logo: "/dlf-logo.png" },
-    { id: 5, name: "DLF", logo: "/dlf-logo.png" },
-    { id: 6, name: "DLF", logo: "/dlf-logo.png" },
-    { id: 7, name: "DLF", logo: "/dlf-logo.png" },
-    { id: 8, name: "DLF", logo: "/dlf-logo.png" },
-    { id: 9, name: "DLF", logo: "/dlf-logo.png" },
+    { id: 1, name: "DLF", logo: "/godrej.png" },
+    { id: 2, name: "DLF", logo: "/centralpark.webp" },
+    { id: 3, name: "DLF", logo: "/conscient.webp" },
+    { id: 4, name: "DLF", logo: "/ireo.webp" },
+    { id: 5, name: "DLF", logo: "/m2k.webp" },
+    { id: 6, name: "DLF", logo: "/m3m.webp" },
+    { id: 7, name: "DLF", logo: "/raheja.webp" },
+    { id: 8, name: "DLF", logo: "/sobha.webp" },
+    { id: 9, name: "DLF", logo: "/trump.webp" },
     { id: 10, name: "DLF", logo: "/dlf-logo.png" },
   ];
 
@@ -88,20 +88,21 @@ const TopSection = () => {
     setProperties(allProperties[category]);
   };
 
-  // Slider settings for Featured Builders (all DLF logos in a single row)
+  // Slider settings for Featured Builders
   const buildersSliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: builders.length, // Show all builders in a single row
+    slidesToShow: builders.length,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 2000,
+    cssEase: "linear",
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 6, // Show fewer slides on smaller screens
+          slidesToShow: 6,
           slidesToScroll: 1,
         },
       },
@@ -127,11 +128,12 @@ const TopSection = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: selectedCategory === "residential" ? 4 : 4, // Adjust slidesToShow as needed
+    slidesToShow: selectedCategory === "residential" ? 4 : 4,
     slidesToScroll: 1,
-    rows: selectedCategory === "residential" ? 2 : 1, // 2 rows for Residential, 1 row for others
+    rows: selectedCategory === "residential" ? 2 : 1,
     autoplay: true,
     autoplaySpeed: 3000,
+    cssEase: "linear",
     responsive: [
       {
         breakpoint: 1024,
@@ -173,7 +175,11 @@ const TopSection = () => {
                 key={builder.id}
                 className="bg-white py-6 px-3 rounded-xl shadow-md border-[2px] border-gray-400 flex items-center justify-center w-40 h-40 mx-2"
               >
-                <img src={builder.logo} alt={builder.name} className="h-16 w-auto" />
+                <img 
+                  src={builder.logo} 
+                  alt={builder.name} 
+                  className="h-full w-full object-contain" // Change to object-cover if you want to fill the box
+                />
               </div>
             ))}
           </Slider>
@@ -188,78 +194,24 @@ const TopSection = () => {
 
         <div className="flex justify-center gap-2 mb-6 lg:max-w-6xl overflow-x-auto">
           {/* Category Selector Buttons */}
-          <button
-            onClick={() => handleCategoryChange("residential")}
-            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-              selectedCategory === "residential" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
-            }`}
-          >
-            Recomonded
-          </button>
-
-          <button
-            onClick={() => handleCategoryChange("featured")}
-            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-              selectedCategory === "featured" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
-            }`}
-          >
-            Featured
-          </button>
-          <button
-            onClick={() => handleCategoryChange("upcoming")}
-            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-              selectedCategory === "upcoming" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
-            }`}
-          >
-            Upcoming
-          </button>
-          <button
-            onClick={() => handleCategoryChange("commercial")}
-            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-              selectedCategory === "commercial" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
-            }`}
-          >
-            Commercial
-          </button>
-          <button
-            onClick={() => handleCategoryChange("affordable")}
-            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-              selectedCategory === "affordable" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
-            }`}
-          >
-            Affordable
-          </button>
-          <button
-            onClick={() => handleCategoryChange("sco")}
-            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-              selectedCategory === "sco" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
-            }`}
-          >
-            SCO
-          </button>
-          <button
-            onClick={() => handleCategoryChange("budget")}
-            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-              selectedCategory === "budget" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
-            }`}
-          >
-            Budget
-          </button>
-          <button
-            onClick={() => handleCategoryChange("luxury")}
-            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-              selectedCategory === "luxury" ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
-            }`}
-          >
-            Luxury
-          </button>
+          {["residential", "featured", "upcoming", "commercial", "affordable", "sco", "budget", "luxury"].map(category => (
+            <button
+              key={category}
+              onClick={() => handleCategoryChange(category)}
+              className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+                selectedCategory === category ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
+              }`}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </button>
+          ))}
         </div>
 
         {/* Transition on Category Change */}
         <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
           <Slider {...propertiesSliderSettings}>
             {properties.map((property, index) => (
-              <div key={index} className="bg-white rounded-4xl border-[2px] border-gray-300 overflow-hidden p-4 border border-gray-200">
+              <div key={index} className="bg-white rounded-4xl border-[2px] border-gray-300 overflow-hidden p-4 border border-gray-200 mx-2">
                 <img src={property.image} alt={property.title} className="w-full h-40 object-cover rounded-lg" />
                 <h3 className="text-xl font-medium mt-4 mb-1">{property.title}</h3>
                 <p className="text-[#043268] font-semibold">{property.price}</p>
