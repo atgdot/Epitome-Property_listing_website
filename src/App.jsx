@@ -16,13 +16,30 @@ import Footer from "./components/Footer";
 import AdminDashboard from "./admin/AdminDashboard";
 import UserManagement from "./components/UserManagement";
 
+// Residential Full Listing Pages
+import LuxuryProjectsFull from "./pages/LuxuryProjectsFull";
+import UpcomingProjectsFull from "./pages/UpcomingProjectsFull";
+import HighRiseApartmentsFull from "./pages/HighRiseApartmentsFull";
+import Subsections from "./pages/Subsections";
+
+// Commercial Full Listing Pages
+import OfficesFull from "./pages/OfficesFull";
+import PreLeasedOfficesFull from "./pages/PreLeasedOfficesFull";
+import PreRentedFull from "./pages/PreRentedFull";
+import ScoProjectsFull from "./pages/ScoProjectsFull";
+
+import { TestimonialProvider } from "./Context/TestimonialContext";
 import "./index.css";
 
 function Layout() {
   const location = useLocation();
 
   // Define routes where the Navbar or Footer should be hidden
-  const hideNavbarRoutes = ["/indiabulls", "/admin-dashboard", "/user-management"];
+  const hideNavbarRoutes = [
+    "/indiabulls",
+    "/admin-dashboard",
+    "/user-management",
+  ];
   const hideFooterRoutes = ["/admin-dashboard", "/user-management"];
 
   return (
@@ -41,8 +58,22 @@ function Layout() {
           <Route path="/PropertyListing" element={<PropertyListing />} />
           <Route path="/PropertyDetails" element={<PropertyDetails />} />
 
+          {/* Residential Full Listing Routes */}
+          <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />
+          <Route path="/residential/upcoming" element={<UpcomingProjectsFull />} />
+          <Route path="/residential/highrise" element={<HighRiseApartmentsFull />} />
+
+          {/* Commercial Full Listing Routes */}
+          <Route path="/commercial/offices" element={<OfficesFull />} />
+          <Route path="/commercial/preleased" element={<PreLeasedOfficesFull />} />
+          <Route path="/commercial/prerented" element={<PreRentedFull />} />
+          <Route path="/commercial/sco" element={<ScoProjectsFull />} />
+
+          {/* Optional: A Subsections page that might include previews, menus, etc. */}
+          <Route path="/subsections" element={<Subsections />} />
+
           {/* Admin Routes */}
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-dashboard/*" element={<AdminDashboard />} />
           <Route path="/user-management" element={<UserManagement />} />
         </Routes>
       </div>
@@ -55,9 +86,11 @@ function Layout() {
 
 function App() {
   return (
-    <Router>
-      <Layout />
-    </Router>
+    <TestimonialProvider>
+      <Router>
+        <Layout />
+      </Router>
+    </TestimonialProvider>
   );
 }
 

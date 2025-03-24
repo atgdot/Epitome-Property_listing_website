@@ -63,7 +63,7 @@ const Contact = () => {
                 {/* Right Section - Contact Image (35%) */}
                 <div className="w-full md:w-[26%] h-[35%] flex justify-center mt-6 md:mt-0">
                     <img
-                        src="https://www.shutterstock.com/image-photo/woman-using-laptop-searching-web-600nw-2426977527.jpg"
+                        src="https://i.ibb.co/WZFvSP3/efeeafabbd74b8f7d9bc42052c52fc97.jpg" 
                         alt="Contact Us"
                         className="w-[80%] md:w-[90%] rounded-lg shadow-lg"
                     />

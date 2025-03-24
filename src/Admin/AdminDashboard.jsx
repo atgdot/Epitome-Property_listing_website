@@ -9,34 +9,9 @@ import { CSSTransition } from "react-transition-group";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import UserManagement from "../components/UserManagement";
 import AdminProperty from "../components/AdminProperty";
+import AdminReviews from "../components/AdminReviews";
 
 
-const reviews = [
-  {
-    id: 1,
-    author: "Andrew Jones",
-    role: "Certified Buyer",
-    stars: 4,
-    comment:
-      "I'm absolutely in love with @gather_place. It's the first video calling software built for people who meet to get work done. Feeling whole lot productive.",
-  },
-  {
-    id: 2,
-    author: "Sarah Smith",
-    role: "Verified User",
-    stars: 5,
-    comment:
-      "Excellent platform for remote teamwork. The interface is intuitive and features are well thought out.",
-  },
-  {
-    id: 3,
-    author: "Mike Johnson",
-    role: "Enterprise Customer",
-    stars: 4,
-    comment:
-      "Great solution for our distributed teams. Has significantly improved our meeting productivity.",
-  },
-];
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -144,8 +119,8 @@ const AdminDashboard = () => {
       case "User":
         return <UserManagement />;
 
-      case "Reviews":
-        return <Reviews reviews={reviews} />; // Use the new Reviews component
+     case "Reviews":
+        return <AdminReviews />;
 
       default:
         return null;
