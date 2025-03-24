@@ -13,7 +13,7 @@ import Projects from "./components/Projects";
 import PropertyListing from "./components/PropertyListing";
 import PropertyDetails from "./components/PropertyDetails";
 import Footer from "./components/Footer";
-import AdminDashboard from "./admin/AdminDashboard";
+import AdminDashboard from "./admin/AdminDashboard.jsx";
 import UserManagement from "./components/UserManagement";
 
 // Residential Full Listing Pages
