@@ -10,7 +10,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 500);
+      setIsScrolled(window.scrollY > 600);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -25,7 +25,7 @@ const Navbar = () => {
             : "bg-transparent relative"
         }`}
     >
-      <div className="flex items-center  space-x-2">
+      <div className="flex items-center space-x-2">
         <img
           onClick={() => navigate("/")}
           src="/logo.png"
@@ -48,7 +48,7 @@ const Navbar = () => {
         />
       </div>
 
-      <div className="hidden md:ml-2 md:flex items-center space-x-4">
+      <div className="hidden md:flex items-center space-x-4">
         <button
           className={`px-4 py-2 rounded-lg transition-all duration-300 
           ${
