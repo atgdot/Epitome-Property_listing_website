@@ -24,7 +24,10 @@ const Navbar = () => {
         <img onClick={() => navigate('/')} src="/logo.png" alt="Logo" className="h-14 w-44 cursor-pointer" />
       </div>
 
+<<<<<<< HEAD
       {/* Search Bar */}
+=======
+>>>>>>> d51da724d9504918ae875ee40ce43d052a6b72bf
       <div className="flex items-center w-full max-w-lg bg-gray-100 rounded-full py-3 px-4">
         <FontAwesomeIcon icon={faSearch} className={`${isScrolled ? "text-gray-400" : "text-gray-500"}`} />
         <input
@@ -36,12 +39,26 @@ const Navbar = () => {
         />
       </div>
 
+<<<<<<< HEAD
       {/* Buttons */}
+=======
+>>>>>>> d51da724d9504918ae875ee40ce43d052a6b72bf
       <div className="hidden md:flex items-center space-x-4">
         <button className={`px-4 py-2 rounded-lg ${isScrolled ? "bg-white text-blue-900 hover:bg-gray-100" : "bg-blue-900 text-white hover:bg-blue-800"}`} onClick={() => alert("Contact Us clicked!")}>
           Contact Us
         </button>
+<<<<<<< HEAD
         <button className={`px-3 py-1 rounded-lg text-sm ${isScrolled ? "bg-white text-blue-900 hover:bg-gray-100" : "bg-blue-900 text-white hover:bg-blue-800"}`} onClick={() => navigate('/admin-dashboard')}>
+=======
+        <button
+          className={`px-4 py-2 rounded-lg transition-all duration-300
+          ${
+            isScrolled
+              ? "bg-white text-blue-900 hover:bg-gray-100"
+              : "bg-blue-900 text-white hover:bg-blue-800"
+          }`}
+        >
+>>>>>>> d51da724d9504918ae875ee40ce43d052a6b72bf
           Admin
         </button>
       </div>

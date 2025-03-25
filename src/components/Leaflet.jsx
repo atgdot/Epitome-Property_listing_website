@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import img from "../assets/propertyi.png";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 const allProperties = [
   // Your properties data
 ];
@@ -10,6 +16,22 @@ const RealEstateMap = () => {
   const [filteredProperties, setFilteredProperties] = useState(allProperties);
   const [priceFilter, setPriceFilter] = useState("all");
   const [currentBanner, setCurrentBanner] = useState(0);
+
+  const builderImages = [
+    img,
+    img,
+    img,
+    img,
+    img,
+    img,
+    img,
+    img,
+    img,
+    img,
+    img,
+    img,
+    img, // Add more images
+  ];
 
   const bannerImages = ["/NEW LAUNCHED 1.png", "/NEW LAUNCHED 2.png"];
 
@@ -74,22 +96,41 @@ const RealEstateMap = () => {
       </div>
 
       {/* Featured Builders Section */}
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-2 text-center">
+
+      <div className="bg-white p-6 shadow-lg w-full">
+        <h2 className="text-2xl font-bold text-center mb-4">
           FEATURED BUILDERS
         </h2>
-        <div className="flex overflow-x-auto space-x-4 py-2">
-          <img src={img} alt="Builder 1" className="h-16 w-32" />
-          <img src={img} alt="Builder 1" className="h-16 w-32" />
-          <img src={img} alt="Builder 1" className="h-16 w-32" />
-          <img src={img} alt="Builder 1" className="h-16 w-32" />
-          <img src={img} alt="Builder 1" className="h-16 w-32" />
-          <img src={img} alt="Builder 1" className="h-16 w-32" />
-          <img src={img} alt="Builder 1" className="h-16 w-32" />
-          <img src={img} alt="Builder 1" className="h-16 w-32" />
-          <img src={img} alt="Builder 1" className="h-16 w-32" />
-          {/* Add more builder logos as needed */}
-        </div>
+
+        <Swiper
+          modules={[Pagination, Navigation]}
+          spaceBetween={20}
+          slidesPerView={6} // Show more slides for full-width effect
+          navigation
+          pagination={{ clickable: true, dynamicBullets: false }}
+          className="w-full"
+        >
+          {builderImages.map((image, index) => (
+            <SwiperSlide key={index} className="flex justify-center">
+              <img
+                src={image}
+                alt={`Builder ${index + 1}`}
+                className="h-28 w-40 object-contain rounded-lg"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* Move dots slightly lower */}
+        <style>
+          {`
+    .swiper-pagination {
+      position: relative !important;
+      margin-top: 15px; /* Move dots lower */
+    }
+  `}
+        </style>
+        {/* <div className="swiper-pagination mt-4"></div> */}
       </div>
     </div>
   );
