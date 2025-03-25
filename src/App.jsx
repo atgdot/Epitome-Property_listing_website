@@ -32,7 +32,7 @@ import PreRentedFull from "./pages/PreRentedFull";
 import ScoProjectsFull from "./pages/ScoProjectsFull";
 
 import { TestimonialProvider } from "./Context/TestimonialContext";
-import { PropertyProvider } from "./context/PropertyContext";  // Import PropertyProvider
+import { PropertyProvider } from "./Context/PropertyContext";  // Import PropertyProvider
 import "./index.css";
 
 function Layout() {

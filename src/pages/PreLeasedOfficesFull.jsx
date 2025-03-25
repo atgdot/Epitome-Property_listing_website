@@ -1,28 +1,29 @@
 import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import PropertyCard from "../components/PropertyCard";
+import PropertyContext from '../Context/PropertyContext';
 
-import PropertyContext from '../context/PropertyContext';
 
-
-const HighRiseApartmentsFull = () => {
-  const { properties } = useContext(PropertyContext);
-  const highRiseApartments = properties.residential.highRiseApartments;
+const PreLeasedOfficesFull = () => {
+  const { commercial } = useContext(PropertyContext);
+  const properties = commercial?.preLeasedOffices || [];
 
   return (
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
-      <h2 className="text-3xl font-semibold text-center mb-6">
-        High Rise Apartments
-      </h2>
+      <h2 className="text-3xl font-semibold text-center mb-6">Pre-Leased Offices</h2>
       <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {highRiseApartments.map((property, index) => (
-            <PropertyCard key={index} property={property} />
-          ))}
+          {properties.length > 0 ? (
+            properties.map((property, index) => (
+              <PropertyCard key={index} property={property} />
+            ))
+          ) : (
+            <p className="text-center text-gray-600">No pre-leased offices available.</p>
+          )}
         </div>
       </CSSTransition>
     </div>
   );
 };
 
-export default HighRiseApartmentsFull;
+export default PreLeasedOfficesFull;
