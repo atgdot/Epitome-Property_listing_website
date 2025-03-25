@@ -1,64 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropertyCard from "../components/PropertyCard";
-import propertyData from "../data/propertyData";
-import { RecommendationsData } from "../data/RecommendationData";
-
-const trendingProperties =
-  (propertyData.trending && propertyData.trending.length
-    ? propertyData.trending
-    : propertyData.featured && propertyData.featured.length
-    ? propertyData.featured
-    : []) || [];
-
-if (!trendingProperties.length) {
-  console.warn("No trending or featured properties found in propertyData.");
-}
-
-const trendingItems =
-  trendingProperties.length < 6
-    ? [...trendingProperties, ...trendingProperties]
-    : trendingProperties;
-const trendingItemsLimited = trendingItems.slice(0, 6);
-
-const propertiesByCategory = {
-  trending: trendingItemsLimited,
-  upcoming: propertyData.residential.upcomingProjects || [],
-  preLeased: propertyData.commercial.preLeasedOffices || [],
-  featured: propertyData.featured || [],
-  recommended: propertyData.recommended || [],
-  commercial: propertyData.commercial.offices || [],
-  sco: propertyData.commercial.sco || [],
-  luxury: propertyData.residential.luxuryProjects || [],
-};
-
-const navButtons = [
-  { label: "Trending", category: "trending" },
-  { label: "Upcoming", category: "upcoming" },
-  { label: "Pre-Leased", category: "preLeased" },
-  { label: "Featured", category: "featured" },
-  { label: "Recommended", category: "recommended" },
-  { label: "Commercial", category: "commercial" },
-  { label: "SCO", category: "sco" },
-  { label: "Luxury", category: "luxury" },
-];
+import { recommendationsData } from "../data/RecommendationData";
+import PropertyContext from "../context/PropertyContext";
 
 const TopSection = () => {
-  const availableCategories = navButtons;
-  const [selectedCategory, setSelectedCategory] = useState(
-    availableCategories.length ? availableCategories[0].category : ""
-  );
+  const { properties } = useContext(PropertyContext);
+  
+  // Trending properties only from context (No fallback or duplication)
+  const trendingProperties = properties.trending || [];
 
-  let properties = propertiesByCategory[selectedCategory] || [];
-  properties =
-    selectedCategory === "trending"
-      ? properties.slice(0, 6)
-      : properties.slice(0, 3);
+  const propertiesByCategory = {
+    trending: trendingProperties, // No duplication
+    upcoming: properties.residential.upcomingProjects || [],
+    preLeased: properties.commercial.preLeasedOffices || [],
+    featured: properties.featured || [],
+    recommended: properties.recommended || [],
+    commercial: properties.commercial.offices || [],
+    sco: properties.commercial.sco || [],
+    luxury: properties.residential.luxuryProjects || [],
+  };
+
+  const navButtons = [
+    { label: "Trending", category: "trending" },
+    { label: "Upcoming", category: "upcoming" },
+    { label: "Pre-Leased", category: "preLeased" },
+    { label: "Featured", category: "featured" },
+    { label: "Recommended", category: "recommended" },
+    { label: "Commercial", category: "commercial" },
+    { label: "SCO", category: "sco" },
+    { label: "Luxury", category: "luxury" },
+  ];
+
+  const [selectedCategory, setSelectedCategory] = useState(navButtons[0].category);
+  let propertiesList = propertiesByCategory[selectedCategory] || [];
+  
+  // Always show the exact properties from context
+  propertiesList = selectedCategory === "trending" ? propertiesList : propertiesList.slice(0, 3);
 
   // Fetch recommendations images from recommendationsData
-  const [Recommendations, setRecommendations] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
-    setRecommendations(RecommendationsData.properties);
+    setRecommendations(recommendationsData.properties);
   }, []);
 
   return (
@@ -67,25 +50,17 @@ const TopSection = () => {
       <div className="flex flex-col items-center text-center mb-6">
         <h2 className="text-3xl font-semibold mb-6">Recommended</h2>
         <div className="flex overflow-x-auto space-x-4 py-4 justify-center">
-          {Recommendations.map((property, index) => (
+          {recommendations.map((property, index) => (
             <div
               key={index}
               className="relative flex-shrink-0 w-64 h-80 rounded-lg shadow-md overflow-hidden"
             >
-              <img
-                src={property.image}
-                alt={property.title}
-                className="w-full h-full object-cover"
-              />
+              <img src={property.image} alt={property.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black bg-opacity-30"></div>
               <div className="absolute bottom-0 p-4 text-white z-10">
-                <div className="font-semibold text-sm uppercase mb-1">
-                  {property.title}
-                </div>
+                <div className="font-semibold text-sm uppercase mb-1">{property.title}</div>
                 {property.address.length > 0 && (
-                  <div className="text-xs whitespace-pre-line">
-                    {property.address.join("\n")}
-                  </div>
+                  <div className="text-xs whitespace-pre-line">{property.address.join("\n")}</div>
                 )}
               </div>
             </div>
@@ -94,11 +69,9 @@ const TopSection = () => {
       </div>
 
       {/* Property Category Navigation */}
-      <h2 className="text-3xl font-semibold text-center mb-6">
-        Explore Our Properties
-      </h2>
+      <h2 className="text-3xl font-semibold text-center mb-6">Explore Our Properties</h2>
       <div className="flex justify-center gap-4 flex-wrap mb-10">
-        {availableCategories.map((btn) => (
+        {navButtons.map((btn) => (
           <button
             key={btn.category}
             onClick={() => setSelectedCategory(btn.category)}
@@ -114,24 +87,19 @@ const TopSection = () => {
       </div>
 
       {/* Properties Listing */}
-      {properties.length > 0 ? (
+      {propertiesList.length > 0 ? (
         <div>
           <h3 className="text-2xl font-semibold text-center mb-6">
-            {availableCategories.find(
-              (btn) => btn.category === selectedCategory
-            )?.label || ""}{" "}
-            Properties
+            {navButtons.find((btn) => btn.category === selectedCategory)?.label || ""} Properties
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {properties.map((property, index) => (
+            {propertiesList.map((property, index) => (
               <PropertyCard key={index} property={property} />
             ))}
           </div>
         </div>
       ) : (
-        <p className="text-center text-gray-600">
-          No properties available for this category.
-        </p>
+        <p className="text-center text-gray-600">No properties available for this category.</p>
       )}
     </div>
   );

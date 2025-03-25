@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import PropertyCard from "../components/PropertyCard";
-import propertyData from "../data/propertyData";
+import PropertyContext from '../Context/PropertyContext';
+
 
 const OfficesFull = () => {
-  const properties = propertyData.commercial.offices;
+  const { commercial } = useContext(PropertyContext);
+  const properties = commercial.offices;
+
   return (
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
       <h2 className="text-3xl font-semibold text-center mb-6">Offices</h2>

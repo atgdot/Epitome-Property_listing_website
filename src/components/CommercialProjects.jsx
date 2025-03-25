@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import { Link } from "react-router-dom";
 import PropertyCard from "./PropertyCard.jsx";
-import propertyData from "../data/propertyData";
+import PropertyContext from '../Context/PropertyContext';
+
 
 const CommercialProjects = () => {
-  const { offices, preLeasedOffices, preRented, sco } = propertyData.commercial;
+  const { properties } = useContext(PropertyContext);
+  const { offices, preLeasedOffices, preRented, sco } = properties.commercial;
 
   return (
     <div className="my-8">
@@ -17,13 +19,8 @@ const CommercialProjects = () => {
       {offices && offices.length > 0 && (
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
-            <h3 className="text-2xl font-semibold text-center">
-              Offices
-            </h3>
-            <Link
-              to="/commercial/offices"
-              className="absolute top-0 right-4 text-blue-800 font-semibold"
-            >
+            <h3 className="text-2xl font-semibold text-center">Offices</h3>
+            <Link to="/commercial/offices" className="absolute top-0 right-4 text-blue-800 font-semibold">
               View All
             </Link>
           </div>
@@ -41,13 +38,8 @@ const CommercialProjects = () => {
       {preLeasedOffices && preLeasedOffices.length > 0 && (
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
-            <h3 className="text-2xl font-semibold text-center">
-              Pre-Leased Offices
-            </h3>
-            <Link
-              to="/commercial/preleased"
-              className="absolute top-0 right-4 text-blue-800 font-semibold"
-            >
+            <h3 className="text-2xl font-semibold text-center">Pre-Leased Offices</h3>
+            <Link to="/commercial/preleased" className="absolute top-0 right-4 text-blue-800 font-semibold">
               View All
             </Link>
           </div>
@@ -65,13 +57,8 @@ const CommercialProjects = () => {
       {preRented && preRented.length > 0 && (
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
-            <h3 className="text-2xl font-semibold text-center">
-              Pre-Rented
-            </h3>
-            <Link
-              to="/commercial/prerented"
-              className="absolute top-0 right-4 text-blue-800 font-semibold"
-            >
+            <h3 className="text-2xl font-semibold text-center">Pre-Rented</h3>
+            <Link to="/commercial/prerented" className="absolute top-0 right-4 text-blue-800 font-semibold">
               View All
             </Link>
           </div>
@@ -89,13 +76,8 @@ const CommercialProjects = () => {
       {sco && sco.length > 0 && (
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
-            <h3 className="text-2xl font-semibold text-center">
-              SCO Projects
-            </h3>
-            <Link
-              to="/commercial/sco"
-              className="absolute top-0 right-4 text-blue-800 font-semibold"
-            >
+            <h3 className="text-2xl font-semibold text-center">SCO Projects</h3>
+            <Link to="/commercial/sco" className="absolute top-0 right-4 text-blue-800 font-semibold">
               View All
             </Link>
           </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { RecommendationsData } from "../data/RecommendationData.jsx";
+import { recommendationsData } from "../data/RecommendationData.jsx";
 
 const Recommendations = () => {
   return (
@@ -7,32 +7,23 @@ const Recommendations = () => {
       <div className="w-full max-w-7xl overflow-x-auto scrollbar-hide px-4">
         <h2 className="text-3xl font-semibold text-center mb-6">Recommended</h2>
         <div className="flex space-x-6 py-4">
-          {RecommendationsData.properties.map((property, index) => (
+          {recommendationsData.properties.map((property, index) => (
             <div
               key={index}
               className="relative flex-shrink-0 w-64 h-80 rounded-lg shadow-md overflow-hidden bg-gray-200"
             >
-              {console.log("Image Path:", property.image)}
-
-              {/* Property Image */}
-              {property.image ? (
-                <img
-                  src={property.image}
-                  alt={property.title}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = "https://via.placeholder.com/300"; // Fallback image
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                  <p className="text-gray-500">No Image</p>
+              {/* Property Image - Ensures it fits the container properly */}
+              {property.image && (
+                <div className="w-full h-full">
+                  <img
+                    src={property.image}
+                    alt={property.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               )}
-
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-
               {/* Property Details */}
               <div className="absolute bottom-0 w-full bg-black bg-opacity-50 p-4 text-white">
                 <div className="font-semibold text-sm uppercase mb-1">

@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import { Link } from "react-router-dom";
 import PropertyCard from "./PropertyCard.jsx";
-import propertyData from "../data/propertyData.jsx";
+import PropertyContext from '../Context/PropertyContext';
+
+
 
 const ResidentialProjects = () => {
-  const { luxuryProjects, upcomingProjects, highRiseApartments } =
-    propertyData.residential;
+  const { properties } = useContext(PropertyContext);
+  const { luxuryProjects, upcomingProjects, highRiseApartments } = properties.residential;
 
   return (
     <div className="my-8">
@@ -18,13 +20,8 @@ const ResidentialProjects = () => {
       {luxuryProjects && luxuryProjects.length > 0 && (
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
-            <h3 className="text-2xl font-semibold text-center">
-              Luxury Projects
-            </h3>
-            <Link
-              to="/residential/luxury"
-              className="absolute top-0 right-4 text-blue-800 font-semibold"
-            >
+            <h3 className="text-2xl font-semibold text-center">Luxury Projects</h3>
+            <Link to="/residential/luxury" className="absolute top-0 right-4 text-blue-800 font-semibold">
               View All
             </Link>
           </div>
@@ -42,13 +39,8 @@ const ResidentialProjects = () => {
       {upcomingProjects && upcomingProjects.length > 0 && (
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
-            <h3 className="text-2xl font-semibold text-center">
-              Upcoming Projects
-            </h3>
-            <Link
-              to="/residential/upcoming"
-              className="absolute top-0 right-4 text-blue-800 font-semibold"
-            >
+            <h3 className="text-2xl font-semibold text-center">Upcoming Projects</h3>
+            <Link to="/residential/upcoming" className="absolute top-0 right-4 text-blue-800 font-semibold">
               View All
             </Link>
           </div>
@@ -66,13 +58,8 @@ const ResidentialProjects = () => {
       {highRiseApartments && highRiseApartments.length > 0 && (
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
-            <h3 className="text-2xl font-semibold text-center">
-              High Rise Apartments
-            </h3>
-            <Link
-              to="/residential/highrise"
-              className="absolute top-0 right-4 text-blue-800 font-semibold"
-            >
+            <h3 className="text-2xl font-semibold text-center">High Rise Apartments</h3>
+            <Link to="/residential/highrise" className="absolute top-0 right-4 text-blue-800 font-semibold">
               View All
             </Link>
           </div>
