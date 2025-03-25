@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import PropertyCard from "../components/PropertyCard";
 import { recommendationsData } from "../data/RecommendationData";
-import PropertyContext from "../Context/PropertyContext";
+import PropertyContext from "../context/PropertyContext";
 
 const TopSection = () => {
   const { properties } = useContext(PropertyContext);

@@ -1,10 +1,9 @@
 import React from "react";
-<<<<<<< HEAD
 import { recommendationsData } from "../data/RecommendationData.jsx";
-=======
+
 import { RecommendationsData } from "../data/RecommendationData.jsx";
 import i from "../assets/propertyi.png";
->>>>>>> 417d0d8 (changes)
+
 
 const Recommendations = () => {
   return (
@@ -17,7 +16,7 @@ const Recommendations = () => {
               key={index}
               className="relative flex-shrink-0 w-64 h-80 rounded-lg shadow-md overflow-hidden bg-gray-200"
             >
-<<<<<<< HEAD
+
               {/* Property Image - Ensures it fits the container properly */}
               {property.image && (
                 <div className="w-full h-full">
@@ -26,7 +25,8 @@ const Recommendations = () => {
                     alt={property.title}
                     className="w-full h-full object-cover"
                   />
-=======
+                </div>
+              )}
               {console.log("Image Path:", property.image)}
 
               {/* Property Image */}
@@ -42,7 +42,7 @@ const Recommendations = () => {
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-300">
                   <p className="text-gray-500">No Image</p>
->>>>>>> 417d0d8 (changes)
+
                 </div>
               )}
               {/* Gradient Overlay */}
