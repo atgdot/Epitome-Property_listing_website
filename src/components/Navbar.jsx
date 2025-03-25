@@ -55,7 +55,11 @@ const Navbar = () => {
           Contact Us
         </button>
         <button
+<<<<<<< HEAD
           className={`px-4 py-2 rounded-lg transition-all duration-300
+=======
+          className={`px-4 py-2 rounded-lg transition-all duration-300 
+>>>>>>> 417d0d8 (changes)
           ${
             isScrolled
               ? "bg-white text-blue-900 hover:bg-gray-100"

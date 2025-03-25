@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-
+import img from "../assets/propertyi.png";
 const allProperties = [
   // Your properties data
 ];
@@ -71,6 +71,25 @@ const RealEstateMap = () => {
           alt="Banner"
           className="w-2/3 h-auto object-cover"
         />
+      </div>
+
+      {/* Featured Builders Section */}
+      <div className="bg-white p-4 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold mb-2 text-center">
+          FEATURED BUILDERS
+        </h2>
+        <div className="flex overflow-x-auto space-x-4 py-2">
+          <img src={img} alt="Builder 1" className="h-16 w-32" />
+          <img src={img} alt="Builder 1" className="h-16 w-32" />
+          <img src={img} alt="Builder 1" className="h-16 w-32" />
+          <img src={img} alt="Builder 1" className="h-16 w-32" />
+          <img src={img} alt="Builder 1" className="h-16 w-32" />
+          <img src={img} alt="Builder 1" className="h-16 w-32" />
+          <img src={img} alt="Builder 1" className="h-16 w-32" />
+          <img src={img} alt="Builder 1" className="h-16 w-32" />
+          <img src={img} alt="Builder 1" className="h-16 w-32" />
+          {/* Add more builder logos as needed */}
+        </div>
       </div>
     </div>
   );
