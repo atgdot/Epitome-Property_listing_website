@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import { Link } from "react-router-dom";
 import PropertyCard from "./PropertyCard.jsx";
-import PropertyContext from '../Context/PropertyContext';
+import PropertyContext from '../context/PropertyContext';
 
 
 const CommercialProjects = () => {

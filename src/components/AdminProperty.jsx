@@ -4,7 +4,7 @@ import { FiFilter } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import PropertyCard from "./PropertyCard";
-import PropertyContext from "../Context/PropertyContext";
+import PropertyContext from "../context/PropertyContext";
 
 const AdminProperty = () => {
   const { properties, addProperty, updateProperty, deleteProperty } =
