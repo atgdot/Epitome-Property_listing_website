@@ -3,6 +3,7 @@ import { recommendationsData } from "../data/RecommendationData.jsx";
 
 import i from "../assets/propertyi.png";
 
+
 const Recommendations = () => {
   return (
     <div className="flex justify-center">
@@ -34,6 +35,7 @@ const Recommendations = () => {
                   e.target.src = i; // Fallback image on error
                 }}
               />
+
 
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-black bg-opacity-40"></div>
