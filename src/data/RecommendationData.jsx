@@ -4,25 +4,40 @@ export const recommendationsData = {
     {
       title: "PURI DIPLOMATIC RESIDENCES",
       address: ["SECTOR 111, DWARKA EXPRESSWAY"],
-
-      image: "propertyi.png",
+<<<<<<< HEAD
+      image: "propertyi.png"
+=======
+      image: img, // Uses the imported image
+>>>>>>> 000c5e7 (update website)
     },
     {
       title: "TRIBECA ROYAL RESIDENCES",
       address: ["SECTOR 150, GOLF COURSE"],
-
-      image: "propertyi.png",
+<<<<<<< HEAD
+      image: "propertyi.png"
+=======
+      image: img,
+>>>>>>> 000c5e7 (update website)
     },
     {
       title: "CONSCIENT PARD",
       address: ["SECTOR 80, NORTHERN PERIPHERAL"],
-      image: "propertyi.png",
+<<<<<<< HEAD
+      image: "propertyi.png"
+=======
+      image: img,
+>>>>>>> 000c5e7 (update website)
     },
     {
       title: "OXIRICH CHINTAMANIS",
       address: ["SECTOR 103, DWARKA EXPRESSWAY"],
-
-      image: "propertyi.png",
+<<<<<<< HEAD
+      image: "propertyi.png"
+    }
+  ]
+=======
+      image: img,
     },
   ],
+>>>>>>> 000c5e7 (update website)
 };
