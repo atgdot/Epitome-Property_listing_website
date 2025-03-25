@@ -18,7 +18,7 @@
     "react-transition-group": "^4.4.5",
     "recharts": "^2.15.1",
     "slick-carousel": "^1.8.1",
-    "swiper": "^11.2.4"
+    "swiper": "^11.2.6"
   },
   "scripts": {
     "start": "vite",
