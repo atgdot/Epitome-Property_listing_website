@@ -1,248 +1,120 @@
-import React, { useState } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { CSSTransition } from "react-transition-group";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import PropertyCard from "../components/PropertyCard";
+import propertyData from "../data/propertyData";
+import { recommendationsData } from "../data/RecommendationData";
 
-// Property Data for each category
-const allProperties = {
-  residential: Array(8).fill({
-    title: "Signature Global Twin Tower DXP",
-    price: "₹ 4.86 - 8 Cr",
-    type: "Residential Flats",
-    location: "Sector 88B, Dwarka Expressway",
-    image: "/propertyi.png", // Replace with actual image path
-  }),
-  featured: Array(6).fill({
-    title: "Signature Global Tower A1",
-    price: "₹ 3.56 - 6 Cr",
-    type: "Commercial Flats",
-    location: "Sector 85, Gurgaon",
-    image: "/propertyi.png", // Replace with actual image path
-  }),
-  upcoming: Array(5).fill({
-    title: "Signature Global Heights",
-    price: "₹ 2.86 - 5 Cr",
-    type: "Residential Flats",
-    location: "Sector 99, Noida",
-    image: "/propertyi.png", // Replace with actual image path
-  }),
-  commercial: Array(7).fill({
-    title: "Signature Global Commercial Park",
-    price: "₹ 6.86 - 12 Cr",
-    type: "Commercial Property",
-    location: "Sector 114, Delhi",
-    image: "/propertyi.png", // Replace with actual image path
-  }),
-  affordable: Array(4).fill({
-    title: "Affordable Homes Dwarka",
-    price: "₹ 1.86 - 3 Cr",
-    type: "Residential Flats",
-    location: "Sector 76, Noida",
-    image: "/propertyi.png", // Replace with actual image path
-  }),
-  sco: Array(3).fill({
-    title: "Signature SCO Plots",
-    price: "₹ 7.86 - 10 Cr",
-    type: "Commercial Plots",
-    location: "Sector 23, Gurgaon",
-    image: "/propertyi.png", // Replace with actual image path
-  }),
-  budget: Array(5).fill({
-    title: "Budget Flats Sector 77",
-    price: "₹ 1.1 - 2 Cr",
-    type: "Residential Flats",
-    location: "Sector 77, Gurgaon",
-    image: "/propertyi.png", // Replace with actual image path
-  }),
-  luxury: Array(6).fill({
-    title: "Luxury Villas Noida",
-    price: "₹ 10.86 - 20 Cr",
-    type: "Luxury Villas",
-    location: "Sector 42, Noida",
-    image: "/propertyi.png", // Replace with actual image path
-  }),
+const trendingProperties =
+  (propertyData.trending && propertyData.trending.length
+    ? propertyData.trending
+    : propertyData.featured && propertyData.featured.length
+    ? propertyData.featured
+    : []) || [];
+
+if (!trendingProperties.length) {
+  console.warn("No trending or featured properties found in propertyData.");
+}
+
+const trendingItems =
+  trendingProperties.length < 6
+    ? [...trendingProperties, ...trendingProperties]
+    : trendingProperties;
+const trendingItemsLimited = trendingItems.slice(0, 6);
+
+const propertiesByCategory = {
+  trending: trendingItemsLimited,
+  upcoming: propertyData.residential.upcomingProjects || [],
+  preLeased: propertyData.commercial.preLeasedOffices || [],
+  featured: propertyData.featured || [],
+  recommended: propertyData.recommended || [],
+  commercial: propertyData.commercial.offices || [],
+  sco: propertyData.commercial.sco || [],
+  luxury: propertyData.residential.luxuryProjects || [],
 };
 
+const navButtons = [
+  { label: "Trending", category: "trending" },
+  { label: "Upcoming", category: "upcoming" },
+  { label: "Pre-Leased", category: "preLeased" },
+  { label: "Featured", category: "featured" },
+  { label: "Recommended", category: "recommended" },
+  { label: "Commercial", category: "commercial" },
+  { label: "SCO", category: "sco" },
+  { label: "Luxury", category: "luxury" },
+];
+
 const TopSection = () => {
-  const builders = [
-    { id: 1, name: "DLF", logo: "/godrej.png" },
-    { id: 2, name: "DLF", logo: "/centralpark.webp" },
-    { id: 3, name: "DLF", logo: "/conscient.webp" },
-    { id: 4, name: "DLF", logo: "/ireo.webp" },
-    { id: 5, name: "DLF", logo: "/m2k.webp" },
-    { id: 6, name: "DLF", logo: "/m3m.webp" },
-    { id: 7, name: "DLF", logo: "/raheja.webp" },
-    { id: 8, name: "DLF", logo: "/sobha.webp" },
-    { id: 9, name: "DLF", logo: "/trump.webp" },
-    { id: 10, name: "DLF", logo: "/dlf-logo.png" },
-  ];
+  const availableCategories = navButtons;
+  const [selectedCategory, setSelectedCategory] = useState(
+    availableCategories.length ? availableCategories[0].category : ""
+  );
+  
+  let properties = propertiesByCategory[selectedCategory] || [];
+  properties = selectedCategory === "trending" ? properties.slice(0, 6) : properties.slice(0, 3);
 
-  const [selectedCategory, setSelectedCategory] = useState("residential");
-  const [properties, setProperties] = useState(allProperties[selectedCategory]);
+  // Fetch recommendations images from recommendationsData
+  const [recommendations, setRecommendations] = useState([]);
 
-  // Handle button clicks to filter properties by category
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setProperties(allProperties[category]);
-  };
-
-  // Slider settings for Featured Builders
-  const buildersSliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: builders.length,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2000,
-    cssEase: "linear",
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 6,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
-
-  // Slider settings for Properties
-  const propertiesSliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: selectedCategory === "residential" ? 4 : 4,
-    slidesToScroll: 1,
-    rows: selectedCategory === "residential" ? 2 : 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    cssEase: "linear",
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: selectedCategory === "residential" ? 3 : 3,
-          slidesToScroll: 1,
-          rows: selectedCategory === "residential" ? 2 : 1,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: selectedCategory === "residential" ? 2 : 2,
-          slidesToScroll: 1,
-          rows: selectedCategory === "residential" ? 2 : 1,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          rows: selectedCategory === "residential" ? 2 : 1,
-        },
-      },
-    ],
-  };
+  useEffect(() => {
+    setRecommendations(recommendationsData.properties);
+  }, []);
 
   return (
-    <div>
-      {/* Featured Builders */}
-      <div className="w-full py-10 px-5">
-        <h2 className="text-3xl font-semibold text-center pb-6">Featured Builders</h2>
-
-        <div className="border-t border-b mt-2 mb-2 border-[#043268]">
-          <Slider {...buildersSliderSettings}>
-            {builders.map((builder) => (
-              <div
-                key={builder.id}
-                className="bg-white py-6 px-3 rounded-xl shadow-md border-[2px] border-gray-400 flex items-center justify-center w-40 h-40 mx-2"
-              >
-                <img 
-                  src={builder.logo} 
-                  alt={builder.name} 
-                  className="h-full w-full object-contain" // Change to object-cover if you want to fill the box
-                />
-              </div>
-            ))}
-          </Slider>
-        </div>
-      </div>
-
-      {/* Property List */}
-      <div className="min-h-screen lg:max-w-7xl mx-auto p-10">
-        <h2 className="text-3xl font-semibold text-center mb-6">
-          Our <span className="text-[#043268]">New Age</span> Properties
-        </h2>
-
-        <div className="flex justify-center gap-2 mb-6 lg:max-w-6xl overflow-x-auto">
-          {/* Category Selector Buttons */}
-          {["residential", "featured", "upcoming", "commercial", "affordable", "sco", "budget", "luxury"].map(category => (
-            <button
-              key={category}
-              onClick={() => handleCategoryChange(category)}
-              className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-                selectedCategory === category ? 'bg-[#043268] text-white' : 'bg-white border border-gray-600'
-              }`}
+    <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
+      {/* Recommendations Section Centered */}
+      <div className="flex flex-col items-center text-center mb-6">
+        <h2 className="text-3xl font-semibold mb-6">Recommended</h2>
+        <div className="flex overflow-x-auto space-x-4 py-4 justify-center">
+          {recommendations.map((property, index) => (
+            <div
+              key={index}
+              className="relative flex-shrink-0 w-64 h-80 rounded-lg shadow-md overflow-hidden"
             >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </button>
+              <img src={property.image} alt={property.title} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+              <div className="absolute bottom-0 p-4 text-white z-10">
+                <div className="font-semibold text-sm uppercase mb-1">{property.title}</div>
+                {property.address.length > 0 && (
+                  <div className="text-xs whitespace-pre-line">{property.address.join("\n")}</div>
+                )}
+              </div>
+            </div>
           ))}
         </div>
-
-        {/* Transition on Category Change */}
-        <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
-          <Slider {...propertiesSliderSettings}>
-            {properties.map((property, index) => (
-              <div key={index} className="bg-white rounded-4xl border-[2px] border-gray-300 overflow-hidden p-4 border border-gray-200 mx-2">
-                <img src={property.image} alt={property.title} className="w-full h-40 object-cover rounded-lg" />
-                <h3 className="text-xl font-medium mt-4 mb-1">{property.title}</h3>
-                <p className="text-[#043268] font-semibold">{property.price}</p>
-                <p className="text-gray-900 text-sm flex items-center ">
-                  <span className="p-3 rounded-full">
-                    <img src="/a.png" alt="" className="w-3 h-3" />
-                  </span>
-                  {property.type}
-                </p>
-                <p className="text-gray-900 text-sm flex items-center">
-                  <span className="p-3 rounded-full">
-                    <img src="/b.png" alt="" className="w-3 h-3" />
-                  </span>
-                  {property.location}
-                </p>
-                <Link to="/property">
-                  <button className="mt-4 w-full hover:cursor-pointer bg-[#043268] text-white font-bold py-2 rounded-lg">
-                    Visit Property Details
-                  </button>
-                </Link>
-              </div>
-            ))}
-          </Slider>
-        </CSSTransition>
-
-        <div className="w-full flex mt-10">
-          <button className="text-[#043268] px-16 py-4 font-semibold border-2 border-[#043268] hover:bg-orange-[#043268] hover:cursor-pointer px-6 py-2 rounded-full mx-auto ">
-            View All Listings
-          </button>
-        </div>
       </div>
+
+      {/* Property Category Navigation */}
+      <h2 className="text-3xl font-semibold text-center mb-6">Explore Our Properties</h2>
+      <div className="flex justify-center gap-4 flex-wrap mb-10">
+        {availableCategories.map((btn) => (
+          <button
+            key={btn.category}
+            onClick={() => setSelectedCategory(btn.category)}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === btn.category
+                ? "bg-[#043268] text-white"
+                : "bg-white border border-gray-600"
+            }`}
+          >
+            {btn.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Properties Listing */}
+      {properties.length > 0 ? (
+        <div>
+          <h3 className="text-2xl font-semibold text-center mb-6">
+            {availableCategories.find((btn) => btn.category === selectedCategory)?.label || ""} Properties
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {properties.map((property, index) => (
+              <PropertyCard key={index} property={property} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p className="text-center text-gray-600">No properties available for this category.</p>
+      )}
     </div>
   );
 };

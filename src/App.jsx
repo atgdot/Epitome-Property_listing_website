@@ -13,8 +13,11 @@ import Projects from "./components/Projects";
 import PropertyListing from "./components/PropertyListing";
 import PropertyDetails from "./components/PropertyDetails";
 import Footer from "./components/Footer";
-import AdminDashboard from "./admin/AdminDashboard.jsx";
+import AdminDashboard from "./admin/AdminDashboard";
 import UserManagement from "./components/UserManagement";
+
+// Import Recommendations component
+import Recommendations from "./components/Recommendation";
 
 // Residential Full Listing Pages
 import LuxuryProjectsFull from "./pages/LuxuryProjectsFull";
@@ -44,32 +47,38 @@ function Layout() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Show Navbar unless the route is in hideNavbarRoutes */}
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
 
-      {/* Page Content */}
       <div className="flex-1">
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/indiabulls" element={<IndiaBulls />} />
           <Route path="/property" element={<Property />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/PropertyListing" element={<PropertyListing />} />
-          <Route path="/PropertyDetails" element={<PropertyDetails />} />
+          
+          {/* Added Recommendations to PropertyDetails route */}
+          <Route 
+            path="/PropertyDetails" 
+            element={
+              <div>
+                <PropertyDetails />
+                <Recommendations />
+              </div>
+            } 
+          />
 
-          {/* Residential Full Listing Routes */}
+          {/* Residential Routes */}
           <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />
           <Route path="/residential/upcoming" element={<UpcomingProjectsFull />} />
           <Route path="/residential/highrise" element={<HighRiseApartmentsFull />} />
 
-          {/* Commercial Full Listing Routes */}
+          {/* Commercial Routes */}
           <Route path="/commercial/offices" element={<OfficesFull />} />
           <Route path="/commercial/preleased" element={<PreLeasedOfficesFull />} />
           <Route path="/commercial/prerented" element={<PreRentedFull />} />
           <Route path="/commercial/sco" element={<ScoProjectsFull />} />
 
-          {/* Optional: A Subsections page that might include previews, menus, etc. */}
           <Route path="/subsections" element={<Subsections />} />
 
           {/* Admin Routes */}
@@ -78,7 +87,6 @@ function Layout() {
         </Routes>
       </div>
 
-      {/* Show Footer unless the route is in hideFooterRoutes */}
       {!hideFooterRoutes.includes(location.pathname) && <Footer />}
     </div>
   );
