@@ -1,7 +1,7 @@
 import React from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
 
-const PropertyCard = ({ property, editable = false, onEdit, onDelete }) => {
+const PropertyCard = ({ property, editable = false, onEdit, onDelete, onViewDetails }) => {
   const formatCategory = (category) => {
     return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
   };
@@ -65,22 +65,31 @@ const PropertyCard = ({ property, editable = false, onEdit, onDelete }) => {
         ))}
       </ul>
 
-      {editable && (
-        <div className="flex justify-end gap-2">
-          <button
-            onClick={onEdit}
-            className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200"
-          >
-            <MdEdit /> Edit
-          </button>
-          <button
-            onClick={onDelete}
-            className="flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
-          >
-            <MdDelete /> Delete
-          </button>
-        </div>
-      )}
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={onViewDetails}
+          className="w-full px-4 py-2 bg-[#043268] text-white font-semibold rounded-lg hover:bg-[#03244a]"
+        >
+          View Details
+        </button>
+
+        {editable && (
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={onEdit}
+              className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200"
+            >
+              <MdEdit /> Edit
+            </button>
+            <button
+              onClick={onDelete}
+              className="flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+            >
+              <MdDelete /> Delete
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
