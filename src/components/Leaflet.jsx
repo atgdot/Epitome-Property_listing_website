@@ -3,11 +3,12 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import img from "../assets/propertyi.png";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Navigation } from "swiper/modules";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/navigation";
+// import "swiper/css/navigation";
+
 const allProperties = [
   // Your properties data
 ];
@@ -17,22 +18,9 @@ const RealEstateMap = () => {
   const [priceFilter, setPriceFilter] = useState("all");
   const [currentBanner, setCurrentBanner] = useState(0);
 
-  const builderImages = [
-    img,
-    img,
-    img,
-    img,
-    img,
-    img,
-    img,
-    img,
-    img,
-    img,
-    img,
-    img,
-    img, // Add more images
-  ];
-
+  const builderImages = Object.values(
+    import.meta.glob("/src/assets/*.webp", { eager: true })
+  ).map((img) => img.default);
   const bannerImages = ["/NEW LAUNCHED 1.png", "/NEW LAUNCHED 2.png"];
 
   useEffect(() => {
@@ -97,40 +85,48 @@ const RealEstateMap = () => {
 
       {/* Featured Builders Section */}
 
-      <div className="bg-white p-6 shadow-lg w-full">
+      <div className="bg-white p-6 w-full">
         <h2 className="text-2xl font-bold text-center mb-4">
           FEATURED BUILDERS
         </h2>
 
-        <Swiper
-          modules={[Pagination, Navigation]}
-          spaceBetween={20}
-          slidesPerView={6} // Show more slides for full-width effect
-          navigation
-          pagination={{ clickable: true, dynamicBullets: false }}
-          className="w-full"
-        >
-          {builderImages.map((image, index) => (
-            <SwiperSlide key={index} className="flex justify-center">
-              <img
-                src={image}
-                alt={`Builder ${index + 1}`}
-                className="h-28 w-40 object-contain rounded-lg"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        <div className="">
+          <Swiper
+            modules={[Pagination, Autoplay]}
+            spaceBetween={5} // Adjusted spacing
+            slidesPerView={6}
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 2000, disableOnInteraction: false }}
+            loop={true}
+            breakpoints={{
+              320: { slidesPerView: 2 },
+              640: { slidesPerView: 3 },
+              1024: { slidesPerView: 7 },
+            }}
+            className="w-full"
+          >
+            {builderImages.map((image, index) => (
+              <SwiperSlide key={index} className="flex justify-center">
+                <div className="bg-white shadow-lg border border-gray-400 rounded-xl p-5 flex justify-center items-center w-44 h-35">
+                  <img
+                    src={image}
+                    alt={`Builder ${index + 1}`}
+                    className="h-20 w-auto object-contain"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
 
-        {/* Move dots slightly lower */}
         <style>
           {`
-    .swiper-pagination {
-      position: relative !important;
-      margin-top: 15px; /* Move dots lower */
-    }
-  `}
+      .swiper-pagination {
+        position: relative !important;
+        margin-top: 15px;
+      }
+    `}
         </style>
-        {/* <div className="swiper-pagination mt-4"></div> */}
       </div>
     </div>
   );
