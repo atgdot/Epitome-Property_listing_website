@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import img from "../assets/propertyi.png";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
-
 import "swiper/css";
 import "swiper/css/pagination";
-// import "swiper/css/navigation";
 
 const allProperties = [
   // Your properties data
@@ -31,9 +28,10 @@ const RealEstateMap = () => {
   }, []);
 
   return (
-    <div className="relative font-lato px-10 mt-2 lg:px-20">
+    <div className="relative font-lato px-5 mt-2">
       <div className="relative">
-        <div className="absolute top-4 left-15 bg-white p-2 rounded-md shadow-md w-fit z-50">
+        {/* Price Filter */}
+        <div className="absolute top-5 left-12 bg-white p-2 rounded-md shadow-md w-fit z-50">
           <label htmlFor="price-filter" className="font-medium text-sm">
             Filter by price:
           </label>
@@ -50,11 +48,11 @@ const RealEstateMap = () => {
           </select>
         </div>
 
-        {/* Map */}
+        {/* Map Section */}
         <MapContainer
           center={[28.4595, 77.0266]}
           zoom={12}
-          style={{ height: "400px", width: "100%" }}
+          style={{ height: "300px", width: "100%" }} // Height Reduced
           scrollWheelZoom={false}
           touchZoom={false}
           className="z-10 rounded-md overflow-hidden"
@@ -75,58 +73,48 @@ const RealEstateMap = () => {
       </div>
 
       {/* Banner Section */}
-      <div className="flex justify-center items-center my-5">
+      <div className="flex justify-center items-center my-2">
         <img
           src={bannerImages[currentBanner]}
           alt="Banner"
-          className="w-2/3 h-auto object-cover"
+          className="w-2/3 h-28 object-cover rounded-md shadow-md" // Height Reduced
         />
       </div>
 
       {/* Featured Builders Section */}
-
-      <div className="bg-white p-6 w-full">
-        <h2 className="text-2xl font-bold text-center mb-4">
+      <div className="bg-white p-4 w-full">
+        <h2 className="text-2xl font-bold text-center mb-2">
           FEATURED BUILDERS
         </h2>
 
-        <div className="">
+        <div className="max-w-[95%] mx-auto">
           <Swiper
-            modules={[Pagination, Autoplay]}
-            spaceBetween={5} // Adjusted spacing
-            slidesPerView={6}
-            pagination={{ clickable: true }}
-            autoplay={{ delay: 2000, disableOnInteraction: false }}
+            modules={[Autoplay]}
+            spaceBetween={3}
+            slidesPerView={10}
+            autoplay={{ delay: 1, disableOnInteraction: false }}
             loop={true}
+            speed={3000}
             breakpoints={{
               320: { slidesPerView: 2 },
-              640: { slidesPerView: 3 },
-              1024: { slidesPerView: 7 },
+              640: { slidesPerView: 4 },
+              1024: { slidesPerView: 10 },
             }}
             className="w-full"
           >
             {builderImages.map((image, index) => (
               <SwiperSlide key={index} className="flex justify-center">
-                <div className="bg-white shadow-lg border border-gray-400 rounded-xl p-5 flex justify-center items-center w-44 h-35">
+                <div className="bg-white shadow-lg border-2 border-[#d4af37] rounded-full p-2 flex justify-center items-center w-30 h-30">
                   <img
                     src={image}
                     alt={`Builder ${index + 1}`}
-                    className="h-20 w-auto object-contain"
+                    className="h-30 w-30 object-contain"
                   />
                 </div>
               </SwiperSlide>
             ))}
           </Swiper>
         </div>
-
-        <style>
-          {`
-      .swiper-pagination {
-        position: relative !important;
-        margin-top: 15px;
-      }
-    `}
-        </style>
       </div>
     </div>
   );
