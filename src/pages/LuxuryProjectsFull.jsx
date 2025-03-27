@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
-import PropertyCard from "../components/PropertyCard";
-import PropertyContext from '../context/PropertyContext';
+import HighRiseCard from "../components/HighRiseCard";
+import PropertyContext from "../context/PropertyContext";
 
 const LuxuryProjectsFull = () => {
   const { properties } = useContext(PropertyContext);
@@ -15,7 +15,13 @@ const LuxuryProjectsFull = () => {
       <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {luxuryProjects.map((property, index) => (
-            <PropertyCard key={index} property={property} />
+            <HighRiseCard 
+              key={index} 
+              property={property} 
+              onViewDetails={() => {
+                // Add view details handler
+              }} 
+            />
           ))}
         </div>
       </CSSTransition>

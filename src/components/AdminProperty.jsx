@@ -4,6 +4,7 @@ import { FiFilter } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import PropertyCard from "./PropertyCard";
+import HighRiseCard from "./HighRiseCard";
 import PropertyContext from "../context/PropertyContext";
 
 const AdminProperty = () => {
@@ -29,7 +30,7 @@ const AdminProperty = () => {
     sector: ""
   });
 
-  // Handle image file input and convert it to a base64 string.
+  // Handle image uploads
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -41,7 +42,7 @@ const AdminProperty = () => {
     }
   };
 
-  // Update category and its respective sub-category.
+  // When category is changed, update subCategory accordingly
   const handleCategoryChange = (newCategory) => {
     let newSubCategory = "";
     if (newCategory === "residential") {
@@ -56,6 +57,7 @@ const AdminProperty = () => {
     }));
   };
 
+  // Reset the form to its initial state
   const resetForm = () => {
     setFormData({
       category: "residential",
@@ -76,7 +78,7 @@ const AdminProperty = () => {
     setEditingProperty(null);
   };
 
-  // Submit handler for add and update property operations.
+  // Submit handler for both adding and updating properties
   const handleSubmit = (e) => {
     e.preventDefault();
     const newProperty = {
@@ -96,12 +98,11 @@ const AdminProperty = () => {
       addProperty(newProperty);
     }
 
-    // The property is saved in the context so it will immediately show up on this page.
     setShowModal(false);
     resetForm();
   };
 
-  // Open modal for editing or adding a property.
+  // Open modal for editing or adding a property
   const openEditModal = (property = null) => {
     setEditingProperty(property);
     if (property) {
@@ -116,17 +117,14 @@ const AdminProperty = () => {
     setShowModal(true);
   };
 
-  // Handler to delete a property.
   const handleDelete = (id) => {
     deleteProperty(id);
   };
 
-  // Flatten all properties from the context into an array.
+  // Flatten properties and enable searching
   const flattenedProperties = Object.values(properties)
     .flatMap((category) =>
-      Array.isArray(category)
-        ? category
-        : Object.values(category).flat()
+      Array.isArray(category) ? category : Object.values(category).flat()
     )
     .filter((property) =>
       Object.values(property).some((val) =>
@@ -134,19 +132,213 @@ const AdminProperty = () => {
       )
     );
 
+  // Render a section of the form based on a given title and list of fields.
+  const renderFormSection = (title, fields) => (
+    <div className="md:col-span-2 border-t pt-1 mt-1" key={title}>
+      <h3 className="text-base font-semibold mb-1 text-[#043268]">{title}</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+        {fields.map((field) => (
+          <div key={field.name}>
+            <label className="block text-xs font-medium mb-1">
+              {field.label}
+            </label>
+            {field.type === "select" ? (
+              <select
+                className="w-full p-1 border rounded text-xs"
+                value={formData[field.name]}
+                onChange={(e) =>
+                  field.onChange
+                    ? field.onChange(e.target.value)
+                    : setFormData({
+                        ...formData,
+                        [field.name]: e.target.value
+                      })
+                }
+                required={field.required}
+              >
+                {field.options?.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            ) : field.type === "file" ? (
+              <input
+                type="file"
+                onChange={handleImageChange}
+                className="w-full p-1 border rounded text-xs"
+                accept="image/*"
+                required={field.required}
+              />
+            ) : field.type === "textarea" ? (
+              <textarea
+                className="w-full p-1 border rounded text-xs"
+                value={formData[field.name]}
+                onChange={(e) =>
+                  setFormData({ ...formData, [field.name]: e.target.value })
+                }
+                placeholder={field.placeholder}
+                rows="2"
+                required={field.required}
+              ></textarea>
+            ) : (
+              <input
+                type={field.type || "text"}
+                className="w-full p-1 border rounded text-xs"
+                placeholder={field.placeholder}
+                value={formData[field.name]}
+                onChange={(e) =>
+                  setFormData({ ...formData, [field.name]: e.target.value })
+                }
+                required={field.required}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  // Common section: Category and Sub Category always appear.
+  const commonSection = {
+    title: "Basic Information",
+    fields: [
+      {
+        name: "category",
+        label: "Category",
+        type: "select",
+        options: [
+          { value: "residential", label: "RESIDENTIAL" },
+          { value: "commercial", label: "Commercial" },
+          { value: "trending", label: "Trending" },
+          { value: "featured", label: "Featured" }
+        ],
+        onChange: handleCategoryChange,
+        required: true
+      },
+      {
+        name: "subCategory",
+        label: "Sub Category",
+        type: "select",
+        options:
+          formData.category === "residential"
+            ? [
+                { value: "luxuryProjects", label: "Luxury Projects" },
+                { value: "upcomingProjects", label: "Upcoming Projects" },
+                { value: "highRiseApartments", label: "High Rise Apartments" }
+              ]
+            : [
+                { value: "offices", label: "Offices" },
+                { value: "preLeasedOffices", label: "Pre-Leased Offices" },
+                { value: "preRented", label: "Pre-Rented" },
+                { value: "sco", label: "SCO" }
+              ],
+        required: true
+      }
+    ]
+  };
+
+  // For residential properties, only show these essential fields.
+  const residentialFormSections = [
+    {
+      title: "Residential Details",
+      fields: [
+        { name: "title", label: "Title", required: true },
+        { name: "city", label: "City", required: true },
+        { name: "sector", label: "Location", required: true },
+        {
+          name: "price",
+          label: "Price (₹)",
+          placeholder: "e.g., 4.86 - 8 Cr",
+          required: true
+        },
+        { name: "image", label: "Property Image", type: "file", required: true }
+      ]
+    },
+    {
+      title: "Description",
+      fields: [
+        {
+          name: "description",
+          label: "Description",
+          type: "textarea",
+          placeholder: "Short description of the property"
+        }
+      ]
+    }
+  ];
+
+  // For non-residential properties, show a more detailed form.
+  const nonResidentialFormSections = [
+    {
+      title: "Non-Residential Details",
+      fields: [
+        { name: "city", label: "City", required: true },
+        { name: "status", label: "Status", required: true },
+        { name: "title", label: "Title", required: true },
+        { name: "image", label: "Property Image", type: "file" }
+      ]
+    },
+    {
+      title: "Description",
+      fields: [
+        {
+          name: "description",
+          label: "Description",
+          type: "textarea",
+          placeholder: "Short description of the property"
+        }
+      ]
+    },
+    {
+      title: "Pricing Information",
+      fields: [
+        {
+          name: "price",
+          label: "Price (₹)",
+          placeholder: "e.g., 4.86 - 8 Cr"
+        },
+        {
+          name: "rentalYield",
+          label: "Rental Yield",
+          placeholder: "e.g., 5.2%"
+        },
+        {
+          name: "currentRental",
+          label: "Current Rental (₹)",
+          placeholder: "e.g., 2.6 Lakh/month"
+        }
+      ]
+    },
+    {
+      title: "Property Details",
+      fields: [
+        { name: "area", label: "Area", placeholder: "e.g., 3,500 sqft" },
+        { name: "tenure", label: "Tenure" },
+        { name: "tenant", label: "Tenant" },
+        { name: "sector", label: "Location" }
+      ]
+    }
+  ];
+
+  // Decide which sections to show (excluding the common section) based on category.
+  const additionalSections =
+    formData.category === "residential"
+      ? residentialFormSections
+      : nonResidentialFormSections;
+
   return (
-    <div>
+    <div className="p-4">
       <h1 className="text-3xl font-semibold text-center mb-6">
         Admin Property Management
       </h1>
 
-      {/* Search and Filter Section */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
         <button className="flex items-center px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
           <FiFilter className="mr-2" /> Filter
         </button>
 
-        <div className="flex border rounded-lg bg-white w-80 overflow-hidden">
+        <div className="flex border rounded-lg bg-white w-full md:w-80 overflow-hidden">
           <input
             type="text"
             placeholder="Search"
@@ -169,242 +361,30 @@ const AdminProperty = () => {
         </div>
       </div>
 
-      {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-2xl">
-            <h2 className="text-2xl font-bold mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 z-50">
+          <div className="bg-white rounded-2xl p-2 w-full max-w-lg">
+            <h2 className="text-2xl font-bold mb-2">
               {editingProperty ? "Edit Property" : "Add New Property"}
             </h2>
-            <form
-              onSubmit={handleSubmit}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4"
-            >
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Category
-                </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => handleCategoryChange(e.target.value)}
-                  className="w-full p-2 border rounded"
-                  required
-                >
-                  <option value="residential">RESIDENTIAL</option>
-                  <option value="commercial">Commercial</option>
-                  <option value="trending">Trending</option>
-                  <option value="featured">Featured</option>
-                </select>
-              </div>
-
-              {["residential", "commercial"].includes(formData.category) && (
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Sub Category
-                  </label>
-                  <select
-                    value={formData.subCategory}
-                    onChange={(e) =>
-                      setFormData({ ...formData, subCategory: e.target.value })
-                    }
-                    className="w-full p-2 border rounded"
-                    required
-                  >
-                    {formData.category === "residential" ? (
-                      <>
-                        <option value="luxuryProjects">Luxury Projects</option>
-                        <option value="upcomingProjects">Upcoming Projects</option>
-                        <option value="highRiseApartments">
-                          High Rise Apartments
-                        </option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="offices">Offices</option>
-                        <option value="preLeasedOffices">Pre-Leased Offices</option>
-                        <option value="preRented">Pre-Rented</option>
-                        <option value="sco">SCO</option>
-                      </>
-                    )}
-                  </select>
-                </div>
+            <form onSubmit={handleSubmit}>
+              {/* Always render common section */}
+              {renderFormSection(commonSection.title, commonSection.fields)}
+              {/* Then conditionally render additional sections */}
+              {additionalSections.map((section) =>
+                renderFormSection(section.title, section.fields)
               )}
-
-              <div>
-                <label className="block text-sm font-medium mb-1">City</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  value={formData.city}
-                  onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Status</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  value={formData.status}
-                  onChange={(e) =>
-                    setFormData({ ...formData, status: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Title</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  value={formData.title}
-                  onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Description
-                </label>
-                <textarea
-                  className="w-full p-2 border rounded"
-                  placeholder="Short description of the property"
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  rows="3"
-                ></textarea>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Price (₹)
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  placeholder="e.g., 4.86 - 8 Cr"
-                  value={formData.price}
-                  onChange={(e) =>
-                    setFormData({ ...formData, price: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Rental Yield
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  placeholder="e.g., 5.2%"
-                  value={formData.rentalYield}
-                  onChange={(e) =>
-                    setFormData({ ...formData, rentalYield: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Area
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  placeholder="e.g., 3,500 sqft"
-                  value={formData.area}
-                  onChange={(e) =>
-                    setFormData({ ...formData, area: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Current Rental (₹)
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  placeholder="e.g., 2.6 Lakh/month"
-                  value={formData.currentRental}
-                  onChange={(e) =>
-                    setFormData({ ...formData, currentRental: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Tenure
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  value={formData.tenure}
-                  onChange={(e) =>
-                    setFormData({ ...formData, tenure: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Tenant
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  value={formData.tenant}
-                  onChange={(e) =>
-                    setFormData({ ...formData, tenant: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Location
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded"
-                  value={formData.sector}
-                  onChange={(e) =>
-                    setFormData({ ...formData, sector: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Property Image
-                </label>
-                <input
-                  type="file"
-                  onChange={handleImageChange}
-                  className="w-full p-2 border rounded"
-                  accept="image/*"
-                />
-              </div>
-
-              <div className="md:col-span-2 flex justify-end gap-2">
+              <div className="flex justify-end gap-2 mt-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-gray-200 rounded-lg"
+                  className="px-4 py-1 bg-gray-200 rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-700 text-white rounded-lg"
+                  className="px-4 py-1 bg-blue-700 text-white rounded-lg"
                 >
                   {editingProperty ? "Update" : "Create"}
                 </button>
@@ -414,18 +394,27 @@ const AdminProperty = () => {
         </div>
       )}
 
-      {/* Property Container */}
       <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {flattenedProperties.map((property, index) => (
-            <PropertyCard
-              key={index}
-              property={property}
-              editable={true}
-              onEdit={() => openEditModal(property)}
-              onDelete={() => handleDelete(property.id)}
-            />
-          ))}
+          {flattenedProperties.map((property, index) =>
+            property.category === "residential" ? (
+              <HighRiseCard
+                key={index}
+                property={property}
+                editable={true}
+                onEdit={() => openEditModal(property)}
+                onDelete={() => handleDelete(property.id)}
+              />
+            ) : (
+              <PropertyCard
+                key={index}
+                property={property}
+                editable={true}
+                onEdit={() => openEditModal(property)}
+                onDelete={() => handleDelete(property.id)}
+              />
+            )
+          )}
         </div>
       </CSSTransition>
     </div>

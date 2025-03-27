@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import { Link } from "react-router-dom";
-import PropertyCard from "./PropertyCard.jsx";
+import HighRiseCard from "../components/HighRiseCard";
 import PropertyContext from "../context/PropertyContext";
 
 const ResidentialProjects = () => {
@@ -37,7 +37,13 @@ const ResidentialProjects = () => {
           <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {luxuryProjects.map((property, index) => (
-                <PropertyCard key={index} property={property} />
+                <HighRiseCard 
+                  key={index} 
+                  property={property} 
+                  onViewDetails={() => {
+                    // Add view details handler here
+                  }} 
+                />
               ))}
             </div>
           </CSSTransition>
@@ -56,7 +62,13 @@ const ResidentialProjects = () => {
           <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {upcomingProjects.map((property, index) => (
-                <PropertyCard key={index} property={property} />
+                <HighRiseCard 
+                  key={index} 
+                  property={property} 
+                  onViewDetails={() => {
+                    // Add view details handler here
+                  }} 
+                />
               ))}
             </div>
           </CSSTransition>
@@ -75,7 +87,13 @@ const ResidentialProjects = () => {
           <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {highRiseApartments.map((property, index) => (
-                <PropertyCard key={index} property={property} />
+                <HighRiseCard 
+                  key={index} 
+                  property={property} 
+                  onViewDetails={() => {
+                    // Add view details handler here
+                  }} 
+                />
               ))}
             </div>
           </CSSTransition>
