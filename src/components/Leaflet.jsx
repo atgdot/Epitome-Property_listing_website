@@ -87,17 +87,21 @@ const RealEstateMap = () => {
           FEATURED BUILDERS
         </h2>
 
-        <div className="max-w-[95%] mx-auto">
+        <div className="max-w-[90%] mx-auto">
           <Swiper
             modules={[Autoplay]}
             spaceBetween={3}
             slidesPerView={10}
-            autoplay={{ delay: 1, disableOnInteraction: false }}
+            autoplay={{
+              delay: 0,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: false,
+            }}
             loop={true}
-            speed={3000}
+            speed={4000}
             breakpoints={{
-              320: { slidesPerView: 2 },
-              640: { slidesPerView: 4 },
+              320: { slidesPerView: 3 },
+              640: { slidesPerView: 5 },
               1024: { slidesPerView: 10 },
             }}
             className="w-full"
