@@ -6,12 +6,21 @@ import { FiFilter } from "react-icons/fi";
 import { IoLogOutOutline } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import { CSSTransition } from "react-transition-group";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 import UserManagement from "../components/UserManagement";
 import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
-
-
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -60,11 +69,6 @@ const AdminDashboard = () => {
                 <p className="text-2xl font-bold">50</p>
                 <p className="text-green-500">Increase</p>
               </div>
-              <div className="bg-white p-4 rounded-lg shadow-lg">
-                <h2 className="text-lg font-semibold">Sold Properties</h2>
-                <p className="text-2xl font-bold">100</p>
-                <p className="text-green-500">Increase</p>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -82,7 +86,9 @@ const AdminDashboard = () => {
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-lg">
-                <h2 className="text-lg font-semibold mb-4">Traffic by Location</h2>
+                <h2 className="text-lg font-semibold mb-4">
+                  Traffic by Location
+                </h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
@@ -90,13 +96,18 @@ const AdminDashboard = () => {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) =>
+                        `${name} ${(percent * 100).toFixed(0)}%`
+                      }
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
                     >
                       {pieChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -119,7 +130,7 @@ const AdminDashboard = () => {
       case "User":
         return <UserManagement />;
 
-     case "Reviews":
+      case "Reviews":
         return <AdminReviews />;
 
       default:
@@ -131,7 +142,12 @@ const AdminDashboard = () => {
     <div className="flex min-h-screen bg-gray-100">
       <aside className="w-64 bg-blue-900 text-white p-6 fixed h-full">
         <div className="flex items-center space-x-2 mt-[-10px]">
-          <img onClick={() => navigate('/')} src="/logo.png" alt="Logo" className="h-10 w-32 cursor-pointer" />
+          <img
+            onClick={() => navigate("/")}
+            src="/logo.png"
+            alt="Logo"
+            className="h-10 w-32 cursor-pointer"
+          />
         </div>
         <nav className="space-y-4">
           {["Dashboard", "Property", "User", "Reviews"].map((item) => (

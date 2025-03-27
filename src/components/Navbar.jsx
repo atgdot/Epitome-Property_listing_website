@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { faSearch, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [query, setQuery] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed w-full flex justify-between items-center px-10 lg:px-20 py-4 shadow-md transition-all duration-500
+      className={`fixed w-full flex justify-between items-center md:px-10 px-6  py-4 shadow-md transition-all duration-500
         ${
           isScrolled
             ? "bg-blue-900 rounded-b-4xl top-0 z-50"
@@ -34,7 +35,10 @@ const Navbar = () => {
         />
       </div>
 
-      <div className="flex items-center w-full max-w-lg bg-gray-100 rounded-full py-3 px-4">
+      <div
+        className="flex items-center bg-gray-100 rounded-full py-2 px-3
+  w-3/5 sm:w-1/2 md:w-full md:max-w-lg md:px-6"
+      >
         <FontAwesomeIcon
           icon={faSearch}
           className={`${isScrolled ? "text-gray-400" : "text-gray-500"}`}
@@ -59,15 +63,51 @@ const Navbar = () => {
         >
           Contact Us
         </button>
-        <button
-          className={`px-4 py-2 rounded-lg transition-all duration-300
+        <Link to="/admin-dashboard">
+          <button
+            className={`px-4 py-2 rounded-lg transition-all duration-300
           ${
             isScrolled
               ? "bg-white text-blue-900 hover:bg-gray-100"
               : "bg-blue-900 text-white hover:bg-blue-800"
           }`}
+          >
+            Admin
+          </button>
+        </Link>
+      </div>
+
+      {/* Mobile Menu Toggle Button */}
+      <button
+        className="md:hidden text-2xl text-gray-900 z-50"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
+        <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
+      </button>
+
+      {/* Mobile Dropdown Menu */}
+      <div
+        className={`fixed top-2 right-0 h-auto w-45 max-w-sm bg-white shadow-lg flex flex-col  items-start py-4 px-4 space-y-3 transition-transform duration-300 z-50 ${
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        } md:hidden`}
+      >
+        <button
+          className="absolute top-2 right-3 text-xl "
+          onClick={() => setIsMenuOpen(false)}
         >
+          <FontAwesomeIcon icon={faTimes} />
+        </button>
+        <Link to="/property" className="text-base text-gray-800">
+          Property
+        </Link>
+        <Link to="/team" className="text-lg text-gray-800">
+          Team
+        </Link>
+        <Link to="/admin-dashboard" className="text-lg text-gray-800">
           Admin
+        </Link>
+        <button className="px-3 py-2 rounded-lg bg-blue-900 text-white hover:bg-blue-800 transition-all text-sm">
+          Contact Us
         </button>
       </div>
     </nav>

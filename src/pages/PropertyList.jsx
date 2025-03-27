@@ -52,7 +52,9 @@ const PropertyList = ({ showProperties }) => {
             key={category}
             onClick={() => handleCategoryChange(category)}
             className={`px-4 py-2 rounded-full hover:cursor-pointer ${
-              selectedCategory === category ? "bg-[#043268] text-white" : "bg-white border border-gray-600"
+              selectedCategory === category
+                ? "bg-[#043268] text-white"
+                : "bg-white border border-gray-600"
             }`}
           >
             {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -63,9 +65,18 @@ const PropertyList = ({ showProperties }) => {
       <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {properties.map((property, index) => (
-            <div key={index} className="bg-white rounded-lg border-2 border-gray-300 p-4">
-              <img src={property.image} alt={property.title} className="w-full h-40 object-cover rounded-lg" />
-              <h3 className="text-xl font-medium mt-4 mb-1">{property.title}</h3>
+            <div
+              key={index}
+              className="bg-white rounded-lg border-2 border-gray-300 p-4"
+            >
+              <img
+                src={property.image}
+                alt={property.title}
+                className="w-full h-40 object-cover rounded-lg"
+              />
+              <h3 className="text-xl font-medium mt-4 mb-1">
+                {property.title}
+              </h3>
               <p className="text-[#043268] font-semibold">{property.price}</p>
               <p className="text-gray-900 text-sm">{property.type}</p>
               <p className="text-gray-900 text-sm">{property.location}</p>
