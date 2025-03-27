@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import PropertyCard from "../components/PropertyCard";
-import PropertyContext from '../context/PropertyContext';
-
+import PropertyContext from "../context/PropertyContext";
 
 const OfficesFull = () => {
   const { commercial } = useContext(PropertyContext);

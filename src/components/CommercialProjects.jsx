@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import PropertyCard from "./PropertyCard.jsx";
-import PropertyContext from '../context/PropertyContext';
+import PropertyContext from "../context/PropertyContext";
 
 const CommercialProjects = () => {
   const { properties } = useContext(PropertyContext);
@@ -9,12 +9,37 @@ const CommercialProjects = () => {
 
   // Menu items with improved consistency
   const menuItems = [
-    { id: 1, title: 'PRE LEASED', imageUrl: "propertyi.png", route: '/pre-leased' },
-    { id: 2, title: 'OFFICE LEASE', imageUrl: "propertyi.png", route: '/office-lease' },
-    { id: 3, title: 'OFFICE SALE', imageUrl:"propertyi.png", route: '/office-sale' },
-    { id: 4, title: 'PLOTS', imageUrl: "propertyi.png", route: '/plots' },
-    { id: 5, title: 'HIGH RISE APARTMENTS', imageUrl: "propertyi.png", route: '/high-rise-apartments' },
-    { id: 6, title: 'SCO PLOTS', imageUrl: "propertyi.png", route: '/sco-plots' },
+    {
+      id: 1,
+      title: "PRE LEASED",
+      imageUrl: "propertyi.png",
+      route: "/pre-leased",
+    },
+    {
+      id: 2,
+      title: "OFFICE LEASE",
+      imageUrl: "propertyi.png",
+      route: "/office-lease",
+    },
+    {
+      id: 3,
+      title: "OFFICE SALE",
+      imageUrl: "propertyi.png",
+      route: "/office-sale",
+    },
+    { id: 4, title: "PLOTS", imageUrl: "propertyi.png", route: "/plots" },
+    {
+      id: 5,
+      title: "HIGH RISE APARTMENTS",
+      imageUrl: "propertyi.png",
+      route: "/high-rise-apartments",
+    },
+    {
+      id: 6,
+      title: "SCO PLOTS",
+      imageUrl: "propertyi.png",
+      route: "/sco-plots",
+    },
   ];
 
   return (
@@ -28,7 +53,10 @@ const CommercialProjects = () => {
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
             <h3 className="text-2xl font-semibold text-center">Offices</h3>
-            <Link to="/commercial/offices" className="absolute top-0 right-4 text-blue-800 font-semibold">
+            <Link
+              to="/commercial/offices"
+              className="absolute top-0 right-4 text-blue-800 font-semibold"
+            >
               View All
             </Link>
           </div>
@@ -44,8 +72,13 @@ const CommercialProjects = () => {
       {preLeasedOffices && preLeasedOffices.length > 0 && (
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
-            <h3 className="text-2xl font-semibold text-center">Pre-Leased Offices</h3>
-            <Link to="/commercial/preleased" className="absolute top-0 right-4 text-blue-800 font-semibold">
+            <h3 className="text-2xl font-semibold text-center">
+              Pre-Leased Offices
+            </h3>
+            <Link
+              to="/commercial/preleased"
+              className="absolute top-0 right-4 text-blue-800 font-semibold"
+            >
               View All
             </Link>
           </div>
@@ -62,7 +95,10 @@ const CommercialProjects = () => {
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
             <h3 className="text-2xl font-semibold text-center">Pre-Rented</h3>
-            <Link to="/commercial/prerented" className="absolute top-0 right-4 text-blue-800 font-semibold">
+            <Link
+              to="/commercial/prerented"
+              className="absolute top-0 right-4 text-blue-800 font-semibold"
+            >
               View All
             </Link>
           </div>
@@ -79,7 +115,10 @@ const CommercialProjects = () => {
         <div className="relative mb-12 px-4">
           <div className="relative mb-4">
             <h3 className="text-2xl font-semibold text-center">SCO Projects</h3>
-            <Link to="/commercial/sco" className="absolute top-0 right-4 text-blue-800 font-semibold">
+            <Link
+              to="/commercial/sco"
+              className="absolute top-0 right-4 text-blue-800 font-semibold"
+            >
               View All
             </Link>
           </div>
@@ -98,9 +137,9 @@ const CommercialProjects = () => {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-6">
           {menuItems.map((item) => (
-            <Link 
-              to={item.route} 
-              key={item.id} 
+            <Link
+              to={item.route}
+              key={item.id}
               className="group relative block h-full overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
             >
               {/* Image Container */}

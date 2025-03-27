@@ -32,7 +32,7 @@ import PreRentedFull from "./pages/PreRentedFull";
 import ScoProjectsFull from "./pages/ScoProjectsFull";
 
 import { TestimonialProvider } from "./Context/TestimonialContext";
-import { PropertyProvider } from "./context/PropertyContext";  // Import PropertyProvider
+import { PropertyProvider } from "./context/PropertyContext"; // Import PropertyProvider
 import "./index.css";
 
 function Layout() {
@@ -59,24 +59,33 @@ function Layout() {
           <Route path="/PropertyListing" element={<PropertyListing />} />
 
           {/* Added Recommendations to PropertyDetails route */}
-          <Route 
-            path="/PropertyDetails" 
+          <Route
+            path="/PropertyDetails"
             element={
               <div>
                 <PropertyDetails />
                 <Recommendations />
               </div>
-            } 
+            }
           />
 
           {/* Residential Routes */}
           <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />
-          <Route path="/residential/upcoming" element={<UpcomingProjectsFull />} />
-          <Route path="/residential/highrise" element={<HighRiseApartmentsFull />} />
+          <Route
+            path="/residential/upcoming"
+            element={<UpcomingProjectsFull />}
+          />
+          <Route
+            path="/residential/highrise"
+            element={<HighRiseApartmentsFull />}
+          />
 
           {/* Commercial Routes */}
           <Route path="/commercial/offices" element={<OfficesFull />} />
-          <Route path="/commercial/preleased" element={<PreLeasedOfficesFull />} />
+          <Route
+            path="/commercial/preleased"
+            element={<PreLeasedOfficesFull />}
+          />
           <Route path="/commercial/prerented" element={<PreRentedFull />} />
           <Route path="/commercial/sco" element={<ScoProjectsFull />} />
 
