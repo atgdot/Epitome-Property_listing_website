@@ -72,15 +72,24 @@ const AdminDashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <div className="bg-white p-4 rounded-lg shadow-lg">
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-lg shadow-xl">
                 <h2 className="text-lg font-semibold mb-4">Total Visitors</h2>
-                <ResponsiveContainer width="100%" height={300}>
+                <p className="text-4xl font-bold animate-pulse">
+                  {barChartData
+                    .reduce((acc, item) => acc + item.visitors, 0)
+                    .toLocaleString()}
+                </p>
+                <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={barChartData}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
+                    <XAxis dataKey="name" stroke="#fff" />
+                    <YAxis stroke="#fff" />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="visitors" fill="#8884d8" />
+                    <Bar
+                      dataKey="visitors"
+                      fill="#00C49F"
+                      radius={[10, 10, 0, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -89,18 +98,18 @@ const AdminDashboard = () => {
                 <h2 className="text-lg font-semibold mb-4">
                   Traffic by Location
                 </h2>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={320}>
                   <PieChart>
                     <Pie
                       data={pieChartData}
                       cx="50%"
                       cy="50%"
+                      outerRadius={90}
+                      innerRadius={40} // Donut Shape
                       labelLine={false}
                       label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
+                        `${name} ${(percent * 100).toFixed(1)}%`
                       }
-                      outerRadius={80}
-                      fill="#8884d8"
                       dataKey="value"
                     >
                       {pieChartData.map((entry, index) => (
@@ -110,16 +119,21 @@ const AdminDashboard = () => {
                         />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip
+                      contentStyle={{
+                        color: "#333",
+                        backgroundColor: "#fff",
+                        borderRadius: "5px",
+                      }}
+                    />
+                    <Legend
+                      verticalAlign="bottom"
+                      align="center"
+                      iconType="circle"
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-lg">
-              <h2 className="text-lg font-semibold mb-4">Property Sold</h2>
-              <p className="text-2xl font-bold">45</p>
-              <p className="text-gray-600">Monthly: -2.46%</p>
             </div>
           </div>
         );

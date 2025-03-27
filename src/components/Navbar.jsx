@@ -89,12 +89,12 @@ const Navbar = () => {
 
       {/* Mobile Dropdown Menu */}
       <div
-        className={`fixed top-2 right-0 h-auto w-45 max-w-sm bg-white shadow-lg flex flex-col  items-start py-4 px-4 space-y-3 transition-transform duration-300 z-50 rounded-l-2xl  ${
+        className={`fixed top-2 right-0 h-auto w-48 max-w-sm font-medium  bg-white shadow-lg flex flex-col  items-start py-4 px-3 space-y-4 transition-transform duration-300 z-50 rounded-l-2xl  ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         } md:hidden`}
       >
         <button
-          className="absolute top-2 right-6 text-xl "
+          className="absolute top-2 right-5 text-xl  "
           onClick={() => setIsMenuOpen(false)}
         >
           <FontAwesomeIcon icon={faTimes} />
@@ -102,12 +102,13 @@ const Navbar = () => {
         <Link to="/property" className="text-base text-gray-800">
           Property
         </Link>
+        <Link to="/admin-dashboard" className="text-base text-gray-800">
+          Commercial Projects
+        </Link>
         <Link to="/team" className="text-base text-gray-800">
           Team
         </Link>
-        <Link to="/admin-dashboard" className="text-base text-gray-800">
-          Admin
-        </Link>
+
         <button className="px-3 py-2 rounded-lg bg-blue-900 text-white hover:bg-blue-800 transition-all text-sm">
           Contact Us
         </button>

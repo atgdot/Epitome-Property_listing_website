@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Navigation, Autoplay } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
@@ -31,7 +31,7 @@ const RealEstateMap = () => {
     <div className="relative font-lato px-5 ">
       <div className="relative">
         {/* Price Filter */}
-        <div className="absolute top-5 left-12 bg-white p-2 rounded-md shadow-md w-fit z-50">
+        <div className="absolute top-5 left-12 bg-white p-2 rounded-md shadow-md w-fit z-30">
           <label htmlFor="price-filter" className="font-medium text-sm">
             Filter by price:
           </label>
@@ -52,7 +52,7 @@ const RealEstateMap = () => {
         <MapContainer
           center={[28.4595, 77.0266]}
           zoom={12}
-          style={{ height: "300px", width: "100%" }} // Height Reduced
+          style={{ height: "300px", width: "100%" }}
           scrollWheelZoom={false}
           touchZoom={false}
           className="z-10 rounded-md overflow-hidden"
