@@ -60,12 +60,9 @@ const Navbar = () => {
           Contact Us
         </button>
         <button
+          onClick={() => navigate("/admin-dashboard")}
           className={`px-4 py-2 rounded-lg transition-all duration-300
-          ${
-            isScrolled
-              ? "bg-white text-blue-900 hover:bg-gray-100"
-              : "bg-blue-900 text-white hover:bg-blue-800"
-          }`}
+          ${isScrolled ? "bg-white text-blue-900 hover:bg-gray-100" : "bg-blue-900 text-white hover:bg-blue-800"}`}
         >
           Admin
         </button>
