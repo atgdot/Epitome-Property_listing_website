@@ -175,9 +175,7 @@ const AdminDashboard = () => {
               {item}
             </button>
           ))}
-          <button className="mt-10 flex items-center gap-2 text-red-400 hover:bg-red-500 hover:text-white p-3 rounded-lg transition">
-            <IoLogOutOutline size={20} /> Log Out
-          </button>
+          
         </nav>
       </aside>
       <main className="flex-1 p-8 ml-64">{renderContent()}</main>
