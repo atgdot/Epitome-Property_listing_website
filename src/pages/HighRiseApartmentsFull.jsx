@@ -1,26 +1,24 @@
 import React, { useContext } from "react";
-import { CSSTransition } from "react-transition-group";
-import PropertyCard from "../components/PropertyCard";
-
-import PropertyContext from '../context/PropertyContext';
-
+import PropertyContext from "../context/PropertyContext";
+import HighRiseCard from "../components/HighRiseCard";
 
 const HighRiseApartmentsFull = () => {
   const { properties } = useContext(PropertyContext);
-  const highRiseApartments = properties.residential.highRiseApartments;
+
+  const highRiseProperties = properties.residential.highRiseApartments;
 
   return (
-    <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
-      <h2 className="text-3xl font-semibold text-center mb-6">
-        High Rise Apartments
-      </h2>
-      <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {highRiseApartments.map((property, index) => (
-            <PropertyCard key={index} property={property} />
-          ))}
-        </div>
-      </CSSTransition>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8 text-[#043268]">High Rise Apartments</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {highRiseProperties.map((property, index) => (
+          <HighRiseCard
+            key={index}
+            property={property}
+            onViewDetails={() => {/* Add view details handler */}}
+          />
+        ))}
+      </div>
     </div>
   );
 };

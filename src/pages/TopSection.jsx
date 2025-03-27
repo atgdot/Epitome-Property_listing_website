@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import PropertyCard from "../components/PropertyCard";
+import HighRiseCard from "../components/HighRiseCard";
 import { recommendationsData } from "../data/RecommendationData";
 import PropertyContext from "../context/PropertyContext";
 
@@ -85,7 +86,7 @@ const TopSection = () => {
         </div>
       </div>
 
-      {/* PROPERTY CATEGORY NAVIGATION (unchanged) */}
+      {/* PROPERTY CATEGORY NAVIGATION */}
       <h2 className="text-3xl font-semibold text-center mb-6">Explore Our Properties</h2>
       <div className="flex justify-center gap-4 flex-wrap mb-10">
         {navButtons.map((btn) => (
@@ -103,7 +104,7 @@ const TopSection = () => {
         ))}
       </div>
 
-      {/* PROPERTIES LISTING (unchanged) */}
+      {/* PROPERTIES LISTING */}
       {propertiesList.length > 0 ? (
         <div>
           <h3 className="text-2xl font-semibold text-center mb-6">
@@ -111,7 +112,17 @@ const TopSection = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {propertiesList.map((property, index) => (
-              <PropertyCard key={index} property={property} />
+              (selectedCategory === "upcoming" || selectedCategory === "luxury") ? (
+                <HighRiseCard 
+                  key={index} 
+                  property={property} 
+                  onViewDetails={() => {
+                    // Add view details handler here
+                  }} 
+                />
+              ) : (
+                <PropertyCard key={index} property={property} />
+              )
             ))}
           </div>
         </div>
