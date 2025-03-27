@@ -28,7 +28,7 @@ const RealEstateMap = () => {
   }, []);
 
   return (
-    <div className="relative font-lato px-5 mt-2">
+    <div className="relative font-lato px-5 ">
       <div className="relative">
         {/* Price Filter */}
         <div className="absolute top-5 left-12 bg-white p-2 rounded-md shadow-md w-fit z-50">
@@ -77,13 +77,13 @@ const RealEstateMap = () => {
         <img
           src={bannerImages[currentBanner]}
           alt="Banner"
-          className="w-2/3 h-28 object-cover rounded-md shadow-md" // Height Reduced
+          className="w-2/3 h-30 object-cover rounded-md shadow-md" // Height Reduced
         />
       </div>
 
       {/* Featured Builders Section */}
       <div className="bg-white p-4 w-full">
-        <h2 className="text-2xl font-bold text-center mb-2">
+        <h2 className="text-3xl font-bold text-center mb-2">
           FEATURED BUILDERS
         </h2>
 

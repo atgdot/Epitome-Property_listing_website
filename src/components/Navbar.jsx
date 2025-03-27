@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-// import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,7 +28,7 @@ const Navbar = () => {
       <div className="flex items-center space-x-2">
         <img
           onClick={() => navigate("/")}
-          src="/logo.png"
+          src={isScrolled ? "/logo.png" : "/logoblack.png"}
           alt="Logo"
           className="h-14 w-44 cursor-pointer"
         />
