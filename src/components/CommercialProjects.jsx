@@ -2,61 +2,58 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import PropertyCard from "./PropertyCard.jsx";
 import PropertyContext from "../context/PropertyContext";
-
 const CommercialProjects = () => {
   const { properties } = useContext(PropertyContext);
   const { offices, preLeasedOffices, preRented, sco } = properties.commercial;
-
   // Menu items with improved consistency
   const menuItems = [
-<<<<<<< HEAD
     {
       id: 1,
       title: "PRE LEASED",
-      imageUrl: "propertyi.png",
+      imageUrl:
+        "https://i.ibb.co/hFFDQrXC/01bef475fa70b91b2561c1cad9b7a92f.jpg",
       route: "/pre-leased",
     },
     {
       id: 2,
       title: "OFFICE LEASE",
-      imageUrl: "propertyi.png",
+      imageUrl:
+        "https://i.ibb.co/PZfXwZYG/329aa8999bf0e843299b5570492f960b.jpg",
       route: "/office-lease",
     },
     {
       id: 3,
       title: "OFFICE SALE",
-      imageUrl: "propertyi.png",
+      imageUrl:
+        "https://i.ibb.co/XrSmRrxK/157eb9356453c4314baa1734c80619a3.jpg",
       route: "/office-sale",
     },
-    { id: 4, title: "PLOTS", imageUrl: "propertyi.png", route: "/plots" },
+    {
+      id: 4,
+      title: "PLOTS",
+      imageUrl: "https://i.ibb.co/xQnsvYP/a9ed8d5db8a056350caa26a1cff75e0d.jpg",
+      route: "/plots",
+    },
     {
       id: 5,
       title: "HIGH RISE APARTMENTS",
-      imageUrl: "propertyi.png",
+      imageUrl:
+        "https://i.ibb.co/LDh5r2Hw/bc0ff8be9ee6178ff662b7b1e84c9679.jpg",
       route: "/high-rise-apartments",
     },
     {
       id: 6,
       title: "SCO PLOTS",
-      imageUrl: "propertyi.png",
+      imageUrl:
+        "https://i.ibb.co/N2T83XBv/a6fb8bac27dfb52af5cf85950b521da3.jpg",
       route: "/sco-plots",
     },
-=======
-    { id: 1, title: "PRE LEASED", imageUrl: "https://i.ibb.co/hFFDQrXC/01bef475fa70b91b2561c1cad9b7a92f.jpg", route: "/pre-leased" },
-    { id: 2, title: "OFFICE LEASE", imageUrl: "https://i.ibb.co/PZfXwZYG/329aa8999bf0e843299b5570492f960b.jpg" , route: "/office-lease" },
-    { id: 3, title: "OFFICE SALE", imageUrl: "https://i.ibb.co/XrSmRrxK/157eb9356453c4314baa1734c80619a3.jpg" , route: "/office-sale" },
-    { id: 4, title: "PLOTS", imageUrl:"https://i.ibb.co/xQnsvYP/a9ed8d5db8a056350caa26a1cff75e0d.jpg" , route: "/plots" },
-    { id: 5, title: "HIGH RISE APARTMENTS", imageUrl: "https://i.ibb.co/LDh5r2Hw/bc0ff8be9ee6178ff662b7b1e84c9679.jpg" , route: "/high-rise-apartments" },
-    { id: 6, title: "SCO PLOTS", imageUrl: "https://i.ibb.co/N2T83XBv/a6fb8bac27dfb52af5cf85950b521da3.jpg" , route: "/sco-plots" },
->>>>>>> 2d43ec8837778282ce671a847c1d04385b59acfc
   ];
-
   return (
     <div className="my-8">
       <h2 className="text-3xl font-semibold text-center mb-8">
         Commercial Projects
       </h2>
-
       {/* Offices Section */}
       {offices && offices.length > 0 && (
         <div className="relative mb-12 px-4">
@@ -76,7 +73,6 @@ const CommercialProjects = () => {
           </div>
         </div>
       )}
-
       {/* Pre-Leased Offices Section */}
       {preLeasedOffices && preLeasedOffices.length > 0 && (
         <div className="relative mb-12 px-4">
@@ -98,7 +94,6 @@ const CommercialProjects = () => {
           </div>
         </div>
       )}
-
       {/* Pre-Rented Section */}
       {preRented && preRented.length > 0 && (
         <div className="relative mb-12 px-4">
@@ -118,7 +113,6 @@ const CommercialProjects = () => {
           </div>
         </div>
       )}
-
       {/* SCO Projects Section */}
       {sco && sco.length > 0 && (
         <div className="relative mb-12 px-4">
@@ -138,7 +132,6 @@ const CommercialProjects = () => {
           </div>
         </div>
       )}
-
       {/* Enhanced Explore More Projects Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
@@ -146,17 +139,10 @@ const CommercialProjects = () => {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-6">
           {menuItems.map((item) => (
-<<<<<<< HEAD
             <Link
               to={item.route}
               key={item.id}
-              className="group relative block h-full overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
-=======
-            <Link 
-              to={item.route} 
-              key={item.id} 
               className="group relative block h-64 overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
->>>>>>> 2d43ec8837778282ce671a847c1d04385b59acfc
             >
               {/* Image Container */}
               <div className="relative w-full h-48 overflow-hidden">
@@ -167,7 +153,6 @@ const CommercialProjects = () => {
                   loading="lazy"
                 />
               </div>
-              
               {/* Title as Button */}
               <div className="w-full bg-blue-950 text-white h-16 flex items-center justify-center font-semibold rounded-b-xl text-center">
                 {item.title}
@@ -179,5 +164,4 @@ const CommercialProjects = () => {
     </div>
   );
 };
-
 export default CommercialProjects;
