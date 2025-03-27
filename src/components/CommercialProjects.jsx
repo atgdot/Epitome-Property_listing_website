@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import PropertyCard from "./PropertyCard.jsx";
-import PropertyContext from '../context/PropertyContext';
+import PropertyContext from "../context/PropertyContext";
 
 const CommercialProjects = () => {
   const { properties } = useContext(PropertyContext);
@@ -9,12 +9,12 @@ const CommercialProjects = () => {
 
   // Menu items with improved consistency
   const menuItems = [
-    { id: 1, title: 'PRE LEASED', imageUrl: "propertyi.png", route: '/pre-leased' },
-    { id: 2, title: 'OFFICE LEASE', imageUrl: "propertyi.png", route: '/office-lease' },
-    { id: 3, title: 'OFFICE SALE', imageUrl:"propertyi.png", route: '/office-sale' },
-    { id: 4, title: 'PLOTS', imageUrl: "propertyi.png", route: '/plots' },
-    { id: 5, title: 'HIGH RISE APARTMENTS', imageUrl: "propertyi.png", route: '/high-rise-apartments' },
-    { id: 6, title: 'SCO PLOTS', imageUrl: "propertyi.png", route: '/sco-plots' },
+    { id: 1, title: "PRE LEASED", imageUrl: "https://i.ibb.co/hFFDQrXC/01bef475fa70b91b2561c1cad9b7a92f.jpg", route: "/pre-leased" },
+    { id: 2, title: "OFFICE LEASE", imageUrl: "https://i.ibb.co/PZfXwZYG/329aa8999bf0e843299b5570492f960b.jpg" , route: "/office-lease" },
+    { id: 3, title: "OFFICE SALE", imageUrl: "https://i.ibb.co/XrSmRrxK/157eb9356453c4314baa1734c80619a3.jpg" , route: "/office-sale" },
+    { id: 4, title: "PLOTS", imageUrl:"https://i.ibb.co/xQnsvYP/a9ed8d5db8a056350caa26a1cff75e0d.jpg" , route: "/plots" },
+    { id: 5, title: "HIGH RISE APARTMENTS", imageUrl: "https://i.ibb.co/LDh5r2Hw/bc0ff8be9ee6178ff662b7b1e84c9679.jpg" , route: "/high-rise-apartments" },
+    { id: 6, title: "SCO PLOTS", imageUrl: "https://i.ibb.co/N2T83XBv/a6fb8bac27dfb52af5cf85950b521da3.jpg" , route: "/sco-plots" },
   ];
 
   return (
@@ -101,25 +101,21 @@ const CommercialProjects = () => {
             <Link 
               to={item.route} 
               key={item.id} 
-              className="group relative block h-full overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+              className="group relative block h-64 overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
             >
               {/* Image Container */}
-              <div className="relative aspect-square w-full overflow-hidden">
+              <div className="relative w-full h-48 overflow-hidden">
                 <img
                   src={item.imageUrl}
                   alt={item.title}
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                 />
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-transparent" />
               </div>
-
-              {/* Title */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-center">
-                <h3 className="text-lg font-semibold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                  {item.title}
-                </h3>
+              
+              {/* Title as Button */}
+              <div className="w-full bg-blue-950 text-white h-16 flex items-center justify-center font-semibold rounded-b-xl text-center">
+                {item.title}
               </div>
             </Link>
           ))}
