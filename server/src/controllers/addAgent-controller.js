@@ -1,4 +1,4 @@
-import addUser from "../models/adduser-model.js";
+import addAgent from "../models/adduser-model.js";
 import { validationResult } from "express-validator";
 
 // CREATE USER
@@ -12,7 +12,7 @@ export const createUser = async (req, res) => {
   try {
     const { name, email, phone, propertyNumber, license, action } = req.body;
 
-    const newUser = new addUser({
+    const newUser = new addAgent({
       name,
       email,
       phone,
@@ -53,37 +53,40 @@ export const updateUser = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "User updated successfully",
-        data: updatedUser,
-      });
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      data: updatedUser,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-
 // search user by name
 export const searchUserByName = async (req, res) => {
-    try {
-      const { name } = req.query; // Get the name from query params
-  
-      if (!name) {
-        return res.status(400).json({ success: false, message: "Name is required for searching" });
-      }
-  
-      // Case-insensitive search using regex
-      const users = await addUser.find({ name: { $regex: name, $options: "i" } });
-  
-      if (users.length === 0) {
-        return res.status(404).json({ success: false, message: "No users found" });
-      }
-  
-      res.status(200).json({ success: true, data: users });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+  try {
+    const { name } = req.query; // Get the name from query params
+
+    if (!name) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Name is required for searching" });
     }
-  };
+
+    // Case-insensitive search using regex
+    const users = await addAgent.find({
+      name: { $regex: name, $options: "i" },
+    });
+
+    if (users.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No users found" });
+    }
+
+    res.status(200).json({ success: true, data: users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

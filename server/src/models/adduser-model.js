@@ -24,9 +24,8 @@ const addUSerSchema = new mongoose.Schema({
     reuire: true
   },
   Action: {
-    type:  String
-  
-
+    type:  String,
+   default: "pending"
   },
 },{timestamps: true});
 

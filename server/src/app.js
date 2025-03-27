@@ -6,6 +6,8 @@ import cors from 'cors';
 import dotenv from "dotenv";
 import connectDB from './db/connectDB.js';
 import propertyRouter from './routes/addproperty-router.js'
+import addUserRouter from './routes/addUser-route.js'
+import addAgentRouter from './routes/addAgent-router.js'
 dotenv.config(); // Load environment variables
 
 
@@ -38,6 +40,8 @@ app.get('/test', (req, res) => {
 
 //rouets
 app.use('/api/v1/admin-dashboard/property' , propertyRouter)
+app.use('/api/v1/admin-dashboard/user' , addUserRouter)
+app.use('/api/v1/admin-dashboard/user' , addAgentRouter)
 
 
 
