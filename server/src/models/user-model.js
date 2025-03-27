@@ -1,0 +1,35 @@
+import mongoose from'mongoose';
+
+
+const addUSerSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  propertyNumber : {
+    type: String,
+    require: true
+  },
+  license: {
+    type: String,
+    reuire: true
+  },
+  Action: {
+    type:  String
+  
+
+  },
+},{timestamps: true});
+
+const  AddUser = mongoose.model('addUser', addUSerSchema);
+
+ export default AddUser;
