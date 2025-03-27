@@ -79,7 +79,9 @@ const Navbar = () => {
 
       {/* Mobile Menu Toggle Button */}
       <button
-        className="md:hidden text-2xl text-gray-900 z-50"
+        className={`md:hidden text-2xl z-50 transition-colors duration-300 ${
+          isScrolled ? "text-white" : "text-gray-900"
+        }`}
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
         <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
@@ -87,7 +89,7 @@ const Navbar = () => {
 
       {/* Mobile Dropdown Menu */}
       <div
-        className={`fixed top-2 right-0 h-auto w-45 max-w-sm bg-white shadow-lg flex flex-col  items-start py-4 px-4 space-y-3 transition-transform duration-300 z-50 ${
+        className={`fixed top-2 right-0 h-auto w-45 max-w-sm bg-white shadow-lg flex flex-col  items-start py-4 px-4 space-y-3 transition-transform duration-300 z-50 rounded-l-2xl  ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         } md:hidden`}
       >
