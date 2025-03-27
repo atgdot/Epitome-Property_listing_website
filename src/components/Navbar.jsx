@@ -94,7 +94,7 @@ const Navbar = () => {
         } md:hidden`}
       >
         <button
-          className="absolute top-2 right-3 text-xl "
+          className="absolute top-2 right-6 text-xl "
           onClick={() => setIsMenuOpen(false)}
         >
           <FontAwesomeIcon icon={faTimes} />
@@ -102,10 +102,10 @@ const Navbar = () => {
         <Link to="/property" className="text-base text-gray-800">
           Property
         </Link>
-        <Link to="/team" className="text-lg text-gray-800">
+        <Link to="/team" className="text-base text-gray-800">
           Team
         </Link>
-        <Link to="/admin-dashboard" className="text-lg text-gray-800">
+        <Link to="/admin-dashboard" className="text-base text-gray-800">
           Admin
         </Link>
         <button className="px-3 py-2 rounded-lg bg-blue-900 text-white hover:bg-blue-800 transition-all text-sm">
