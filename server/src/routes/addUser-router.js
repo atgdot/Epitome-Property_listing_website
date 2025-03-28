@@ -22,17 +22,17 @@ const userValidationRules = [
   body("license").notEmpty().withMessage("License is required"),
 ];
 
-// 📝 Create User Route
+//  Create User Route
 router.post("/create", userValidationRules, createUser);
 
-// 🔄 Update User Route
+//  Update User Route
 router.put("/update/:id", userValidationRules, updateUser);
 
-// 🔍 Search User Route
+//  Search User Route
 router.get("/search", searchUserByName);
 
-// 🗑 Delete User Route
+//  Delete User Route
 router.delete("/delete/:id", deleteUserById);
 
-// ✅ Export Router
+//  Export Router
 export default router;
