@@ -106,49 +106,60 @@ export const getAllPropertiesController = async (req, res) => {
 
 //  Get Property by name
 
-export const getPropertiesByCategoryOrSubcategoryController = async (req, res) => {
+
+export const searchPropertiesController = async (req, res) => {
   try {
-    const { searchTerm } = req.params;
-    console.log("🔍 Searching for:", searchTerm);
+    const { searchTerm } = req.params; // Get the search term from URL params
 
-    // Find category by name (case-insensitive)
-    const category = await addProperty.findOne({ name: { $regex: searchTerm, $options: "i" } });
+    // Create a flexible search filter
+    const filter = {
+      $or: [
+        { category: { $regex: searchTerm, $options: "i" } }, // Match category (case-insensitive)
+        { subCategory: { $regex: searchTerm, $options: "i" } }, // Match subCategory
+        { city: { $regex: searchTerm, $options: "i" } }, // Match city
+        { title: { $regex: searchTerm, $options: "i" } }, // Match property title
+        { status: { $regex: searchTerm, $options: "i" } } // Match property status
+      ]
+    };
 
-    let filter = category 
-      ? { category: category._id }  // If category exists, search by its ID
-      : { subCategory: { $regex: searchTerm, $options: "i" } }; // Otherwise, search in subCategory
+    // console.log(" Search Filter:", filter);
 
-    console.log("🔎 Filter:", filter);
-
-    // Find properties with matching category or subCategory
-    const properties = await addProperty.find(filter).populate("category");
+    // Find properties matching the filter
+    const properties = await addProperty.find(filter);
 
     if (!properties.length) {
       return res.status(404).json({ success: false, message: `No properties found for '${searchTerm}'` });
     }
 
-    res.json({ success: true, data: properties });
+    res.status(200).json({ 
+      success: true, 
+      // data: properties 
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    // console.error(" Error searching properties:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };
+
+
 // Delete Property by ID
 export const deletePropertyController = async (req, res) => {
   try {
-    const deletedProperty = await addProperty.findByIdAndDelete(req.params.id);
-    deletedProperty
-      ? res.json({
-          success: true,
-          message: "Property deleted successfully",
-        })
-      : res.status(404).json({
-          success: false,
-          message: "Property not found",
-        });
+    const { id } = req.params;
+
+    // Check if the ID is valid
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ success: false, message: "Invalid property ID" });
+    }
+
+    const deletedProperty = await addProperty.findByIdAndDelete(id);
+
+    if (!deletedProperty) {
+      return res.status(404).json({ success: false, message: "Property not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Property deleted successfully" });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };
