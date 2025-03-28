@@ -23,6 +23,7 @@ import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
 import AdminRecommendation from "../components/AdminRecommendation"; // Added the recommendation import
 import BannerContext from "../Context/BannerContext";
+import { RecommendationContext } from "../Context/RecommendationContext";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -53,6 +54,24 @@ const AdminDashboard = () => {
     if (newBanner) {
       updateBanner(newBanner);
       setNewBanner("");
+    }
+  };
+
+  const { addRecommendation } = useContext(RecommendationContext);
+  const [property, setProperty] = useState({
+    title: "",
+    image: "",
+    price: "",
+  });
+
+  const handleChange = (e) => {
+    setProperty({ ...property, [e.target.name]: e.target.value });
+  };
+
+  const handleAddRecommendation = () => {
+    if (property.title && property.image && property.price) {
+      addRecommendation(property);
+      setProperty({ title: "", image: "", price: "" }); // Reset fields
     }
   };
 
@@ -219,6 +238,39 @@ const AdminDashboard = () => {
       </aside>
       <main className="flex-1 p-8 ml-64">{renderContent()}</main>
     </div>
+    // <div className="p-6 bg-white shadow-md rounded-lg">
+    //   <h2 className="text-xl font-bold mb-4">Add Recommendation</h2>
+    //   <input
+    //     type="text"
+    //     name="title"
+    //     placeholder="Enter Property Name"
+    //     value={property.title}
+    //     onChange={handleChange}
+    //     className="border p-2 w-full rounded mb-3"
+    //   />
+    //   <input
+    //     type="text"
+    //     name="image"
+    //     placeholder="Enter Image URL"
+    //     value={property.image}
+    //     onChange={handleChange}
+    //     className="border p-2 w-full rounded mb-3"
+    //   />
+    //   <input
+    //     type="text"
+    //     name="price"
+    //     placeholder="Enter Price"
+    //     value={property.price}
+    //     onChange={handleChange}
+    //     className="border p-2 w-full rounded mb-3"
+    //   />
+    //   <button
+    //     onClick={handleAddRecommendation}
+    //     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+    //   >
+    //     Add Recommendation
+    //   </button>
+    // </div>
   );
 };
 

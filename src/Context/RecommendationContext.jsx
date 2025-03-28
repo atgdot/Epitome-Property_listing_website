@@ -3,19 +3,23 @@ import React, { createContext, useState } from "react";
 export const RecommendationContext = createContext();
 
 export const RecommendationProvider = ({ children }) => {
-  // Start with an empty state. The admin page will create the recommendation data.
+  // Initially empty recommendations
   const [recommendations, setRecommendations] = useState({
-    title: "",
+    title: "Recommended Properties",
     properties: [],
   });
 
-  const updateRecommendations = (updatedData) => {
-    setRecommendations(updatedData);
+  // Function to add new recommendations
+  const addRecommendation = (newProperty) => {
+    setRecommendations((prev) => ({
+      ...prev,
+      properties: [...prev.properties, newProperty],
+    }));
   };
 
   return (
     <RecommendationContext.Provider
-      value={{ recommendations, updateRecommendations }}
+      value={{ recommendations, addRecommendation }}
     >
       {children}
     </RecommendationContext.Provider>
