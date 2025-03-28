@@ -5,6 +5,8 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
+
+// Components & Pages
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import IndiaBulls from "./pages/IndiaBulls";
@@ -15,8 +17,6 @@ import PropertyDetails from "./components/PropertyDetails";
 import Footer from "./components/Footer";
 import AdminDashboard from "./admin/AdminDashboard";
 import UserManagement from "./components/UserManagement";
-
-// Import Recommendations component
 import Recommendations from "./components/Recommendation";
 
 // Residential Full Listing Pages
@@ -31,9 +31,12 @@ import PreLeasedOfficesFull from "./pages/PreLeasedOfficesFull";
 import PreRentedFull from "./pages/PreRentedFull";
 import ScoProjectsFull from "./pages/ScoProjectsFull";
 
+// Context Providers
 import { TestimonialProvider } from "./Context/TestimonialContext";
-import { PropertyProvider } from "./Context/PropertycardContext"; // Import PropertyProvider
-import { RecommendationProvider } from "./Context/RecommendationContext"; // Import RecommendationProvider
+import { PropertyProvider } from "./Context/PropertycardContext"; 
+import { RecommendationProvider } from "./Context/RecommendationContext";
+import { PhotoProvider } from "./Context/PhotoContext";
+
 import "./index.css";
 
 function Layout() {
@@ -59,7 +62,7 @@ function Layout() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/PropertyListing" element={<PropertyListing />} />
 
-          {/* Added Recommendations to PropertyDetails route */}
+          {/* Property Details now includes Recommendations */}
           <Route
             path="/PropertyDetails"
             element={
@@ -72,12 +75,21 @@ function Layout() {
 
           {/* Residential Routes */}
           <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />
-          <Route path="/residential/upcoming" element={<UpcomingProjectsFull />} />
-          <Route path="/residential/highrise" element={<HighRiseApartmentsFull />} />
+          <Route
+            path="/residential/upcoming"
+            element={<UpcomingProjectsFull />}
+          />
+          <Route
+            path="/residential/highrise"
+            element={<HighRiseApartmentsFull />}
+          />
 
           {/* Commercial Routes */}
           <Route path="/commercial/offices" element={<OfficesFull />} />
-          <Route path="/commercial/preleased" element={<PreLeasedOfficesFull />} />
+          <Route
+            path="/commercial/preleased"
+            element={<PreLeasedOfficesFull />}
+          />
           <Route path="/commercial/prerented" element={<PreRentedFull />} />
           <Route path="/commercial/sco" element={<ScoProjectsFull />} />
 
@@ -99,9 +111,11 @@ function App() {
     <PropertyProvider>
       <TestimonialProvider>
         <RecommendationProvider>
-          <Router>
-            <Layout />
-          </Router>
+          <PhotoProvider>
+            <Router>
+              <Layout />
+            </Router>
+          </PhotoProvider>
         </RecommendationProvider>
       </TestimonialProvider>
     </PropertyProvider>
