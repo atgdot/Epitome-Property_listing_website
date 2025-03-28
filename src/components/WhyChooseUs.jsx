@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { PhotoContext } from "../Context/PhotoContext";
+import { PhotoContext } from "../context/PhotoContext";
 import { FaTimes } from "react-icons/fa";
 
 const FeatureCard = ({ feature, onExpand }) => {

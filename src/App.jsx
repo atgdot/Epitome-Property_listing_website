@@ -35,7 +35,7 @@ import ScoProjectsFull from "./pages/ScoProjectsFull";
 import { TestimonialProvider } from "./Context/TestimonialContext";
 import { PropertyProvider } from "./Context/PropertycardContext"; 
 import { RecommendationProvider } from "./Context/RecommendationContext";
-import { PhotoProvider } from "./Context/PhotoContext";
+import { PhotoProvider } from "./context/PhotoContext";
 
 import "./index.css";
 
