@@ -1,4 +1,3 @@
-// BannerContext.js
 import React, { createContext, useState, useEffect } from "react";
 
 const BannerContext = createContext();
@@ -12,7 +11,7 @@ export const BannerProvider = ({ children }) => {
 
   const fetchBanners = async () => {
     try {
-      const response = await fetch("https://your-api.com/banners");
+      const response = await fetch("http://localhost:5176/banners");
       const data = await response.json();
       setBannerImages(data);
     } catch (error) {
@@ -22,7 +21,7 @@ export const BannerProvider = ({ children }) => {
 
   const updateBanner = async (newBanner) => {
     try {
-      const response = await fetch("https://your-api.com/banners", {
+      const response = await fetch("http://localhost:5176/banners", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: newBanner }),

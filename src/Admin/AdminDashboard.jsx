@@ -184,7 +184,13 @@ const AdminDashboard = () => {
   };
 
   // Updated nav items to include "Recommendations"
-  const navItems = ["Dashboard", "Property", "User", "Reviews", "Recommendations"];
+  const navItems = [
+    "Dashboard",
+    "Property",
+    "User",
+    "Reviews",
+    "Recommendations",
+  ];
 
   return (
     <div className="flex min-h-screen bg-gray-100">
