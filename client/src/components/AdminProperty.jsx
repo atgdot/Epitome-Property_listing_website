@@ -87,6 +87,7 @@ const AdminProperty = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Create the property object, excluding image if it's empty
     const newProperty = {
       ...formData,
       price: formData.price.startsWith("₹")
@@ -98,23 +99,25 @@ const AdminProperty = () => {
       id: editingProperty?.id || Math.random()
     };
 
+    // Remove image property if it's empty
+    if (!newProperty.image) {
+      delete newProperty.image;
+    }
+
     try {
       if (editingProperty) {
-        // If editing, dispatch updateProperty action
         const updateResult = await dispatch(updateProperty({
           id: editingProperty.id,
           propertyData: newProperty
         })).unwrap();
 
         if (updateResult) {
-          updateProperty(updateResult); // Local state update
+          updateProperty(updateResult);
         }
       } else {
-        // If creating new, dispatch createProperty action
         const createResult = await dispatch(createProperty(newProperty)).unwrap();
-
         if (createResult) {
-          addProperty(createResult); // Update local state with the response from API
+          addProperty(createResult);
         } else {
           throw new Error('Failed to create property');
         }
@@ -280,7 +283,12 @@ const AdminProperty = () => {
           placeholder: "e.g., 4.86 - 8 Cr",
           required: true
         },
-        { name: "image", label: "Property Image", type: "file", required: true }
+        {
+          name: "image",
+          label: "Property Image (Optional)",
+          type: "file",
+          required: false  // Made optional
+        }
       ]
     },
     {
@@ -304,7 +312,12 @@ const AdminProperty = () => {
         { name: "city", label: "City", required: true },
         { name: "status", label: "Status", required: true },
         { name: "title", label: "Title", required: true },
-        { name: "image", label: "Property Image", type: "file" }
+        {
+          name: "image",
+          label: "Property Image (Optional)",
+          type: "file",
+          required: false  // Made optional
+        }
       ]
     },
     {
