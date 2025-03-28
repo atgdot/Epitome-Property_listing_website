@@ -15,25 +15,41 @@ const router = express.Router();
 // Validation rules
 const propertyValidationRules = [
   body("category")
-    .isIn(["Residential", "Commercial", "Trending", "Featured"])
-    .withMessage("Invalid category"),
- body("subcategory")
-    .isIn(["luxury project",
-      "Upcoming project",
-      "High Rise Apartment",
-      "offices",
-      "Pre-leased",
-      "Pre-rented",
-      "SCO",])
-    .withMessage("Invalid category"),
+    .custom((value) => {
+      const validCategories = ["residential", "commercial", "trending", "featured"];
+      if (!validCategories.includes(value.toLowerCase())) {
+        throw new Error(
+          "Invalid category. Allowed values: Residential, Commercial, Trending, Featured"
+        );
+      }
+      return true;
+    }),
+  body("subcategory")
+    .optional()
+    .custom((value) => {
+      const validSubcategories = [
+        "luxury project",
+        "upcoming project",
+        "high rise apartment",
+        "offices",
+        "pre-leased",
+        "pre-rented",
+        "sco",
+      ];
+      if (!validSubcategories.includes(value.toLowerCase())) {
+        throw new Error(
+          "Invalid subcategory. Allowed values: luxury project, upcoming project, etc."
+        );
+      }
+      return true;
+    }),
   body("city").notEmpty().withMessage("City is required"),
-  body("status").isIn(["active", "inactive", "pending"]).withMessage("Invalid status"),
+  body("status")
+    .isIn(["active", "inactive", "pending"])
+    .withMessage("Invalid status"),
   body("title").notEmpty().withMessage("Title is required"),
   body("description").notEmpty().withMessage("Description is required"),
   body("price").isString().withMessage("Price must be a string"),
-  body("status")
-  .isIn(["active", "inactive", "pending"])
-  .withMessage("Invalid status. Allowed values: active, inactive, pending"),
   body("Rental_Yield").optional().isString(),
   body("current_Renatal").optional().isString(),
   body("Area").optional().isString(),
@@ -42,7 +58,6 @@ const propertyValidationRules = [
   body("location").optional().isString(),
   body("property_Image").optional().isString(),
 ];
-
 const idValidationRule = [
   param("id").isMongoId().withMessage("Invalid property ID"),
 ];

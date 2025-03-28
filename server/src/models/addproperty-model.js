@@ -3,21 +3,13 @@ import mongoose from "mongoose";
 const addPropertySchema = new mongoose.Schema({
   category: {
     type: String,
-    enum: ["Residential", "Commercial", "Trending", "Featured"],
+    
     required: true,
   },
   subCategory: {
     type: [String],
     require: true,
-    enum: [
-      "luxury project",
-      "Upcoming project",
-      "High Rise Apartment",
-      "offices",
-      "Pre-leased",
-      "Pre-rented",
-      "SCO",
-    ],
+  
   },
   city: {
     type: String,
