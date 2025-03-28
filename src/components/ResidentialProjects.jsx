@@ -99,7 +99,7 @@ const ResidentialProjects = () => {
         <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
           Prime Locations
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
           {menuItems.map((item) => (
             <Link
               to={item.route}
