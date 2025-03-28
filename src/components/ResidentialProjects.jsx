@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import { Link } from "react-router-dom";
 import HighRiseCard from "../components/HighRiseCard";
-import PropertyContext from "../context/PropertyContext";
+import PropertyContext from "../Context/PropertycardContext";
 
 const ResidentialProjects = () => {
   const { properties } = useContext(PropertyContext);

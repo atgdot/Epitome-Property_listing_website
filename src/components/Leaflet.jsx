@@ -31,7 +31,7 @@ const RealEstateMap = () => {
     <div className="relative font-lato px-5 ">
       <div className="relative">
         {/* Price Filter */}
-        <div className="absolute top-5 left-12 bg-white p-2 rounded-md shadow-md w-fit z-30">
+        <div className="absolute top-5 left-11 bg-white p-2 rounded-md shadow-md w-fit z-30">
           <label htmlFor="price-filter" className="font-medium text-sm">
             Filter by price:
           </label>
@@ -42,9 +42,9 @@ const RealEstateMap = () => {
             className="ml-2 border rounded px-2 py-1 text-sm"
           >
             <option value="all">All</option>
-            <option value="0-500000">$0 - $500,000</option>
-            <option value="500000-1000000">$500,000 - $1,000,000</option>
-            <option value="above-1000000">Above $1,000,000</option>
+            <option value="0-500000">₹0 - ₹5,00,000</option>
+            <option value="500000-1000000">₹5,00,000 - ₹10,00,000</option>
+            <option value="above-1000000">Above ₹10,00,000</option>
           </select>
         </div>
 
@@ -100,7 +100,7 @@ const RealEstateMap = () => {
             loop={true}
             speed={4000}
             breakpoints={{
-              320: { slidesPerView: 3 },
+              320: { slidesPerView: 2 },
               640: { slidesPerView: 5 },
               1024: { slidesPerView: 10 },
             }}

@@ -5,7 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import PropertyCard from "./PropertyCard";
 import HighRiseCard from "./HighRiseCard";
-import PropertyContext from "../context/PropertyContext";
+import PropertyContext from "../Context/PropertycardContext";
 
 const AdminProperty = () => {
   const { properties, addProperty, updateProperty, deleteProperty } =
