@@ -6,7 +6,8 @@ import {
   searchPropertiesController,
   updatePropertyController,
   deletePropertyController,
-  getPropertyDetailsController
+  getPropertyDetailsController,
+  getAllPropertyController,
 } from "../controllers/addproperty-controller.js";
 
 const router = express.Router();
@@ -16,21 +17,30 @@ const propertyValidationRules = [
   body("category")
     .isIn(["Residential", "Commercial", "Trending", "Featured"])
     .withMessage("Invalid category"),
+ body("subcategory")
+    .isIn(["luxury project",
+      "Upcoming project",
+      "High Rise Apartment",
+      "offices",
+      "Pre-leased",
+      "Pre-rented",
+      "SCO",])
+    .withMessage("Invalid category"),
   body("city").notEmpty().withMessage("City is required"),
   body("status").isIn(["active", "inactive", "pending"]).withMessage("Invalid status"),
   body("title").notEmpty().withMessage("Title is required"),
   body("description").notEmpty().withMessage("Description is required"),
   body("price").isString().withMessage("Price must be a string"),
-  body("Rental_Yield")
-  .isString().withMessage("Rental Yield must be a string")
-  .matches(/^\d+%$/).withMessage("Rental Yield must be a number followed by '%' (e.g., '12%')"),
-  body("Area").notEmpty().withMessage("Area is required"),
-  body("current_Renatal")
-  .isString()
-    .withMessage("Current rental must be a string"),
-  body("Tenure").isString().withMessage("tenure must be a string"),
-  body("location").notEmpty().withMessage("Location is required"),
-  body("Tenant").notEmpty().withMessage("Tenant is required"),
+  body("status")
+  .isIn(["active", "inactive", "pending"])
+  .withMessage("Invalid status. Allowed values: active, inactive, pending"),
+  body("Rental_Yield").optional().isString(),
+  body("current_Renatal").optional().isString(),
+  body("Area").optional().isString(),
+  body("Tenure").optional().isString(),
+  body("Tenant").optional().isString(),
+  body("location").optional().isString(),
+  body("property_Image").optional().isString(),
 ];
 
 const idValidationRule = [
@@ -49,6 +59,7 @@ router.patch(
 );router.get("/detail/:id", getPropertyDetailsController);
 
 // router.get("/all", getAllPropertiesController); 
+router.get("/all", getAllPropertyController); 
 router.get("/search/:searchTerm", searchPropertiesController);
 router.delete("/delete/:id", idValidationRule, deletePropertyController);
 
