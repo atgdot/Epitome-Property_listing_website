@@ -8,7 +8,7 @@ const addPropertySchema = new mongoose.Schema({
   },
   subCategory: {
     type: [String],
-    require:  true,
+    require: true,
     enum: [
       "luxury project",
       "Upcoming project",
@@ -26,7 +26,6 @@ const addPropertySchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["active", "inactive", "pending"],
-    required: true,
   },
   description: {
     type: String,
@@ -42,32 +41,26 @@ const addPropertySchema = new mongoose.Schema({
   },
   Rental_Yield: {
     type: String,
-    required: true,
   },
   current_Renatal: {
     type: String,
-    required: true,
-  },  
+  },
   Area: {
     type: String,
-    required: true,
   },
   Tenure: {
     type: String,
-    required: true,
   },
   Tenant: {
     type: String,
-    required: true,
   },
   location: {
     type: String,
-    required: true,
-    default: null
   },
   property_Image: {
     type: String,
-    default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSTWFa-5clKaN3zrnAriHY10BICdAFuXvTg&s"
+    default:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSTWFa-5clKaN3zrnAriHY10BICdAFuXvTg&s",
   },
 });
 

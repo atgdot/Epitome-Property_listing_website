@@ -26,7 +26,7 @@ connectDB(); // Connect to database
 const app = express();
 
 app.use(morgan("tiny"));
-
+app.use(bodyParser.json())
 // Middleware
 app.use(
   cors({
