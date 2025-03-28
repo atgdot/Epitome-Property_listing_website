@@ -15,10 +15,10 @@ const addPropertySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  status: {
-    type: String,
-    enum: ["active", "inactive", "pending"],
-  },
+  // status: {
+  //   type: String,
+  //   enum: ["active", "inactive", "pending"],
+  // },
   description: {
     type: String,
     required: true,

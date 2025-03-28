@@ -44,9 +44,9 @@ const propertyValidationRules = [
       return true;
     }),
   body("city").notEmpty().withMessage("City is required"),
-  body("status")
-    .isIn(["active", "inactive", "pending"])
-    .withMessage("Invalid status"),
+  // body("status")
+  //   .isIn(["active", "inactive", "pending"])
+  //   .withMessage("Invalid status"),
   body("title").notEmpty().withMessage("Title is required"),
   body("description").notEmpty().withMessage("Description is required"),
   body("price").isString().withMessage("Price must be a string"),
