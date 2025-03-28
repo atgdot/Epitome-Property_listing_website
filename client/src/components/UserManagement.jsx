@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
-
+import { createUser } from "../utils/api";
 
 const UserManagement = () => {
   // State for storing users/agents (each has a type: "User" or "Agent")
