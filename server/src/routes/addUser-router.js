@@ -19,7 +19,6 @@ const userValidationRules = [
   body("email").isEmail().withMessage("Invalid email format"),
   body("phone").notEmpty().withMessage("Phone is required"),
   body("propertyNumber").notEmpty().withMessage("Property Number is required"),
-  body("license").notEmpty().withMessage("License is required"),
 ];
 
 //  Create User Route
