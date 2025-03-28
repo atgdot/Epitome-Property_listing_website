@@ -5,22 +5,23 @@ import morgan from 'morgan';
 import cors from 'cors';
 import dotenv from "dotenv";
 import connectDB from './db/connectDB.js';
-<<<<<<< Updated upstream
-import propertyRouter from './routes/addproperty-router.js'
-import ResdentialPropertyRouter from './routes/addpropertyResidentail-router.js'
-import addUserRouter from './routes/addUser-route.js'
-import addAgentRouter from './routes/addAgent-router.js'
-import reviewRouter from './routes/review-route.js'
-import feedbackRouter from'./routes/feedback-router.js'
-dotenv.config(); // Load environment variables
-=======
+
+// <<<<<<< Updated upstream
+// import propertyRouter from './routes/addproperty-router.js'
+// import ResdentialPropertyRouter from './routes/addpropertyResidentail-router.js'
+// import addUserRouter from './routes/addUser-route.js'
+// import addAgentRouter from './routes/addAgent-router.js'
+// import reviewRouter from './routes/review-route.js'
+// import feedbackRouter from'./routes/feedback-router.js'
+// dotenv.config(); // Load environment variables
+// =======
 import propertyRouter from './routes/addproperty-router.js';
 import residentialPropertyRouter from './routes/addpropertyResidentail-router.js';
 import addUserRouter from './routes/addUser-router.js';
 import addAgentRouter from './routes/addAgent-router.js';
 import reviewRouter from './routes/review-router.js';
 import feedbackRouter from './routes/feedback-router.js';
->>>>>>> Stashed changes
+//>>>>>>> Stashed changes
 
 dotenv.config(); // Load environment variables
 
@@ -29,10 +30,10 @@ console.log("🚀 Starting server...");
 
 connectDB().then(() => console.log("✅ MongoDB Connected Successfully")).catch(err => console.error("❌ MongoDB Connection Error:", err));
 
-<<<<<<< Updated upstream
-connectDB(); // Connect to database
-=======
->>>>>>> Stashed changes
+// <<<<<<< Updated upstream
+// connectDB(); // Connect to database
+// =======
+// >>>>>>> Stashed changes
 const app = express();
 
 app.use(morgan("tiny"));
@@ -64,7 +65,7 @@ app.use((req, res, next) => {
 app.get('/test', (req, res) => {
     console.log("✅ Test route hit!");
     res.json({ message: 'Hello World' });
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
     
 })
 
@@ -77,10 +78,6 @@ app.use('/api/v1/admin-dashboard/review' , reviewRouter)
 app.use('/api/v1/feedback' , feedbackRouter)
 
 
-
-=======
-});
->>>>>>> Stashed changes
 
 // ✅ Fix: Use different paths for each router
 app.use('/api/v1/admin-dashboard/property', propertyRouter);
