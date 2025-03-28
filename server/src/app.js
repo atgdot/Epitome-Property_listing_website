@@ -36,10 +36,10 @@ app.use(helmet({
   }));
 
 
-app.get('/test', (req, res) => {
-    res.json({ message: 'Hello World' });
+// app.get('/test', (req, res) => {
+//     res.json({ message: 'Hello World' });
     
-})
+// })
 
 //rouets
 app.use('/api/v1/admin-dashboard/property' , propertyRouter)
