@@ -9,14 +9,14 @@ import propertyRouter from './routes/addproperty-router.js'
 import ResdentialPropertyRouter from './routes/addpropertyResidentail-router.js'
 import addUserRouter from './routes/addUser-route.js'
 import addAgentRouter from './routes/addAgent-router.js'
-import review from './routes/review-route.js'
+import reviewRouter from './routes/review-route.js'
 import feedbackRouter from'./routes/feedback-router.js'
 dotenv.config(); // Load environment variables
 
 
 
 
-connectDB()
+connectDB(); // Connect to database
 const app = express();
 
 app.use(morgan("tiny"));
@@ -46,8 +46,8 @@ app.use('/api/v1/admin-dashboard/property' , propertyRouter)
 app.use('/api/v1/admin-dashboard/property' , ResdentialPropertyRouter)
 app.use('/api/v1/admin-dashboard/user' , addUserRouter)
 app.use('/api/v1/admin-dashboard/user' , addAgentRouter)
-app.use('/api/v1/admin-dashboard/review' , review)
-app.use('/api/v1/feedback' , review)
+app.use('/api/v1/admin-dashboard/review' , reviewRouter)
+app.use('/api/v1/feedback' , feedbackRouter)
 
 
 

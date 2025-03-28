@@ -18,15 +18,18 @@ export const submitFeedback = async (req, res) => {
       phone,
       message,
     });
+    console.log(newFeedback);
 
     await newFeedback.save();
+   
+    
 
     res
       .status(201)
       .json({
         success: true,
         message: "Feedback submitted successfully",
-        data: newFeedback,
+        // data: newFeedback,
       });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

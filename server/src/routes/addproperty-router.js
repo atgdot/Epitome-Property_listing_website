@@ -3,7 +3,7 @@ import { body, param } from "express-validator";
 import {
   createPropertyController,
   getAllPropertiesController,
-  getPropertiesByCategoryOrSubcategoryController,
+  searchPropertiesController,
   updatePropertyController,
   deletePropertyController,
 } from "../controllers/addproperty-controller.js";
@@ -45,7 +45,7 @@ router.put(
   updatePropertyController
 );
 router.get("/all", getAllPropertiesController);
-router.get("/search/:searchTerm", getPropertiesByCategoryOrSubcategoryController);
-router.delete("/:id", idValidationRule, deletePropertyController);
+router.get("/search/:searchTerm", searchPropertiesController);;
+router.delete("/delete/:id", idValidationRule, deletePropertyController);
 
 export default router;

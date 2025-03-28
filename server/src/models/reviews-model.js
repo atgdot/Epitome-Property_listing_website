@@ -20,10 +20,6 @@ const reviewSchema = new mongoose.Schema({
         min: 1,
         max: 5, // Ensures rating is between 1 and 5
       },
-      review: {
-        type: String,
-        required: false, // Optional review text
-      },
       profile_photo: {
         type: String,
         require: true,
