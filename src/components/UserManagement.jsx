@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { createUser } from "../services/api";
 
 const UserManagement = () => {
   // State for storing users/agents (each has a type: "User" or "Agent")
@@ -33,22 +34,30 @@ const UserManagement = () => {
   );
 
   // Handle adding a new user/agent
-  const handleAddUser = (e) => {
-    e.preventDefault();
-    const newUser = { ...formData, id: Date.now() };
+  const handleAddUser = async (e) => {
+  e.preventDefault();
 
-    // Convert license file to object URL if needed
-    if (formData.license && typeof formData.license !== "string") {
-      newUser.license = URL.createObjectURL(formData.license);
-    }
-    // Convert profile image file to object URL if needed
-    if (formData.profileImage && typeof formData.profileImage !== "string") {
-      newUser.profileImage = URL.createObjectURL(formData.profileImage);
-    }
-    setUsers([...users, newUser]);
+  const newUser = {
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+    propertyNumber: formData.propertyNumber,
+    profileImage: formData.profileImage, // This might need to be converted to base64 or FormData for API
+    type: activeTab, // "User" or "Agent"
+  };
+
+  try {
+    const response = await createUser(newUser); // Call API function
+    console.log("User created successfully:", response);
+    
+    setUsers([...users, response]); // Update state with new user
     setFormData(initialFormState);
     setIsAddModalOpen(false);
-  };
+  } catch (error) {
+    console.error("Error creating user:", error);
+  }
+};
+
 
   // Handle editing an existing user/agent
   const handleEditUser = (e) => {
