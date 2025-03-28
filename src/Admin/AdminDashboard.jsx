@@ -21,6 +21,7 @@ import {
 import UserManagement from "../components/UserManagement";
 import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
+import AdminRecommendation from "../components/AdminRecommendation"; // Added the recommendation import
 import BannerContext from "../Context/BannerContext";
 
 const AdminDashboard = () => {
@@ -174,10 +175,16 @@ const AdminDashboard = () => {
       case "Reviews":
         return <AdminReviews />;
 
+      case "Recommendations":
+        return <AdminRecommendation />;
+
       default:
         return null;
     }
   };
+
+  // Updated nav items to include "Recommendations"
+  const navItems = ["Dashboard", "Property", "User", "Reviews", "Recommendations"];
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -191,7 +198,7 @@ const AdminDashboard = () => {
           />
         </div>
         <nav className="space-y-4">
-          {["Dashboard", "Property", "User", "Reviews"].map((item) => (
+          {navItems.map((item) => (
             <button
               key={item}
               onClick={() => setSelectedTab(item)}

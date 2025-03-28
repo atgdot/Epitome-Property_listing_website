@@ -33,6 +33,7 @@ import ScoProjectsFull from "./pages/ScoProjectsFull";
 
 import { TestimonialProvider } from "./Context/TestimonialContext";
 import { PropertyProvider } from "./Context/PropertycardContext"; // Import PropertyProvider
+import { RecommendationProvider } from "./Context/RecommendationContext"; // Import RecommendationProvider
 import "./index.css";
 
 function Layout() {
@@ -71,21 +72,12 @@ function Layout() {
 
           {/* Residential Routes */}
           <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />
-          <Route
-            path="/residential/upcoming"
-            element={<UpcomingProjectsFull />}
-          />
-          <Route
-            path="/residential/highrise"
-            element={<HighRiseApartmentsFull />}
-          />
+          <Route path="/residential/upcoming" element={<UpcomingProjectsFull />} />
+          <Route path="/residential/highrise" element={<HighRiseApartmentsFull />} />
 
           {/* Commercial Routes */}
           <Route path="/commercial/offices" element={<OfficesFull />} />
-          <Route
-            path="/commercial/preleased"
-            element={<PreLeasedOfficesFull />}
-          />
+          <Route path="/commercial/preleased" element={<PreLeasedOfficesFull />} />
           <Route path="/commercial/prerented" element={<PreRentedFull />} />
           <Route path="/commercial/sco" element={<ScoProjectsFull />} />
 
@@ -106,9 +98,11 @@ function App() {
   return (
     <PropertyProvider>
       <TestimonialProvider>
-        <Router>
-          <Layout />
-        </Router>
+        <RecommendationProvider>
+          <Router>
+            <Layout />
+          </Router>
+        </RecommendationProvider>
       </TestimonialProvider>
     </PropertyProvider>
   );

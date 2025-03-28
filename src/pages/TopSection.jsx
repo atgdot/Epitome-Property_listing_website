@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import PropertyCard from "../components/PropertyCard";
 import HighRiseCard from "../components/HighRiseCard";
-import { recommendationsData } from "../data/RecommendationData";
 import PropertyContext from "../Context/PropertycardContext";
+import { RecommendationContext } from "../Context/RecommendationContext";
 
 // Flip Card Component that displays the image on the front and details on the back.
 const RecommendationFlipCard = ({ property }) => (
@@ -20,9 +20,7 @@ const RecommendationFlipCard = ({ property }) => (
       {/* Back Side: Show details */}
       <div className="absolute w-full h-full rounded-xl bg-gray-800 p-6 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center">
         <h3 className="text-2xl font-bold mb-4">{property.title}</h3>
-        <p className="text-lg">
-          {property.address.join(", ")}
-        </p>
+        <p className="text-lg">{property.address.join(", ")}</p>
       </div>
     </div>
   </div>
@@ -30,7 +28,8 @@ const RecommendationFlipCard = ({ property }) => (
 
 const TopSection = () => {
   const { properties } = useContext(PropertyContext);
-  
+  const { recommendations } = useContext(RecommendationContext);
+
   // Trending properties only from context (No fallback or duplication)
   const trendingProperties = properties.trending || [];
 
@@ -59,16 +58,8 @@ const TopSection = () => {
   const [selectedCategory, setSelectedCategory] = useState(navButtons[0].category);
   let propertiesList = propertiesByCategory[selectedCategory] || [];
   
-  // Always show the exact properties from context for trending,
-  // otherwise limit to 3 for the other categories.
+  // Always show all properties for trending; for other categories, limit to 3.
   propertiesList = selectedCategory === "trending" ? propertiesList : propertiesList.slice(0, 3);
-
-  // Fetch recommendations from recommendationsData.
-  const [recommendations, setRecommendations] = useState([]);
-
-  useEffect(() => {
-    setRecommendations(recommendationsData.properties);
-  }, []);
 
   return (
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
@@ -80,9 +71,11 @@ const TopSection = () => {
         </div>
         {/* Grid with 4 cards in one row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {recommendations.slice(0, 4).map((property, index) => (
-            <RecommendationFlipCard key={index} property={property} />
-          ))}
+          {recommendations &&
+            recommendations.properties &&
+            recommendations.properties.slice(0, 4).map((property, index) => (
+              <RecommendationFlipCard key={index} property={property} />
+            ))}
         </div>
       </div>
 
@@ -111,8 +104,8 @@ const TopSection = () => {
             {navButtons.find((btn) => btn.category === selectedCategory)?.label || ""} Properties
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {propertiesList.map((property, index) => (
-              (selectedCategory === "upcoming" || selectedCategory === "luxury") ? (
+            {propertiesList.map((property, index) =>
+              selectedCategory === "upcoming" || selectedCategory === "luxury" ? (
                 <HighRiseCard 
                   key={index} 
                   property={property} 
@@ -123,7 +116,7 @@ const TopSection = () => {
               ) : (
                 <PropertyCard key={index} property={property} />
               )
-            ))}
+            )}
           </div>
         </div>
       ) : (
