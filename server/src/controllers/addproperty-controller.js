@@ -2,10 +2,13 @@ import { validationResult } from "express-validator";
 import addProperty from "../models/addproperty-model.js";
 
 // add property
-export const addPropertyController = async (req, res) => {
+export const createPropertyController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ success: false, errors: errors.array() });
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
   }
 
   try {
@@ -16,7 +19,10 @@ export const addPropertyController = async (req, res) => {
       data: property,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -24,7 +30,10 @@ export const addPropertyController = async (req, res) => {
 export const updatePropertyController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ success: false, errors: errors.array() });
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
   }
 
   try {
@@ -34,10 +43,19 @@ export const updatePropertyController = async (req, res) => {
       { new: true }
     );
     updatedProperty
-      ? res.json({ success: true, data: updatedProperty })
-      : res.status(404).json({ success: false, message: "Property not found" });
+      ? res.json({
+          success: true,
+          data: updatedProperty,
+        })
+      : res.status(404).json({
+          success: false,
+          message: "Property not found",
+        });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -79,22 +97,41 @@ export const getAllPropertiesController = async (req, res) => {
       data: properties,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-//  Get Property by ID
-export const getPropertyByIdController = async (req, res) => {
+//  Get Property by name
+
+export const getPropertiesByCategoryOrSubcategoryController = async (req, res) => {
   try {
-    const property = await addProperty.findById(req.params.id);
-    property
-      ? res.json({ success: true, data: property })
-      : res.status(404).json({ success: false, message: "Property not found" });
+    const { searchTerm } = req.params;
+    console.log("🔍 Searching for:", searchTerm);
+
+    // Find category by name (case-insensitive)
+    const category = await addProperty.findOne({ name: { $regex: searchTerm, $options: "i" } });
+
+    let filter = category 
+      ? { category: category._id }  // If category exists, search by its ID
+      : { subCategory: { $regex: searchTerm, $options: "i" } }; // Otherwise, search in subCategory
+
+    console.log("🔎 Filter:", filter);
+
+    // Find properties with matching category or subCategory
+    const properties = await addProperty.find(filter).populate("category");
+
+    if (!properties.length) {
+      return res.status(404).json({ success: false, message: `No properties found for '${searchTerm}'` });
+    }
+
+    res.json({ success: true, data: properties });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 // Delete Property by ID
 export const deletePropertyController = async (req, res) => {
   try {
@@ -104,8 +141,14 @@ export const deletePropertyController = async (req, res) => {
           success: true,
           message: "Property deleted successfully",
         })
-      : res.status(404).json({ success: false, message: "Property not found" });
+      : res.status(404).json({
+          success: false,
+          message: "Property not found",
+        });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

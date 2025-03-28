@@ -1,12 +1,12 @@
 import express from "express";
 import { body, param } from "express-validator";
 import {
-  addPropertyController,
+  createPropertyController,
   getAllPropertiesController,
-  getPropertyByIdController,
+  getPropertiesByCategoryOrSubcategoryController,
   updatePropertyController,
   deletePropertyController,
-} from '../controllers/addproperty-controller.js';
+} from "../controllers/addproperty-controller.js";
 
 const router = express.Router();
 
@@ -16,16 +16,18 @@ const propertyValidationRules = [
     .isIn(["Residential", "Commercial", "Trending", "Featured"])
     .withMessage("Invalid category"),
   body("city").notEmpty().withMessage("City is required"),
-  body("status")
-    .isIn(["Active", "Inactive"])
-    .withMessage("Invalid status"),
+  body("status").isIn(["active", "inactive", "pending"]).withMessage("Invalid status"),
   body("title").notEmpty().withMessage("Title is required"),
   body("description").notEmpty().withMessage("Description is required"),
-  body("price").isNumeric().withMessage("Price must be a number"),
-  body("Rental_Yield").isNumeric().withMessage("Rental Yield must be a number"),
+  body("price").isString().withMessage("Price must be a string"),
+  body("Rental_Yield")
+  .isString().withMessage("Rental Yield must be a string")
+  .matches(/^\d+%$/).withMessage("Rental Yield must be a number followed by '%' (e.g., '12%')"),
   body("Area").notEmpty().withMessage("Area is required"),
-  body("current_Renatal").isNumeric().withMessage("Current rental must be a number"),
-  body("tenure").isNumeric().withMessage("Tenure must be a number"),
+  body("current_Renatal")
+  .isString()
+    .withMessage("Current rental must be a string"),
+  body("Tenure").isString().withMessage("tenure must be a string"),
   body("location").notEmpty().withMessage("Location is required"),
   body("Tenant").notEmpty().withMessage("Tenant is required"),
 ];
@@ -35,10 +37,15 @@ const idValidationRule = [
 ];
 
 // Routes
-router.post("/add", propertyValidationRules, addPropertyController);
-router.put("/update/:id", idValidationRule, propertyValidationRules, updatePropertyController);
+router.post("/create", propertyValidationRules, createPropertyController);
+router.put(
+  "/update/:id",
+  idValidationRule,
+  propertyValidationRules,
+  updatePropertyController
+);
 router.get("/all", getAllPropertiesController);
-router.get("/:id", idValidationRule, getPropertyByIdController);
+router.get("/search/:searchTerm", getPropertiesByCategoryOrSubcategoryController);
 router.delete("/:id", idValidationRule, deletePropertyController);
 
 export default router;
