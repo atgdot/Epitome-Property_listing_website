@@ -1,11 +1,5 @@
-// AdminDashboard.js
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSearch } from "react-icons/fa";
-import { FiFilter } from "react-icons/fi";
-import { IoLogOutOutline } from "react-icons/io5";
-import { MdEdit } from "react-icons/md";
-import { CSSTransition } from "react-transition-group";
 import {
   BarChart,
   Bar,
@@ -23,15 +17,10 @@ import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
 import AdminRecommendation from "../components/AdminRecommendation"; // Added the recommendation import
 import BannerContext from "../Context/BannerContext";
-import { RecommendationContext } from "../Context/RecommendationContext";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { updateBanner } = useContext(BannerContext);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedAll, setSelectedAll] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Dashboard");
-  const [newBanner, setNewBanner] = useState("");
 
   const barChartData = [
     { name: "17 Sun", visitors: 250000 },
@@ -54,24 +43,6 @@ const AdminDashboard = () => {
     if (newBanner) {
       updateBanner(newBanner);
       setNewBanner("");
-    }
-  };
-
-  const { addRecommendation } = useContext(RecommendationContext);
-  const [property, setProperty] = useState({
-    title: "",
-    image: "",
-    price: "",
-  });
-
-  const handleChange = (e) => {
-    setProperty({ ...property, [e.target.name]: e.target.value });
-  };
-
-  const handleAddRecommendation = () => {
-    if (property.title && property.image && property.price) {
-      addRecommendation(property);
-      setProperty({ title: "", image: "", price: "" }); // Reset fields
     }
   };
 
@@ -98,23 +69,6 @@ const AdminDashboard = () => {
                 <h2 className="text-lg font-semibold">Pending Properties</h2>
                 <p className="text-2xl font-bold">50</p>
                 <p className="text-green-500">Increase</p>
-              </div>
-              {/* Banner section */}
-              <div className="p-6 bg-white shadow-md rounded-lg">
-                <h2 className="text-xl font-bold mb-4">Update Banner</h2>
-                <input
-                  type="text"
-                  placeholder="Enter new banner URL"
-                  value={newBanner}
-                  onChange={(e) => setNewBanner(e.target.value)}
-                  className="border p-2 w-full rounded mb-3"
-                />
-                <button
-                  onClick={handleUpdate}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Update Banner
-                </button>
               </div>
             </div>
 
@@ -152,7 +106,7 @@ const AdminDashboard = () => {
                       cx="50%"
                       cy="50%"
                       outerRadius={90}
-                      innerRadius={40} // Donut Shape
+                      innerRadius={40}
                       labelLine={false}
                       label={({ name, percent }) =>
                         `${name} ${(percent * 100).toFixed(1)}%`
@@ -184,31 +138,29 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
-
       case "Property":
         return <AdminProperty />;
-
       case "User":
         return <UserManagement />;
-
       case "Reviews":
         return <AdminReviews />;
-
       case "Recommendations":
         return <AdminRecommendation />;
-
+      case "Photo":
+        return <AdminPhoto />;
       default:
         return null;
     }
   };
 
-  // Updated nav items to include "Recommendations"
+  // Updated navigation to include "Photo"
   const navItems = [
     "Dashboard",
     "Property",
     "User",
     "Reviews",
     "Recommendations",
+    "Photo",
   ];
 
   return (
