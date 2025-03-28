@@ -54,7 +54,7 @@ const IndiabullsEstateClub = () => {
                     Expressway, it is spread across nearly 17 acres of prime land, of
                     which over 2 acres are landscaped greens. This elite one-of-a-kind
                     gated community offers the lifestyle coveted by everyone but enjoyed
-                    by a select few.
+                    by a select few.ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
                 </p>
                 <p className="text-gray-700 mt-2 leading-relaxed">
                     Residents enjoy amenities like Waves, the iconic clubhouse that spans

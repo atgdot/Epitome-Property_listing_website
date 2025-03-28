@@ -8,7 +8,7 @@ const IndiabullsEstate = () => {
         { type: "4 BHK - Crest", size: "3759 SQ.FT" },
         { type: "3 BHK - Vantage", size: "2570 - 2572 SQ.FT" },
         { type: "Penthouse 1", size: "7008 SQ.FT" },
-        { type: "Penthouse 2", size: "6327 SQ.FT" },
+        { type: "Pentvvvvvvvvvvvvvvvvvvvvvhouse 2", size: "6327 SQ.FT" },
         { type: "Penthouse 3", size: "6296 SQ.FT" },
         { type: "Penthouse 4", size: "5079 SQ.FT" },
         { type: "Penthouse 5", size: "4866 SQ.FT" },

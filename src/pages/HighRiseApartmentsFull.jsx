@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import PropertyContext from "../context/PropertyContext";
+import PropertyContext from "../Context/PropertycardContext";
 import HighRiseCard from "../components/HighRiseCard";
 
 const HighRiseApartmentsFull = () => {

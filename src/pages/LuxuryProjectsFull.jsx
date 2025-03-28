@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import HighRiseCard from "../components/HighRiseCard";
-import PropertyContext from "../context/PropertyContext";
+import PropertyContext from "../Context/PropertycardContext";
 
 const LuxuryProjectsFull = () => {
   const { properties } = useContext(PropertyContext);
