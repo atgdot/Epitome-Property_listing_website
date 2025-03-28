@@ -6,10 +6,13 @@ import { MdEdit } from "react-icons/md";
 import PropertyCard from "./PropertyCard";
 import HighRiseCard from "./HighRiseCard";
 import PropertyContext from "../Context/PropertycardContext";
+import { useDispatch } from "react-redux";
+import { createProperty, updateProperty } from '../utils/Store/slice/propertySlice';
 
 const AdminProperty = () => {
   const { properties, addProperty, updateProperty, deleteProperty } =
     useContext(PropertyContext);
+  const dispatch = useDispatch()
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
@@ -29,6 +32,7 @@ const AdminProperty = () => {
     tenant: "",
     sector: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Handle image uploads
   const handleImageChange = (e) => {
@@ -79,8 +83,10 @@ const AdminProperty = () => {
   };
 
   // Submit handler for both adding and updating properties
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     const newProperty = {
       ...formData,
       price: formData.price.startsWith("₹")
@@ -92,14 +98,36 @@ const AdminProperty = () => {
       id: editingProperty?.id || Math.random()
     };
 
-    if (editingProperty) {
-      updateProperty(newProperty);
-    } else {
-      addProperty(newProperty);
-    }
+    try {
+      if (editingProperty) {
+        // If editing, dispatch updateProperty action
+        const updateResult = await dispatch(updateProperty({
+          id: editingProperty.id,
+          propertyData: newProperty
+        })).unwrap();
 
-    setShowModal(false);
-    resetForm();
+        if (updateResult) {
+          updateProperty(updateResult); // Local state update
+        }
+      } else {
+        // If creating new, dispatch createProperty action
+        const createResult = await dispatch(createProperty(newProperty)).unwrap();
+
+        if (createResult) {
+          addProperty(createResult); // Update local state with the response from API
+        } else {
+          throw new Error('Failed to create property');
+        }
+      }
+
+      setShowModal(false);
+      resetForm();
+    } catch (error) {
+      console.error('Error submitting property:', error);
+      alert(error.message || 'Failed to submit property. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Open modal for editing or adding a property
@@ -150,9 +178,9 @@ const AdminProperty = () => {
                   field.onChange
                     ? field.onChange(e.target.value)
                     : setFormData({
-                        ...formData,
-                        [field.name]: e.target.value
-                      })
+                      ...formData,
+                      [field.name]: e.target.value
+                    })
                 }
                 required={field.required}
               >
@@ -223,16 +251,16 @@ const AdminProperty = () => {
         options:
           formData.category === "residential"
             ? [
-                { value: "luxuryProjects", label: "Luxury Projects" },
-                { value: "upcomingProjects", label: "Upcoming Projects" },
-                { value: "highRiseApartments", label: "High Rise Apartments" }
-              ]
+              { value: "luxuryProjects", label: "Luxury Projects" },
+              { value: "upcomingProjects", label: "Upcoming Projects" },
+              { value: "highRiseApartments", label: "High Rise Apartments" }
+            ]
             : [
-                { value: "offices", label: "Offices" },
-                { value: "preLeasedOffices", label: "Pre-Leased Offices" },
-                { value: "preRented", label: "Pre-Rented" },
-                { value: "sco", label: "SCO" }
-              ],
+              { value: "offices", label: "Offices" },
+              { value: "preLeasedOffices", label: "Pre-Leased Offices" },
+              { value: "preRented", label: "Pre-Rented" },
+              { value: "sco", label: "SCO" }
+            ],
         required: true
       }
     ]
@@ -384,9 +412,13 @@ const AdminProperty = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1 bg-blue-700 text-white rounded-lg"
+                  disabled={isSubmitting}
+                  className="px-4 py-1 bg-blue-700 text-white rounded-lg disabled:bg-blue-300"
                 >
-                  {editingProperty ? "Update" : "Create"}
+                  {isSubmitting
+                    ? 'Submitting...'
+                    : (editingProperty ? "Update" : "Create")
+                  }
                 </button>
               </div>
             </form>

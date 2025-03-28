@@ -1,15 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { BASE_URL } from '../../api';
+
+
+// Make sure this is defined
 
 // Create Property Thunk
 export const createProperty = createAsyncThunk(
   'property/createProperty',
   async (propertyData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/api/property/create', propertyData);
-      return response.data;
+      const response = await axios.post(BASE_URL + '/api/v1/admin-dashboard/property/create', propertyData);
+      if (response.data) {
+        return response.data;
+      }
+      throw new Error('No data received');
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response?.data || { message: error.message }
+      );
     }
   }
 );

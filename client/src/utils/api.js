@@ -1,2 +1,2 @@
-const BASE_URL = "http://localhost:3000/api/v1/admin-dashboard"; // Ensure this is correct
+export const BASE_URL = "http://localhost:3000"; // Ensure this is correct
 

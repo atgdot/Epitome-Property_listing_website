@@ -1,5 +1,7 @@
 // PropertyContext.jsx
 import React, { createContext, useState, useEffect } from 'react';
+import { useDispatch } from "react-redux";
+
 
 const PropertyContext = createContext();
 
@@ -22,33 +24,63 @@ const initialData = {
 export const PropertyProvider = ({ children }) => {
   const [properties, setProperties] = useState(initialData);
 
+
   useEffect(() => {
     const savedProperties = localStorage.getItem('properties');
     if (savedProperties) {
-      setProperties(JSON.parse(savedProperties));
+      try {
+        setProperties(JSON.parse(savedProperties));
+      } catch (error) {
+        console.error('Error parsing saved properties:', error);
+        setProperties(initialData);
+      }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('properties', JSON.stringify(properties));
+    try {
+      localStorage.setItem('properties', JSON.stringify(properties));
+    } catch (error) {
+      console.error('Error saving properties to localStorage:', error);
+    }
   }, [properties]);
 
   const addProperty = (property) => {
-    setProperties(prev => {
-      const category = property.category;
-      const subCategory = property.subCategory;
-      const newValue = Array.isArray(prev[category])
-        ? [...prev[category], property]
-        : {
+    try {
+      setProperties(prev => {
+        const category = property.category;
+        const subCategory = property.subCategory;
+
+        // Create a copy of the previous state
+        const newState = { ...prev };
+
+        if (Array.isArray(prev[category])) {
+          newState[category] = [...prev[category], property];
+        } else if (prev[category] && prev[category][subCategory]) {
+          newState[category] = {
             ...prev[category],
             [subCategory]: [...prev[category][subCategory], property]
           };
-      
-      return { ...prev, [category]: newValue };
-    });
+        } else {
+          console.error('Invalid category or subCategory:', category, subCategory);
+          return prev;
+        }
+
+        // Dispatch to Redux store
+
+        return newState;
+      });
+    } catch (error) {
+      console.error('Error adding property:', error);
+    }
   };
 
   const updateProperty = (updatedProperty) => {
+    if (!updatedProperty || !updatedProperty.id) {
+      console.error('Invalid property data for update');
+      return;
+    }
+
     setProperties(prev => {
       const newProperties = { ...prev };
       let found = false;
@@ -62,25 +94,30 @@ export const PropertyProvider = ({ children }) => {
             newProperties[categoryKey] = category.filter(p => p.id !== updatedProperty.id);
             found = true;
           }
-        } else {
+        } else if (category && typeof category === 'object') {
           Object.keys(category).forEach(subCategoryKey => {
-            const index = category[subCategoryKey].findIndex(p => p.id === updatedProperty.id);
-            if (index !== -1) {
-              newProperties[categoryKey][subCategoryKey] = 
-                category[subCategoryKey].filter(p => p.id !== updatedProperty.id);
-              found = true;
+            if (Array.isArray(category[subCategoryKey])) {
+              const index = category[subCategoryKey].findIndex(p => p.id === updatedProperty.id);
+              if (index !== -1) {
+                newProperties[categoryKey][subCategoryKey] =
+                  category[subCategoryKey].filter(p => p.id !== updatedProperty.id);
+                found = true;
+              }
             }
           });
         }
-        if (found) return newProperties;
       });
 
       // Add to new location
-      const category = updatedProperty.category;
-      const subCategory = updatedProperty.subCategory;
+      const { category, subCategory } = updatedProperty;
+      if (!category) return prev;
+
       if (Array.isArray(newProperties[category])) {
         newProperties[category] = [...newProperties[category], updatedProperty];
-      } else {
+      } else if (newProperties[category] && subCategory) {
+        if (!newProperties[category][subCategory]) {
+          newProperties[category][subCategory] = [];
+        }
         newProperties[category][subCategory] = [
           ...newProperties[category][subCategory],
           updatedProperty
@@ -92,16 +129,20 @@ export const PropertyProvider = ({ children }) => {
   };
 
   const deleteProperty = (id) => {
+    if (!id) return;
+
     setProperties(prev => {
       const newProperties = { ...prev };
       Object.keys(newProperties).forEach(categoryKey => {
         const category = newProperties[categoryKey];
         if (Array.isArray(category)) {
           newProperties[categoryKey] = category.filter(p => p.id !== id);
-        } else {
+        } else if (category && typeof category === 'object') {
           Object.keys(category).forEach(subCategoryKey => {
-            newProperties[categoryKey][subCategoryKey] = 
-              category[subCategoryKey].filter(p => p.id !== id);
+            if (Array.isArray(category[subCategoryKey])) {
+              newProperties[categoryKey][subCategoryKey] =
+                category[subCategoryKey].filter(p => p.id !== id);
+            }
           });
         }
       });
@@ -109,8 +150,15 @@ export const PropertyProvider = ({ children }) => {
     });
   };
 
+  const value = {
+    properties,
+    addProperty,
+    updateProperty,
+    deleteProperty
+  };
+
   return (
-    <PropertyContext.Provider value={{ properties, addProperty, updateProperty, deleteProperty }}>
+    <PropertyContext.Provider value={value}>
       {children}
     </PropertyContext.Provider>
   );

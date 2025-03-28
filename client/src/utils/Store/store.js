@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import propertyReducer from './slice/propertySlice';
 
-const appStore = configureStore({
+const store = configureStore({
   reducer: {
-   
+    property: propertyReducer,
   },
 });
 
-export default appStore;
+export default store;
