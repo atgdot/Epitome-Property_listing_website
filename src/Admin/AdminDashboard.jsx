@@ -1,11 +1,5 @@
-// AdminDashboard.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSearch } from "react-icons/fa";
-import { FiFilter } from "react-icons/fi";
-import { IoLogOutOutline } from "react-icons/io5";
-import { MdEdit } from "react-icons/md";
-import { CSSTransition } from "react-transition-group";
 import {
   BarChart,
   Bar,
@@ -21,11 +15,11 @@ import {
 import UserManagement from "../components/UserManagement";
 import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
+import AdminRecommendation from "../components/AdminRecommendation"; // Added the recommendation import
+import BannerContext from "../Context/BannerContext";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedAll, setSelectedAll] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Dashboard");
 
   const barChartData = [
@@ -44,6 +38,13 @@ const AdminDashboard = () => {
     { name: "Noida", value: 13.9 },
     { name: "Faridabad", value: 11.2 },
   ];
+
+  const handleUpdate = () => {
+    if (newBanner) {
+      updateBanner(newBanner);
+      setNewBanner("");
+    }
+  };
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -105,7 +106,7 @@ const AdminDashboard = () => {
                       cx="50%"
                       cy="50%"
                       outerRadius={90}
-                      innerRadius={40} // Donut Shape
+                      innerRadius={40}
                       labelLine={false}
                       label={({ name, percent }) =>
                         `${name} ${(percent * 100).toFixed(1)}%`
@@ -137,20 +138,30 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
-
       case "Property":
         return <AdminProperty />;
-
       case "User":
         return <UserManagement />;
-
       case "Reviews":
         return <AdminReviews />;
-
+      case "Recommendations":
+        return <AdminRecommendation />;
+      case "Photo":
+        return <AdminPhoto />;
       default:
         return null;
     }
   };
+
+  // Updated navigation to include "Photo"
+  const navItems = [
+    "Dashboard",
+    "Property",
+    "User",
+    "Reviews",
+    "Recommendations",
+    "Photo",
+  ];
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -164,7 +175,7 @@ const AdminDashboard = () => {
           />
         </div>
         <nav className="space-y-4">
-          {["Dashboard", "Property", "User", "Reviews"].map((item) => (
+          {navItems.map((item) => (
             <button
               key={item}
               onClick={() => setSelectedTab(item)}
@@ -175,11 +186,43 @@ const AdminDashboard = () => {
               {item}
             </button>
           ))}
-          
         </nav>
       </aside>
       <main className="flex-1 p-8 ml-64">{renderContent()}</main>
     </div>
+    // <div className="p-6 bg-white shadow-md rounded-lg">
+    //   <h2 className="text-xl font-bold mb-4">Add Recommendation</h2>
+    //   <input
+    //     type="text"
+    //     name="title"
+    //     placeholder="Enter Property Name"
+    //     value={property.title}
+    //     onChange={handleChange}
+    //     className="border p-2 w-full rounded mb-3"
+    //   />
+    //   <input
+    //     type="text"
+    //     name="image"
+    //     placeholder="Enter Image URL"
+    //     value={property.image}
+    //     onChange={handleChange}
+    //     className="border p-2 w-full rounded mb-3"
+    //   />
+    //   <input
+    //     type="text"
+    //     name="price"
+    //     placeholder="Enter Price"
+    //     value={property.price}
+    //     onChange={handleChange}
+    //     className="border p-2 w-full rounded mb-3"
+    //   />
+    //   <button
+    //     onClick={handleAddRecommendation}
+    //     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+    //   >
+    //     Add Recommendation
+    //   </button>
+    // </div>
   );
 };
 
