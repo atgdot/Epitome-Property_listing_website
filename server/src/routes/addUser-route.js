@@ -1,7 +1,7 @@
 import express from "express";
 import { body } from "express-validator";
 
-import { createUser, updateUser ,searchUserByName} from "../controllers/addUser-controllers.js";
+import { createUser, updateUser ,searchUserByName ,deleteUserById} from "../controllers/addUser-controllers.js";
 const userValidationRules = [
   body("name").notEmpty().withMessage("Name is required"),
   body("email").isEmail().withMessage("Invalid email format"),
@@ -16,5 +16,7 @@ const router = express.Router();
 router.post("/create", userValidationRules, createUser);
 router.put("/update/:id", userValidationRules,  updateUser);
 router.get("/search", searchUserByName);
+router.delete("/delete/:id", deleteUserById);
+
 
 export default router;
