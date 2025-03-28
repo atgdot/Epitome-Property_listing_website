@@ -4,6 +4,7 @@ import {
   updateProperty,
   deleteProperty,
   getPropertyById,
+  searchProperty
 } from "../controllers/addPropertyResidentail-controller.js";
 import { check } from "express-validator";
 
@@ -22,8 +23,10 @@ router.post(
   createProperty
 );
 
-router.put("/:id", updateProperty); // Update property
-router.delete("/:id", deleteProperty); // Delete property
-router.get("/:id", getPropertyById); // Get property by ID
+router.put("/update/:id", updateProperty); // Update property
+router.delete("/delete/:id", deleteProperty); // Delete property
+router.get("detail/:id", getPropertyById); // Get property by ID
+router.get("/search/:searchTerm", searchProperty);
+
 
 export default router;

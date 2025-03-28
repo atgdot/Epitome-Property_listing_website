@@ -2,10 +2,11 @@ import express from "express";
 import { body, param } from "express-validator";
 import {
   createPropertyController,
-  getAllPropertiesController,
+  // getAllPropertiesController,
   searchPropertiesController,
   updatePropertyController,
   deletePropertyController,
+  getPropertyDetailsController
 } from "../controllers/addproperty-controller.js";
 
 const router = express.Router();
@@ -36,16 +37,19 @@ const idValidationRule = [
   param("id").isMongoId().withMessage("Invalid property ID"),
 ];
 
+
+
 // Routes
 router.post("/create", propertyValidationRules, createPropertyController);
-router.put(
+router.patch(
   "/update/:id",
   idValidationRule,
   propertyValidationRules,
   updatePropertyController
-);
-router.get("/all", getAllPropertiesController);
-router.get("/search/:searchTerm", searchPropertiesController);;
+);router.get("/detail/:id", getPropertyDetailsController);
+
+// router.get("/all", getAllPropertiesController); 
+router.get("/search/:searchTerm", searchPropertiesController);
 router.delete("/delete/:id", idValidationRule, deletePropertyController);
 
 export default router;

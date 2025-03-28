@@ -22,7 +22,7 @@ const addPropertySchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["active", "inactive", "pending"], // Make sure "active" is listed
+    enum: ["active", "inactive", "pending"],
     required: true,
   },
   description: {

@@ -94,3 +94,36 @@ export const getPropertyById = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const searchProperty = async (req, res) => {
+  try {
+    const { searchTerm } = req.params; // Get the search term from URL params
+
+    // Create a flexible search filter
+    const filter = {
+      $or: [
+        { category: { $regex: searchTerm, $options: "i" } }, // Match category (case-insensitive)
+        { subCategory: { $regex: searchTerm, $options: "i" } }, // Match subCategory
+        { city: { $regex: searchTerm, $options: "i" } }, // Match city
+        { title: { $regex: searchTerm, $options: "i" } }, // Match property title
+      ]
+    };
+
+    // console.log(" Search Filter:", filter);
+
+    // Find properties matching the filter
+    const properties = await AddPropertyResidentail.find(filter);
+
+    if (!properties.length) {
+      return res.status(404).json({ success: false, message: `No properties found for '${searchTerm}'` });
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      // data: properties 
+    });
+  } catch (error) {
+    // console.error(" Error searching properties:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+  }
+};
