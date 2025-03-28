@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import PropertyCard from "../components/PropertyCard";
 import HighRiseCard from "../components/HighRiseCard";
 import { recommendationsData } from "../data/RecommendationData";
-import PropertyContext from "../context/PropertyContext";
+import PropertyContext from "../Context/PropertycardContext";
 
 // Flip Card Component that displays the image on the front and details on the back.
 const RecommendationFlipCard = ({ property }) => (

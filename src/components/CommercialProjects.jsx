@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import PropertyCard from "./PropertyCard.jsx";
-import PropertyContext from "../context/PropertyContext";
+import PropertyContext from "../Context/PropertycardContext";
 const CommercialProjects = () => {
   const { properties } = useContext(PropertyContext);
   const { offices, preLeasedOffices, preRented, sco } = properties.commercial;

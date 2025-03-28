@@ -10,7 +10,7 @@ const indiabullsData = {
       {
         id: 1,
         name: "Indiabulls Estate Club",
-        location: "Gurugram, Haryana",
+        location: "Gurugram,hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh Haryana",
         price: "₹ 4.31 Cr - 12.26 Cr",
         image: "https://imagizer.imageshack.com/img923/1580/SsEjkC.png",
         galleryIcon: "https://imagizer.imageshack.com/img924/1651/96mkmc.png",

@@ -20,7 +20,7 @@ const IndiaBulls = () => {
             Schedule a Meeting
           </button>
           <button className="bg-[#043268] text-white py-2 px-6 rounded-lg transition duration-300">
-            Get a Callback
+            Get a ffffffffffffffffffCallback
           </button>
         </div>
 

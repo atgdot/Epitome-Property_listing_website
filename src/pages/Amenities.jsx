@@ -40,7 +40,7 @@ const Amenities = () => {
       <div className="flex justify-center my-4">
         <div className="flex items-center w-60">
           <div className="flex-1 border-t border-black"></div>
-          <p className="mx-1 text-black whitespace-nowrap">Project Facilities</p>
+          <p className="mx-1 text-black whitespace-nowrap">Project Facilitiesdddddddddddddddd</p>
           <div className="flex-1 border-t border-black"></div>
         </div>
       </div>
