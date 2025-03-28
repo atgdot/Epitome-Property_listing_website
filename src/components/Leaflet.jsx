@@ -34,7 +34,7 @@ const RealEstateMap = () => {
     <div className="relative font-lato px-5 ">
       <div className="relative">
         {/* Price Filter */}
-        <div className="absolute top-5 left-11 bg-white p-2 rounded-md shadow-md w-fit z-30">
+        <div className="absolute top-5  left-11 bg-white p-2 rounded-md shadow-md md:w-fit w-[75%] z-30 ">
           <label htmlFor="price-filter" className="font-medium text-sm">
             Filter by price:
           </label>
@@ -42,7 +42,7 @@ const RealEstateMap = () => {
             id="price-filter"
             value={priceFilter}
             onChange={(e) => setPriceFilter(e.target.value)}
-            className="ml-2 border rounded px-2 py-1 text-sm"
+            className="ml-2 border rounded  py-1 text-sm"
           >
             <option value="all">All</option>
             <option value="0-500000">₹0 - ₹5,00,000</option>
