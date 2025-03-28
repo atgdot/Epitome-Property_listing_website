@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import BannerContext from "../Context/BannerContext";
 
 const allProperties = [
   // Your properties data
 ];
 
 const RealEstateMap = () => {
+  const { bannerImages } = useContext(BannerContext);
   const [filteredProperties, setFilteredProperties] = useState(allProperties);
   const [priceFilter, setPriceFilter] = useState("all");
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -18,7 +20,8 @@ const RealEstateMap = () => {
   const builderImages = Object.values(
     import.meta.glob("/src/assets/*.webp", { eager: true })
   ).map((img) => img.default);
-  const bannerImages = ["/NEW LAUNCHED 1.png", "/NEW LAUNCHED 2.png"];
+
+  // const bannerImages = ["/NEW LAUNCHED 1.png", "/NEW LAUNCHED 2.png"];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -73,14 +76,22 @@ const RealEstateMap = () => {
       </div>
 
       {/* Banner Section */}
-      <div className="flex justify-center items-center my-2">
+      {/* <div className="flex justify-center items-center my-2">
         <img
           src={bannerImages[currentBanner]}
           alt="Banner"
           className="w-2/3 h-30 object-cover rounded-md shadow-md" // Height Reduced
         />
+      </div> */}
+      <div className="flex justify-center items-center my-2">
+        {bannerImages.length > 0 && ( // ✅ API se aayenge banners
+          <img
+            src={bannerImages[0]} // ✅ Dynamic Banner
+            alt="Banner"
+            className="w-2/3 h-30 object-cover rounded-md shadow-md"
+          />
+        )}
       </div>
-
       {/* Featured Builders Section */}
       <div className="bg-white p-4 w-full">
         <h2 className="text-3xl font-bold text-center mb-2">

@@ -1,5 +1,5 @@
 // AdminDashboard.js
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { FiFilter } from "react-icons/fi";
@@ -21,12 +21,15 @@ import {
 import UserManagement from "../components/UserManagement";
 import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
+import BannerContext from "../Context/BannerContext";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { updateBanner } = useContext(BannerContext);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAll, setSelectedAll] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Dashboard");
+  const [newBanner, setNewBanner] = useState("");
 
   const barChartData = [
     { name: "17 Sun", visitors: 250000 },
@@ -44,6 +47,13 @@ const AdminDashboard = () => {
     { name: "Noida", value: 13.9 },
     { name: "Faridabad", value: 11.2 },
   ];
+
+  const handleUpdate = () => {
+    if (newBanner) {
+      updateBanner(newBanner);
+      setNewBanner("");
+    }
+  };
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -68,6 +78,23 @@ const AdminDashboard = () => {
                 <h2 className="text-lg font-semibold">Pending Properties</h2>
                 <p className="text-2xl font-bold">50</p>
                 <p className="text-green-500">Increase</p>
+              </div>
+              {/* Banner section */}
+              <div className="p-6 bg-white shadow-md rounded-lg">
+                <h2 className="text-xl font-bold mb-4">Update Banner</h2>
+                <input
+                  type="text"
+                  placeholder="Enter new banner URL"
+                  value={newBanner}
+                  onChange={(e) => setNewBanner(e.target.value)}
+                  className="border p-2 w-full rounded mb-3"
+                />
+                <button
+                  onClick={handleUpdate}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Update Banner
+                </button>
               </div>
             </div>
 
@@ -175,7 +202,6 @@ const AdminDashboard = () => {
               {item}
             </button>
           ))}
-          
         </nav>
       </aside>
       <main className="flex-1 p-8 ml-64">{renderContent()}</main>
