@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { RecommendationContext } from "../context/RecommendationContext";
+import { RecommendationContext } from "../Context/RecommendationContext";
 
 const AdminRecommendation = () => {
   const { recommendations, updateRecommendations } = useContext(RecommendationContext);
