@@ -20,6 +20,7 @@ import addUserRouter from "./routes/addUser-router.js";
 import addAgentRouter from "./routes/addAgent-router.js";
 import reviewRouter from "./routes/review-router.js";
 import feedbackRouter from "./routes/feedback-router.js";
+import recommendationCardRouter from './routes/recommendationCard-router.js'
 dotenv.config(); // Load environment variables
 connectDB(); // Connect to database
 const app = express();
@@ -66,6 +67,7 @@ app.use('/api/v1/admin-dashboard/property' , residentialPropertyRouter)
 app.use('/api/v1/admin-dashboard/user' , addUserRouter)
 app.use('/api/v1/admin-dashboard/user' , addAgentRouter)
 app.use('/api/v1/admin-dashboard/review' , reviewRouter)
+app.use('/api/v1/admin-dashboard/recommendation' , recommendationCardRouter)
 app.use('/api/v1/feedback' , feedbackRouter)
 
 

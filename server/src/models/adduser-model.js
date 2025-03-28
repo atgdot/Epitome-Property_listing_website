@@ -21,12 +21,11 @@ const addUSerSchema = new mongoose.Schema({
   },
   license: {
     type: String,
-    reuire: true
   },
-  Action: {
-    type:  String,
-   default: "pending"
-  },
+  Profile_Image: {
+    type: String,
+    default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDTHGqtTtGcjOE3uy1fZxAcyXsAdr1XWLbXw&s"
+  }
 },{timestamps: true});
 
 const  AddUser = mongoose.model('addUser', addUSerSchema);

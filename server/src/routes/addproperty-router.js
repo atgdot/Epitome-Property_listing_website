@@ -6,7 +6,8 @@ import {
   searchPropertiesController,
   updatePropertyController,
   deletePropertyController,
-  getPropertyDetailsController
+  getPropertyDetailsController,
+  getAllPropertyController,
 } from "../controllers/addproperty-controller.js";
 
 const router = express.Router();
@@ -49,6 +50,7 @@ router.patch(
 );router.get("/detail/:id", getPropertyDetailsController);
 
 // router.get("/all", getAllPropertiesController); 
+router.get("/all", getAllPropertyController); 
 router.get("/search/:searchTerm", searchPropertiesController);
 router.delete("/delete/:id", idValidationRule, deletePropertyController);
 

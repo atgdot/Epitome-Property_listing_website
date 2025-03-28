@@ -7,7 +7,9 @@ import { createAgent, updateAgent ,searchAgentByName, deleteAgentById} from "../
   body("email").isEmail().withMessage("Invalid email format"),
   body("phone").notEmpty().withMessage("Phone is required"),
   body("propertyNumber").notEmpty().withMessage("Property Number is required"),
-  body("license").notEmpty().withMessage("License is required"),
+  body("license").isString().withMessage("License should be a string"),
+  body("Profile_Image").optional().isURL().withMessage("Invalid upload image URL"),
+ 
 ];
 
 

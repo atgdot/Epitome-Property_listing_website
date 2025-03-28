@@ -18,7 +18,7 @@ export const createAgent = async (req, res) => {
       phone,
       propertyNumber,
       license,
-      action,
+      Profile_Image
     });
     await newUser.save();
 

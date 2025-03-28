@@ -10,6 +10,9 @@ const addPropertySchema = new mongoose.Schema({
     type: [String],
     require:  true,
     enum: [
+      "luxury project",
+      "Upcoming project",
+      "High Rise Apartment",
       "offices",
       "Pre-leased",
       "Pre-rented",
@@ -64,7 +67,7 @@ const addPropertySchema = new mongoose.Schema({
   },
   property_Image: {
     type: String,
-    default:null
+    default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSTWFa-5clKaN3zrnAriHY10BICdAFuXvTg&s"
   },
 });
 

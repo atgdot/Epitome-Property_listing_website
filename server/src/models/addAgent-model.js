@@ -21,12 +21,12 @@ const addAgentSchema = new mongoose.Schema({
   },
   license: {
     type: String,
-    reuire: true
   },
-  Action: {
-    type:  String,
-   default: "pending"
-  },
+  Profile_Image: {
+    type: String,
+    default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg0lpFqhun73Bm_lZLxBD9UumI8kBphIY2mA&s"
+  }
+ 
 },{timestamps: true});
 
 const  addAgent = mongoose.model('addAgent', addAgentSchema);
