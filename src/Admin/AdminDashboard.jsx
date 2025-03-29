@@ -41,9 +41,9 @@ const AdminDashboard = () => {
     { name: "Faridabad", value: 11.2 },
   ];
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (newBanner) {
-      updateBanner(newBanner);
+      await updateBanner(newBanner);
       setNewBanner("");
     }
   };

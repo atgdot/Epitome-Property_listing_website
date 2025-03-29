@@ -21,14 +21,14 @@ const RealEstateMap = () => {
     import.meta.glob("/src/assets/*.webp", { eager: true })
   ).map((img) => img.default);
 
-  // const bannerImages = ["/NEW LAUNCHED 1.png", "/NEW LAUNCHED 2.png"];
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentBanner((prev) => (prev + 1) % bannerImages.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    if (bannerImages.length > 0) {
+      const interval = setInterval(() => {
+        setCurrentBanner((prev) => (prev + 1) % bannerImages.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [bannerImages.length]);
 
   return (
     <div className="relative font-lato px-5 ">
@@ -76,22 +76,16 @@ const RealEstateMap = () => {
       </div>
 
       {/* Banner Section */}
-      {/* <div className="flex justify-center items-center my-2">
-        <img
-          src={bannerImages[currentBanner]}
-          alt="Banner"
-          className="w-2/3 h-30 object-cover rounded-md shadow-md" // Height Reduced
-        />
-      </div> */}
       <div className="flex justify-center items-center my-2">
-        {bannerImages.length > 0 && ( // ✅ API se aayenge banners
+        {bannerImages.length > 0 && (
           <img
-            src={bannerImages[0]} // ✅ Dynamic Banner
+            src={bannerImages[currentBanner]} // ✅ Dynamic Banner
             alt="Banner"
             className="w-2/3 h-30 object-cover rounded-md shadow-md"
           />
         )}
       </div>
+
       {/* Featured Builders Section */}
       <div className="bg-white p-4 w-full">
         <h2 className="text-3xl font-bold text-center mb-2">
@@ -112,8 +106,8 @@ const RealEstateMap = () => {
             speed={4000}
             breakpoints={{
               320: { slidesPerView: 2 },
-              640: { slidesPerView: 5 },
-              1024: { slidesPerView: 10 },
+              640: { slidesPerView: 4 },
+              1024: { slidesPerView: 9 },
             }}
             className="w-full"
           >
