@@ -40,7 +40,6 @@ const AdminDashboard = () => {
     { name: "Faridabad", value: 11.2 },
   ];
 
-<<<<<<< HEAD:src/Admin/AdminDashboard.jsx
   const handleUpdate = async () => {
     if (newBanner) {
       await updateBanner(newBanner);
@@ -48,8 +47,6 @@ const AdminDashboard = () => {
     }
   };
 
-=======
->>>>>>> d9e33b5097aea5c9409802f9bcbef7c0d8a8df7b:client/src/Admin/AdminDashboard.jsx
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   const renderContent = () => {
@@ -107,13 +104,19 @@ const AdminDashboard = () => {
                     <YAxis stroke="#fff" />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="visitors" fill="#00C49F" radius={[10, 10, 0, 0]} />
+                    <Bar
+                      dataKey="visitors"
+                      fill="#00C49F"
+                      radius={[10, 10, 0, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-lg">
-                <h2 className="text-lg font-semibold mb-4">Traffic by Location</h2>
+                <h2 className="text-lg font-semibold mb-4">
+                  Traffic by Location
+                </h2>
                 <ResponsiveContainer width="100%" height={320}>
                   <PieChart>
                     <Pie
@@ -129,7 +132,10 @@ const AdminDashboard = () => {
                       dataKey="value"
                     >
                       {pieChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
                       ))}
                     </Pie>
                     <Tooltip
@@ -139,7 +145,11 @@ const AdminDashboard = () => {
                         borderRadius: "5px",
                       }}
                     />
-                    <Legend verticalAlign="bottom" align="center" iconType="circle" />
+                    <Legend
+                      verticalAlign="bottom"
+                      align="center"
+                      iconType="circle"
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -148,7 +158,7 @@ const AdminDashboard = () => {
         );
       case "Property":
         return <AdminProperty />;
-   
+
       case "User":
         return <UserManagement />;
       case "Reviews":
