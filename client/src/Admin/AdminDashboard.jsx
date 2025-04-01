@@ -13,6 +13,7 @@ import {
   Cell,
 } from "recharts";
 import UserManagement from "../components/UserManagement";
+import BannerContext from "../Context/BannerContext";
 import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
 import AdminRecommendation from "../components/AdminRecommendation";
@@ -156,9 +157,7 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
-      case "Property":
-        return <AdminProperty />;
-
+     
       case "User":
         return <UserManagement />;
       case "Reviews":
@@ -176,7 +175,7 @@ const AdminDashboard = () => {
   const navItems = [
     "Dashboard",
     "Property",
-    "PropertyDetail", // New nav item for property editing
+
     "User",
     "Reviews",
     "Recommendations",
