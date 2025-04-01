@@ -1,26 +1,27 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { PhotoContext } from "../context/PhotoContext";
 import { FaTimes } from "react-icons/fa";
 
 const FeatureCard = ({ feature, onExpand }) => {
   return (
-    <div className="cursor-pointer relative" onClick={() => onExpand(feature)}>
-      {feature.images && feature.images.length > 0 ? (
-        <img
-          src={feature.images[0]}
-          alt={feature.description}
-          className="w-full h-48 object-cover shadow-lg"
-        />
-      ) : (
-        <div className="w-full h-48 bg-gray-300 flex items-center justify-center shadow-lg">
-          No Image
-        </div>
-      )}
-      <div className="absolute inset-0 bg-black opacity-50 z-10"></div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-20">
-        <div className="text-4xl font-semibold">{feature.count}</div>
-        <div className="text-lg">{feature.description}</div>
+    <div
+      className="border p-4 rounded shadow-md cursor-pointer"
+      onClick={() => onExpand(feature)}
+    >
+      <h3 className="text-xl font-semibold text-center mb-2">{feature.description}</h3>
+      <div className="grid grid-cols-2 gap-2">
+        {feature.images.slice(0, 2).map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`${feature.description} ${index}`}
+            className="w-full h-32 object-cover"
+          />
+        ))}
       </div>
+      {feature.images.length > 2 && (
+        <p className="text-center text-blue-600 mt-2">+ {feature.images.length - 2} more</p>
+      )}
     </div>
   );
 };
@@ -29,22 +30,11 @@ const WhyChooseUs = () => {
   const { features } = useContext(PhotoContext);
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const navbar = document.getElementById("navbar");
-    if (navbar) {
-      navbar.style.display = selectedFeature || selectedImage ? "none" : "";
-    }
-  }, [selectedFeature, selectedImage]);
+  const [imageIndex, setImageIndex] = useState(0);
 
   const handleExpand = (feature) => {
     setSelectedFeature(feature);
-  };
-
-  const handleImageClick = (img, index) => {
-    setSelectedImage(img);
-    setCurrentIndex(index);
+    setSelectedImage(null);
   };
 
   const handleClose = () => {
@@ -52,21 +42,24 @@ const WhyChooseUs = () => {
     setSelectedImage(null);
   };
 
-  const handleNext = () => {
-    if (selectedFeature) {
-      const nextIndex = (currentIndex + 1) % selectedFeature.images.length;
-      setSelectedImage(selectedFeature.images[nextIndex]);
-      setCurrentIndex(nextIndex);
-    }
+  const handleImageClick = (img, index) => {
+    setSelectedImage(img);
+    setImageIndex(index);
   };
 
   const handlePrev = () => {
     if (selectedFeature) {
-      const prevIndex =
-        (currentIndex - 1 + selectedFeature.images.length) %
-        selectedFeature.images.length;
-      setSelectedImage(selectedFeature.images[prevIndex]);
-      setCurrentIndex(prevIndex);
+      const newIndex = (imageIndex - 1 + selectedFeature.images.length) % selectedFeature.images.length;
+      setSelectedImage(selectedFeature.images[newIndex]);
+      setImageIndex(newIndex);
+    }
+  };
+
+  const handleNext = () => {
+    if (selectedFeature) {
+      const newIndex = (imageIndex + 1) % selectedFeature.images.length;
+      setSelectedImage(selectedFeature.images[newIndex]);
+      setImageIndex(newIndex);
     }
   };
 
@@ -88,6 +81,7 @@ const WhyChooseUs = () => {
         ))}
       </div>
 
+      {/* Expanded Feature View */}
       {selectedFeature && !selectedImage && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex flex-col items-center justify-center p-4">
           <button onClick={handleClose} className="absolute top-4 right-4 text-white text-3xl">
@@ -107,29 +101,17 @@ const WhyChooseUs = () => {
         </div>
       )}
 
+      {/* Full-Screen Image View */}
       {selectedImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
-          <button
-            onClick={handleClose}
-            className="absolute top-4 right-4 text-white text-3xl z-50"
-          >
+          <button onClick={handleClose} className="absolute top-4 right-4 text-white text-3xl z-50">
             <FaTimes />
           </button>
-          <button
-            onClick={handlePrev}
-            className="absolute left-4 text-white text-4xl z-50"
-          >
+          <button onClick={handlePrev} className="absolute left-4 text-white text-4xl z-50">
             &#9664;
           </button>
-          <img
-            src={selectedImage}
-            alt="Full View"
-            className="max-w-full max-h-screen"
-          />
-          <button
-            onClick={handleNext}
-            className="absolute right-4 text-white text-4xl z-50"
-          >
+          <img src={selectedImage} alt="Full View" className="max-w-full max-h-screen" />
+          <button onClick={handleNext} className="absolute right-4 text-white text-4xl z-50">
             &#9654;
           </button>
         </div>

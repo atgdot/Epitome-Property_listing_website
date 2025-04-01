@@ -1,4 +1,3 @@
-// src/context/PhotoContext.jsx
 import React, { createContext, useState } from "react";
 
 export const PhotoContext = createContext();
@@ -30,9 +29,20 @@ export const PhotoProvider = ({ children }) => {
     );
   };
 
+  // Deletes a single image from a feature
+  const deleteSingleImage = (featureId, imageIndex) => {
+    setFeatures((prevFeatures) =>
+      prevFeatures.map((feature) =>
+        feature.id === featureId
+          ? { ...feature, images: feature.images.filter((_, i) => i !== imageIndex) }
+          : feature
+      )
+    );
+  };
+
   return (
     <PhotoContext.Provider
-      value={{ features, addFeature, updateFeatureImages, deleteFeature }}
+      value={{ features, addFeature, updateFeatureImages, deleteFeature, deleteSingleImage }}
     >
       {children}
     </PhotoContext.Provider>

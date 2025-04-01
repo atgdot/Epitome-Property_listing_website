@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BannerContext from "../Context/BannerContext";
 import {
   BarChart,
   Bar,
@@ -20,9 +19,7 @@ import AdminRecommendation from "../components/AdminRecommendation";
 import AdminPhoto from "../components/AdminPhoto"; // Import AdminPhoto
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { updateBanner } = useContext(BannerContext);
   const [selectedTab, setSelectedTab] = useState("Dashboard");
-  const [newBanner, setNewBanner] = useState("");
 
   const barChartData = [
     { name: "17 Sun", visitors: 250000 },
@@ -40,13 +37,6 @@ const AdminDashboard = () => {
     { name: "Noida", value: 13.9 },
     { name: "Faridabad", value: 11.2 },
   ];
-
-  const handleUpdate = async () => {
-    if (newBanner) {
-      await updateBanner(newBanner);
-      setNewBanner("");
-    }
-  };
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -72,23 +62,6 @@ const AdminDashboard = () => {
                 <p className="text-2xl font-bold">50</p>
                 <p className="text-green-500">Increase</p>
               </div>
-              {/* Banner section */}
-              <div className="p-6 bg-white shadow-md rounded-lg">
-                <h2 className="text-xl font-bold mb-4">Update Banner</h2>
-                <input
-                  type="text"
-                  placeholder="Enter new banner URL"
-                  value={newBanner}
-                  onChange={(e) => setNewBanner(e.target.value)}
-                  className="border p-2 w-full rounded mb-3"
-                />
-                <button
-                  onClick={handleUpdate}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Update Banner
-                </button>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -105,19 +78,13 @@ const AdminDashboard = () => {
                     <YAxis stroke="#fff" />
                     <Tooltip />
                     <Legend />
-                    <Bar
-                      dataKey="visitors"
-                      fill="#00C49F"
-                      radius={[10, 10, 0, 0]}
-                    />
+                    <Bar dataKey="visitors" fill="#00C49F" radius={[10, 10, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
               <div className="bg-white p-4 rounded-lg shadow-lg">
-                <h2 className="text-lg font-semibold mb-4">
-                  Traffic by Location
-                </h2>
+                <h2 className="text-lg font-semibold mb-4">Traffic by Location</h2>
                 <ResponsiveContainer width="100%" height={320}>
                   <PieChart>
                     <Pie
@@ -133,10 +100,7 @@ const AdminDashboard = () => {
                       dataKey="value"
                     >
                       {pieChartData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
                     <Tooltip
@@ -146,18 +110,16 @@ const AdminDashboard = () => {
                         borderRadius: "5px",
                       }}
                     />
-                    <Legend
-                      verticalAlign="bottom"
-                      align="center"
-                      iconType="circle"
-                    />
+                    <Legend verticalAlign="bottom" align="center" iconType="circle" />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
             </div>
           </div>
         );
-     
+      case "Property":
+        return <AdminProperty />;
+   
       case "User":
         return <UserManagement />;
       case "Reviews":
@@ -175,7 +137,7 @@ const AdminDashboard = () => {
   const navItems = [
     "Dashboard",
     "Property",
-
+    "PropertyDetail", // New nav item for property editing
     "User",
     "Reviews",
     "Recommendations",

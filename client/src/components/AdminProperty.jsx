@@ -1,18 +1,25 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
 import { FiFilter } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
-import { MdEdit } from "react-icons/md";
+import { MdEdit, MdDelete } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+
 import PropertyCard from "./PropertyCard";
 import HighRiseCard from "./HighRiseCard";
-import PropertyContext from "../Context/PropertycardContext";
-import { useDispatch } from "react-redux";
-import { createProperty, updateProperty } from '../utils/Store/slice/propertySlice';
+
+import {
+  createProperty,
+  updateProperty,
+  deleteProperty,
+  getAllProperties,
+  clearError,
+} from '../utils/Store/slice/propertySlice';
 
 const AdminProperty = () => {
-  const { properties, addProperty, updateProperty, deleteProperty } =
-    useContext(PropertyContext);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { properties, loading, error } = useSelector(state => state.property);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
@@ -30,11 +37,20 @@ const AdminProperty = () => {
     currentRental: "",
     tenure: "",
     tenant: "",
-    sector: ""
+    sector: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Handle image uploads
+  useEffect(() => {
+    dispatch(getAllProperties());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      console.error("Redux Property Error:", error);
+    }
+  }, [error, dispatch]);
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -43,16 +59,19 @@ const AdminProperty = () => {
         setFormData({ ...formData, image: reader.result });
       };
       reader.readAsDataURL(file);
+    } else {
+      setFormData({ ...formData, image: "" });
     }
   };
 
-  // When category is changed, update subCategory accordingly
   const handleCategoryChange = (newCategory) => {
     let newSubCategory = "";
     if (newCategory === "residential") {
       newSubCategory = "luxuryProjects";
     } else if (newCategory === "commercial") {
       newSubCategory = "offices";
+    } else {
+      newSubCategory = "";
     }
     setFormData((prev) => ({
       ...prev,
@@ -61,7 +80,6 @@ const AdminProperty = () => {
     }));
   };
 
-  // Reset the form to its initial state
   const resetForm = () => {
     setFormData({
       category: "residential",
@@ -77,70 +95,59 @@ const AdminProperty = () => {
       currentRental: "",
       tenure: "",
       tenant: "",
-      sector: ""
+      sector: "",
     });
     setEditingProperty(null);
   };
 
-  // Submit handler for both adding and updating properties
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setIsSubmitting(true);
+    dispatch(clearError());
 
-    // Create the property object, excluding image if it's empty
-    const newProperty = {
-      ...formData,
-      price: formData.price.startsWith("₹")
-        ? formData.price
-        : `₹ ${formData.price}`,
-      currentRental: formData.currentRental.startsWith("₹")
-        ? formData.currentRental
-        : `₹ ${formData.currentRental}`,
-      id: editingProperty?.id || Math.random()
-    };
+    const propertyDataToSend = { ...formData };
 
-    // Remove image property if it's empty
-    if (!newProperty.image) {
-      delete newProperty.image;
+    if (typeof propertyDataToSend.price === 'string') {
+      propertyDataToSend.price = propertyDataToSend.price.replace("₹ ", "").trim();
+    }
+    if (typeof propertyDataToSend.currentRental === 'string') {
+      propertyDataToSend.currentRental = propertyDataToSend.currentRental.replace("₹ ", "").trim();
+    }
+
+    if (!propertyDataToSend.image) {
+      delete propertyDataToSend.image;
     }
 
     try {
       if (editingProperty) {
-        const updateResult = await dispatch(updateProperty({
-          id: editingProperty.id,
-          propertyData: newProperty
-        })).unwrap();
-
-        if (updateResult) {
-          updateProperty(updateResult);
-        }
+        const { id, ...updateData } = propertyDataToSend;
+        await dispatch(updateProperty({ id: editingProperty._id, propertyData: updateData })).unwrap();
+        console.log("Property updated successfully!");
       } else {
-        const createResult = await dispatch(createProperty(newProperty)).unwrap();
-        if (createResult) {
-          addProperty(createResult);
-        } else {
-          throw new Error('Failed to create property');
-        }
+        await dispatch(createProperty(propertyDataToSend)).unwrap();
+        console.log("Property created successfully!");
       }
 
       setShowModal(false);
       resetForm();
-    } catch (error) {
-      console.error('Error submitting property:', error);
-      alert(error.message || 'Failed to submit property. Please try again.');
+    } catch (err) {
+      console.error('Failed to submit property:', err);
+      alert(`Error: ${err?.message || 'Failed to save property. Please try again.'}`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Open modal for editing or adding a property
   const openEditModal = (property = null) => {
+    dispatch(clearError());
     setEditingProperty(property);
     if (property) {
       setFormData({
         ...property,
-        price: property.price.replace("₹ ", ""),
-        currentRental: property.currentRental.replace("₹ ", "")
+        price: typeof property.price === 'string' ? property.price.replace("₹ ", "").trim() : (property.price || ''),
+        currentRental: typeof property.currentRental === 'string' ? property.currentRental.replace("₹ ", "").trim() : (property.currentRental || ''),
+        image: property.image || ""
       });
     } else {
       resetForm();
@@ -149,34 +156,50 @@ const AdminProperty = () => {
   };
 
   const handleDelete = (id) => {
-    deleteProperty(id);
+    console.log('Deleting property ID from AdminProperty:', id);
+    if (window.confirm('Are you sure you want to delete this property?')) {
+      dispatch(deleteProperty(id))
+        .unwrap()
+        .then(() => {
+          console.log('Property deleted successfully!');
+        })
+        .catch((err) => {
+          console.error('Failed to delete property:', err);
+          alert(`Error: ${err?.message || 'Failed to delete property.'}`);
+        });
+    }
   };
 
-  // Flatten properties and enable searching
-  const flattenedProperties = Object.values(properties)
-    .flatMap((category) =>
-      Array.isArray(category) ? category : Object.values(category).flat()
-    )
-    .filter((property) =>
-      Object.values(property).some((val) =>
-        val.toString().toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
+  const filteredProperties = Array.isArray(properties)
+    ? properties.filter((property) => {
+        if (!property || typeof property !== 'object') return false;
+        if (!searchQuery) return true;
+        const searchTerm = searchQuery.toLowerCase();
+        return (
+          property.title?.toLowerCase().includes(searchTerm) ||
+          property.city?.toLowerCase().includes(searchTerm) ||
+          property.sector?.toLowerCase().includes(searchTerm) ||
+          property.category?.toLowerCase().includes(searchTerm) ||
+          property.subCategory?.toLowerCase().includes(searchTerm) ||
+          property.description?.toLowerCase().includes(searchTerm)
+        );
+      })
+    : [];
 
-  // Render a section of the form based on a given title and list of fields.
   const renderFormSection = (title, fields) => (
     <div className="md:col-span-2 border-t pt-1 mt-1" key={title}>
       <h3 className="text-base font-semibold mb-1 text-[#043268]">{title}</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
         {fields.map((field) => (
           <div key={field.name}>
-            <label className="block text-xs font-medium mb-1">
-              {field.label}
+            <label htmlFor={field.name} className="block text-xs font-medium mb-1">
+              {field.label} {field.required && <span className="text-red-500">*</span>}
             </label>
             {field.type === "select" ? (
               <select
-                className="w-full p-1 border rounded text-xs"
-                value={formData[field.name]}
+                id={field.name}
+                className="w-full p-1 border rounded text-xs focus:ring-blue-500 focus:border-blue-500"
+                value={formData[field.name] || ''}
                 onChange={(e) =>
                   field.onChange
                     ? field.onChange(e.target.value)
@@ -195,16 +218,17 @@ const AdminProperty = () => {
               </select>
             ) : field.type === "file" ? (
               <input
+                id={field.name}
                 type="file"
                 onChange={handleImageChange}
-                className="w-full p-1 border rounded text-xs"
+                className="w-full p-1 border rounded text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 accept="image/*"
-                required={field.required}
               />
             ) : field.type === "textarea" ? (
               <textarea
-                className="w-full p-1 border rounded text-xs"
-                value={formData[field.name]}
+                id={field.name}
+                className="w-full p-1 border rounded text-xs focus:ring-blue-500 focus:border-blue-500"
+                value={formData[field.name] || ''}
                 onChange={(e) =>
                   setFormData({ ...formData, [field.name]: e.target.value })
                 }
@@ -214,10 +238,11 @@ const AdminProperty = () => {
               ></textarea>
             ) : (
               <input
+                id={field.name}
                 type={field.type || "text"}
-                className="w-full p-1 border rounded text-xs"
+                className="w-full p-1 border rounded text-xs focus:ring-blue-500 focus:border-blue-500"
                 placeholder={field.placeholder}
-                value={formData[field.name]}
+                value={formData[field.name] || ''}
                 onChange={(e) =>
                   setFormData({ ...formData, [field.name]: e.target.value })
                 }
@@ -230,7 +255,6 @@ const AdminProperty = () => {
     </div>
   );
 
-  // Common section: Category and Sub Category always appear.
   const commonSection = {
     title: "Basic Information",
     fields: [
@@ -258,36 +282,36 @@ const AdminProperty = () => {
               { value: "upcomingProjects", label: "Upcoming Projects" },
               { value: "highRiseApartments", label: "High Rise Apartments" }
             ]
-            : [
-              { value: "offices", label: "Offices" },
-              { value: "preLeasedOffices", label: "Pre-Leased Offices" },
-              { value: "preRented", label: "Pre-Rented" },
-              { value: "sco", label: "SCO" }
-            ],
-        required: true
+            : formData.category === "commercial"
+              ? [
+                { value: "offices", label: "Offices" },
+                { value: "preLeasedOffices", label: "Pre-Leased Offices" },
+                { value: "preRented", label: "Pre-Rented" },
+                { value: "sco", label: "SCO" }
+              ]
+              : [],
+        required: formData.category === "residential" || formData.category === "commercial"
       }
     ]
   };
-
-  // For residential properties, only show these essential fields.
   const residentialFormSections = [
     {
       title: "Residential Details",
       fields: [
         { name: "title", label: "Title", required: true },
         { name: "city", label: "City", required: true },
-        { name: "sector", label: "Location", required: true },
+        { name: "sector", label: "Location/Sector", required: true },
         {
           name: "price",
           label: "Price (₹)",
-          placeholder: "e.g., 4.86 - 8 Cr",
+          placeholder: "e.g., 4.86 Cr or 48600000",
           required: true
         },
         {
           name: "image",
           label: "Property Image (Optional)",
           type: "file",
-          required: false  // Made optional
+          required: false
         }
       ]
     },
@@ -303,20 +327,19 @@ const AdminProperty = () => {
       ]
     }
   ];
-
-  // For non-residential properties, show a more detailed form.
   const nonResidentialFormSections = [
     {
-      title: "Non-Residential Details",
+      title: "Commercial/Other Details",
       fields: [
-        { name: "city", label: "City", required: true },
-        { name: "status", label: "Status", required: true },
         { name: "title", label: "Title", required: true },
+        { name: "city", label: "City", required: true },
+        { name: "sector", label: "Location/Sector" },
+        { name: "status", label: "Status", placeholder: "e.g., Under Construction, Ready to Move" },
         {
           name: "image",
           label: "Property Image (Optional)",
           type: "file",
-          required: false  // Made optional
+          required: false
         }
       ]
     },
@@ -337,57 +360,57 @@ const AdminProperty = () => {
         {
           name: "price",
           label: "Price (₹)",
-          placeholder: "e.g., 4.86 - 8 Cr"
+          placeholder: "e.g., 4.86 Cr or 48600000"
         },
         {
           name: "rentalYield",
-          label: "Rental Yield",
-          placeholder: "e.g., 5.2%"
+          label: "Rental Yield (%)",
+          placeholder: "e.g., 5.2"
         },
         {
           name: "currentRental",
           label: "Current Rental (₹)",
-          placeholder: "e.g., 2.6 Lakh/month"
+          placeholder: "e.g., 2.6 Lakh/month or 260000"
         }
       ]
     },
     {
       title: "Property Details",
       fields: [
-        { name: "area", label: "Area", placeholder: "e.g., 3,500 sqft" },
-        { name: "tenure", label: "Tenure" },
-        { name: "tenant", label: "Tenant" },
-        { name: "sector", label: "Location" }
+        { name: "area", label: "Area (sqft)", placeholder: "e.g., 3500" },
+        { name: "tenure", label: "Lease Tenure", placeholder: "e.g., 9 years" },
+        { name: "tenant", label: "Tenant Name" },
       ]
     }
   ];
 
-  // Decide which sections to show (excluding the common section) based on category.
   const additionalSections =
     formData.category === "residential"
       ? residentialFormSections
-      : nonResidentialFormSections;
+      : formData.category === "commercial"
+        ? nonResidentialFormSections
+        : [];
 
   return (
     <div className="p-4">
       <h1 className="text-3xl font-semibold text-center mb-6">
-        Admin Property Management
+        Admin Property Management (Redux)
       </h1>
 
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
-        <button className="flex items-center px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+        <button className="flex items-center px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm">
           <FiFilter className="mr-2" /> Filter
         </button>
 
-        <div className="flex border rounded-lg bg-white w-full md:w-80 overflow-hidden">
+        <div className="flex border rounded-lg bg-white w-full md:w-80 overflow-hidden shadow-sm">
           <input
             type="text"
-            placeholder="Search"
-            className="px-4 py-2 w-full outline-none"
+            placeholder="Search by title, city, location..."
+            className="px-4 py-2 w-full outline-none text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="px-4 py-2 bg-blue-700 text-white flex items-center">
+          <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white flex items-center transition-colors">
             <FaSearch />
           </button>
         </div>
@@ -395,73 +418,93 @@ const AdminProperty = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => openEditModal()}
-            className="flex items-center gap-1 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+            className="flex items-center gap-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition text-sm shadow-sm"
           >
-            <MdEdit /> Add New
+            <MdEdit /> Add New Property
           </button>
         </div>
       </div>
 
+      {loading && <div className="text-center p-4">Loading properties...</div>}
+      {error && !loading && (
+        <div className="text-center p-4 bg-red-100 text-red-700 rounded mb-4">
+          Error: {error.message || 'Failed to load data.'}
+          <button onClick={() => dispatch(clearError())} className="ml-4 text-red-900 font-bold">X</button>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProperties.map((property) => {
+          const propertyId = property._id; // Ensure you use _id consistently
+          return property.category === "residential" ? (
+            <HighRiseCard
+              key={propertyId}
+              property={property}
+              editable={true}
+              onEdit={() => openEditModal(property)}
+              onDelete={() => handleDelete(propertyId)}
+            />
+          ) : (
+            <PropertyCard
+              key={propertyId}
+              property={property}
+              editable={true}
+              onEdit={() => openEditModal(property)}
+              onDelete={() => handleDelete(propertyId)}
+            />
+          );
+        })}
+      </div>
+
+      {!loading && filteredProperties.length === 0 && properties.length > 0 && (
+        <div className="text-center col-span-full mt-6 text-gray-500">
+          No properties found matching your search query.
+        </div>
+      )}
+      {!loading && properties.length === 0 && (
+        <div className="text-center col-span-full mt-6 text-gray-500">
+          No properties available. Add a new property to get started.
+        </div>
+      )}
+
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 z-50">
-          <div className="bg-white rounded-2xl p-2 w-full max-w-lg">
-            <h2 className="text-2xl font-bold mb-2">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-2 z-50 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl p-4 w-full max-w-lg max-h-[90vh] overflow-y-auto my-4">
+            <h2 className="text-xl font-semibold mb-3 text-gray-700 border-b pb-2">
               {editingProperty ? "Edit Property" : "Add New Property"}
             </h2>
             <form onSubmit={handleSubmit}>
-              {/* Always render common section */}
               {renderFormSection(commonSection.title, commonSection.fields)}
-              {/* Then conditionally render additional sections */}
               {additionalSections.map((section) =>
                 renderFormSection(section.title, section.fields)
               )}
-              <div className="flex justify-end gap-2 mt-4">
+
+              <div className="flex justify-end gap-3 mt-4 pt-3 border-t">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-1 bg-gray-200 rounded-lg"
+                  onClick={() => { setShowModal(false); resetForm(); dispatch(clearError()); }}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="px-4 py-1 bg-blue-700 text-white rounded-lg disabled:bg-blue-300"
+                  disabled={isSubmitting || loading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm disabled:bg-blue-300 disabled:cursor-not-allowed"
                 >
                   {isSubmitting
                     ? 'Submitting...'
-                    : (editingProperty ? "Update" : "Create")
+                    : (editingProperty ? "Update Property" : "Create Property")
                   }
                 </button>
               </div>
+              {error && isSubmitting && (
+                <p className="text-red-600 text-xs mt-2 text-right">{error.message || 'Submission failed.'}</p>
+              )}
             </form>
           </div>
         </div>
       )}
-
-      <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {flattenedProperties.map((property, index) =>
-            property.category === "residential" ? (
-              <HighRiseCard
-                key={index}
-                property={property}
-                editable={true}
-                onEdit={() => openEditModal(property)}
-                onDelete={() => handleDelete(property.id)}
-              />
-            ) : (
-              <PropertyCard
-                key={index}
-                property={property}
-                editable={true}
-                onEdit={() => openEditModal(property)}
-                onDelete={() => handleDelete(property.id)}
-              />
-            )
-          )}
-        </div>
-      </CSSTransition>
     </div>
   );
 };
