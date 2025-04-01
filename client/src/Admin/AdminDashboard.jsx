@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BannerContext from "../Context/BannerContext";
 import {
   BarChart,
   Bar,
@@ -13,7 +14,6 @@ import {
   Cell,
 } from "recharts";
 import UserManagement from "../components/UserManagement";
-import BannerContext from "../Context/BannerContext";
 import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
 import AdminRecommendation from "../components/AdminRecommendation";
