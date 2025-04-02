@@ -8,8 +8,16 @@ const addPropertySchema = new mongoose.Schema({
   },
   subCategory: {
     type: [String],
-    enum: ["Luxury Projects", "Upcoming Project", "High Rise Apartment","Offices","Pre-Leased Offices","Pre-Rented","SCO"],
-    required: true,
+    enum: [
+      "Luxury Projects",
+      "Upcoming Project",
+      "High Rise Apartment",
+      "Offices",
+      "Pre-Leased Offices",
+      "Pre-Rented",
+      "SCO",
+    ],
+    default: [], // Allows subCategory to be empty
   },
   city: {
     type: String,

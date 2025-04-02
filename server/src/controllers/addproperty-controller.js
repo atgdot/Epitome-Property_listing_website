@@ -9,39 +9,50 @@ const allowedSubCategories = ["Luxury Projects", "Upcoming Project", "High Rise 
 export const createPropertyController = async (req, res) => {
   const errors = validationResult(req);
   console.log("Received category:", req.body.category);
-console.log("Received subCategory:", req.body.subCategory);
+  console.log("Received subCategory:", req.body.subCategory);
 
   if (!errors.isEmpty()) {
     return res.status(400).json({ success: false, errors: errors.array() });
   }
 
   try {
-    const { category, subCategory } = req.body;
+    let { category, subCategory } = req.body;
+
+    // Convert empty string to an empty array
+    if (!subCategory || subCategory === "") {
+      subCategory = [];
+    }
+
+    // Ensure subCategory is an array
+    if (!Array.isArray(subCategory)) {
+      return res.status(400).json({ success: false, message: "Invalid subCategory format" });
+    }
 
     // Validate category
     if (!allowedCategories.includes(category)) {
       return res.status(400).json({ success: false, message: "Invalid category" });
     }
 
-    // Validate subCategory (ensure all values are allowed)
-    if (!Array.isArray(subCategory) || !subCategory.every(sub => allowedSubCategories.includes(sub))) {
+    // Validate subCategory: Allow empty or valid values
+    if (subCategory.length > 0 && !subCategory.every(sub => allowedSubCategories.includes(sub))) {
       return res.status(400).json({ success: false, message: "Invalid subCategory" });
     }
 
     // Create property in database
-    const property = await addProperty.create(req.body);
+    const property = await addProperty.create({ ...req.body, subCategory });
 
     // Return success response with ID
     res.status(201).json({
       success: true,
       message: "Property added successfully",
-      id: property._id,  // Returning the newly created property ID
-      data: property
+      id: property._id,
+      data: property,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 
 // Update Property by ID
