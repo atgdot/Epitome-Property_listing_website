@@ -21,6 +21,8 @@ const AdminProperty = () => {
   const { properties, loading, error } = useSelector(state => state.property);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
   const [formData, setFormData] = useState({
@@ -64,19 +66,15 @@ const AdminProperty = () => {
     }
   };
 
-  // Updated handleCategoryChange to support trending and featured as commercial
+  // Updated handleCategoryChange:
+  // For "residential" and "commercial", set default subCategory.
+  // For "trending" and "featured", remove subCategory.
   const handleCategoryChange = (newCategory) => {
     let newSubCategory = "";
     if (newCategory === "residential") {
       newSubCategory = "luxuryProjects";
-    } else if (
-      newCategory === "commercial" ||
-      newCategory === "trending" ||
-      newCategory === "featured"
-    ) {
+    } else if (newCategory === "commercial") {
       newSubCategory = "offices";
-    } else {
-      newSubCategory = "";
     }
     setFormData((prev) => ({
       ...prev,
@@ -181,22 +179,29 @@ const AdminProperty = () => {
     }
   };
 
+  // Updated filteredProperties to include filter by category as well as search query
   const filteredProperties = Array.isArray(properties)
     ? properties.filter((property) => {
         if (!property || typeof property !== "object") return false;
-        if (!searchQuery) return true;
-        const searchTerm = searchQuery.toLowerCase();
-        return (
-          property.title?.toLowerCase().includes(searchTerm) ||
-          property.city?.toLowerCase().includes(searchTerm) ||
-          property.sector?.toLowerCase().includes(searchTerm) ||
-          property.category?.toLowerCase().includes(searchTerm) ||
-          property.subCategory?.toLowerCase().includes(searchTerm) ||
-          property.description?.toLowerCase().includes(searchTerm)
-        );
+        if (filterCategory !== "all" && property.category.toLowerCase() !== filterCategory) {
+          return false;
+        }
+        if (searchQuery) {
+          const searchTerm = searchQuery.toLowerCase();
+          return (
+            property.title?.toLowerCase().includes(searchTerm) ||
+            property.city?.toLowerCase().includes(searchTerm) ||
+            property.sector?.toLowerCase().includes(searchTerm) ||
+            property.category?.toLowerCase().includes(searchTerm) ||
+            property.subCategory?.toLowerCase().includes(searchTerm) ||
+            property.description?.toLowerCase().includes(searchTerm)
+          );
+        }
+        return true;
       })
     : [];
 
+  // Render form section helper
   const renderFormSection = (title, fields) => (
     <div className="md:col-span-2 border-t pt-1 mt-1" key={title}>
       <h3 className="text-base font-semibold mb-1 text-[#043268]">{title}</h3>
@@ -266,46 +271,51 @@ const AdminProperty = () => {
     </div>
   );
 
+  // Build the common section dynamically.
+  // Only include the subCategory field when the category is NOT trending or featured.
+  const commonFields = [
+    {
+      name: "category",
+      label: "Category",
+      type: "select",
+      options: [
+        { value: "residential", label: "RESIDENTIAL" },
+        { value: "commercial", label: "Commercial" },
+        { value: "trending", label: "Trending" },
+        { value: "featured", label: "Featured" }
+      ],
+      onChange: handleCategoryChange,
+      required: true,
+    },
+  ];
+
+  if (formData.category !== "trending" && formData.category !== "featured") {
+    commonFields.push({
+      name: "subCategory",
+      label: "Sub Category",
+      type: "select",
+      options:
+        formData.category === "residential"
+          ? [
+              { value: "luxuryProjects", label: "Luxury Projects" },
+              { value: "upcomingProjects", label: "Upcoming Projects" },
+              { value: "highRiseApartments", label: "High Rise Apartments" }
+            ]
+          : formData.category === "commercial"
+          ? [
+              { value: "offices", label: "Offices" },
+              { value: "preLeasedOffices", label: "Pre-Leased Offices" },
+              { value: "preRented", label: "Pre-Rented" },
+              { value: "sco", label: "SCO" }
+            ]
+          : [],
+      required: formData.category === "residential" || formData.category === "commercial"
+    });
+  }
+
   const commonSection = {
     title: "Basic Information",
-    fields: [
-      {
-        name: "category",
-        label: "Category",
-        type: "select",
-        options: [
-          { value: "residential", label: "RESIDENTIAL" },
-          { value: "commercial", label: "Commercial" },
-          { value: "trending", label: "Trending" },
-          { value: "featured", label: "Featured" }
-        ],
-        onChange: handleCategoryChange,
-        required: true
-      },
-      {
-        name: "subCategory",
-        label: "Sub Category",
-        type: "select",
-        options:
-          formData.category === "residential"
-            ? [
-                { value: "luxuryProjects", label: "Luxury Projects" },
-                { value: "upcomingProjects", label: "Upcoming Projects" },
-                { value: "highRiseApartments", label: "High Rise Apartments" }
-              ]
-            : formData.category === "commercial" ||
-              formData.category === "trending" ||
-              formData.category === "featured"
-            ? [
-                { value: "offices", label: "Offices" },
-                { value: "preLeasedOffices", label: "Pre-Leased Offices" },
-                { value: "preRented", label: "Pre-Rented" },
-                { value: "sco", label: "SCO" }
-              ]
-            : [],
-        required: formData.category === "residential" || formData.category === "commercial" || formData.category === "trending" || formData.category === "featured"
-      }
-    ]
+    fields: commonFields,
   };
 
   const residentialFormSections = [
@@ -399,7 +409,7 @@ const AdminProperty = () => {
     }
   ];
 
-  // Updated additionalSections: trending and featured share the same form as commercial.
+  // For residential use residential form sections and for others use nonResidential.
   const additionalSections =
     formData.category === "residential"
       ? residentialFormSections
@@ -416,7 +426,10 @@ const AdminProperty = () => {
       </h1>
 
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
-        <button className="flex items-center px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm">
+        <button
+          onClick={() => setShowFilterPanel(!showFilterPanel)}
+          className="flex items-center px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm"
+        >
           <FiFilter className="mr-2" /> Filter
         </button>
 
@@ -442,6 +455,23 @@ const AdminProperty = () => {
           </button>
         </div>
       </div>
+
+      {showFilterPanel && (
+        <div className="mb-4">
+          <label className="mr-2 font-medium">Filter by Category:</label>
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="p-2 border rounded"
+          >
+            <option value="all">All</option>
+            <option value="residential">Residential</option>
+            <option value="commercial">Commercial</option>
+            <option value="trending">Trending</option>
+            <option value="featured">Featured</option>
+          </select>
+        </div>
+      )}
 
       {loading && <div className="text-center p-4">Loading properties...</div>}
       {error && !loading && (
