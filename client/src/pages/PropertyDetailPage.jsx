@@ -1,6 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import PropertyHeader from "../components/PropertyHeader";
+import PropertyFooter from "../components/PropertyFooter";
 
 const PropertyDetailPage = () => {
   const property = useSelector(
@@ -21,7 +23,7 @@ const PropertyDetailPage = () => {
     );
   }
 
-  // Mock data for units - you should get this from your backend/state
+  //  data for units - you should get this from your backend/state
   const unitTypes = [
     { name: "3 BHK - Vantage", size: "2570 - 2572 SQFT" },
     { name: "4 BHK - Crest", size: "3579 SQFT" },
@@ -36,7 +38,7 @@ const PropertyDetailPage = () => {
     "Maintenance",
   ];
 
-  // Mock gallery images - replace with actual property images
+  // gallery images - replace with actual property images
   const galleryImages = [
     property.property_Image,
     "https://via.placeholder.com/600x400?text=Gallery+1",
@@ -46,6 +48,7 @@ const PropertyDetailPage = () => {
 
   return (
     <div className="bg-gray-50">
+      <PropertyHeader property={property} />
       {/* Hero Section */}
       <div className="relative">
         <img
@@ -194,6 +197,7 @@ const PropertyDetailPage = () => {
           </div>
         </section>
       </div>
+      <PropertyFooter property={property} />
     </div>
   );
 };
