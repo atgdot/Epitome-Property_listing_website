@@ -64,11 +64,16 @@ const AdminProperty = () => {
     }
   };
 
+  // Updated handleCategoryChange to support trending and featured as commercial
   const handleCategoryChange = (newCategory) => {
     let newSubCategory = "";
     if (newCategory === "residential") {
       newSubCategory = "luxuryProjects";
-    } else if (newCategory === "commercial") {
+    } else if (
+      newCategory === "commercial" ||
+      newCategory === "trending" ||
+      newCategory === "featured"
+    ) {
       newSubCategory = "offices";
     } else {
       newSubCategory = "";
@@ -76,7 +81,7 @@ const AdminProperty = () => {
     setFormData((prev) => ({
       ...prev,
       category: newCategory,
-      subCategory: newSubCategory
+      subCategory: newSubCategory,
     }));
   };
 
@@ -108,10 +113,10 @@ const AdminProperty = () => {
 
     const propertyDataToSend = { ...formData };
 
-    if (typeof propertyDataToSend.price === 'string') {
+    if (typeof propertyDataToSend.price === "string") {
       propertyDataToSend.price = propertyDataToSend.price.replace("₹ ", "").trim();
     }
-    if (typeof propertyDataToSend.currentRental === 'string') {
+    if (typeof propertyDataToSend.currentRental === "string") {
       propertyDataToSend.currentRental = propertyDataToSend.currentRental.replace("₹ ", "").trim();
     }
 
@@ -132,8 +137,8 @@ const AdminProperty = () => {
       setShowModal(false);
       resetForm();
     } catch (err) {
-      console.error('Failed to submit property:', err);
-      alert(`Error: ${err?.message || 'Failed to save property. Please try again.'}`);
+      console.error("Failed to submit property:", err);
+      alert(`Error: ${err?.message || "Failed to save property. Please try again."}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -145,9 +150,15 @@ const AdminProperty = () => {
     if (property) {
       setFormData({
         ...property,
-        price: typeof property.price === 'string' ? property.price.replace("₹ ", "").trim() : (property.price || ''),
-        currentRental: typeof property.currentRental === 'string' ? property.currentRental.replace("₹ ", "").trim() : (property.currentRental || ''),
-        image: property.image || ""
+        price:
+          typeof property.price === "string"
+            ? property.price.replace("₹ ", "").trim()
+            : property.price || "",
+        currentRental:
+          typeof property.currentRental === "string"
+            ? property.currentRental.replace("₹ ", "").trim()
+            : property.currentRental || "",
+        image: property.image || "",
       });
     } else {
       resetForm();
@@ -156,23 +167,23 @@ const AdminProperty = () => {
   };
 
   const handleDelete = (id) => {
-    console.log('Deleting property ID from AdminProperty:', id);
-    if (window.confirm('Are you sure you want to delete this property?')) {
+    console.log("Deleting property ID from AdminProperty:", id);
+    if (window.confirm("Are you sure you want to delete this property?")) {
       dispatch(deleteProperty(id))
         .unwrap()
         .then(() => {
-          console.log('Property deleted successfully!');
+          console.log("Property deleted successfully!");
         })
         .catch((err) => {
-          console.error('Failed to delete property:', err);
-          alert(`Error: ${err?.message || 'Failed to delete property.'}`);
+          console.error("Failed to delete property:", err);
+          alert(`Error: ${err?.message || "Failed to delete property."}`);
         });
     }
   };
 
   const filteredProperties = Array.isArray(properties)
     ? properties.filter((property) => {
-        if (!property || typeof property !== 'object') return false;
+        if (!property || typeof property !== "object") return false;
         if (!searchQuery) return true;
         const searchTerm = searchQuery.toLowerCase();
         return (
@@ -199,14 +210,14 @@ const AdminProperty = () => {
               <select
                 id={field.name}
                 className="w-full p-1 border rounded text-xs focus:ring-blue-500 focus:border-blue-500"
-                value={formData[field.name] || ''}
+                value={formData[field.name] || ""}
                 onChange={(e) =>
                   field.onChange
                     ? field.onChange(e.target.value)
                     : setFormData({
-                      ...formData,
-                      [field.name]: e.target.value
-                    })
+                        ...formData,
+                        [field.name]: e.target.value,
+                      })
                 }
                 required={field.required}
               >
@@ -228,7 +239,7 @@ const AdminProperty = () => {
               <textarea
                 id={field.name}
                 className="w-full p-1 border rounded text-xs focus:ring-blue-500 focus:border-blue-500"
-                value={formData[field.name] || ''}
+                value={formData[field.name] || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, [field.name]: e.target.value })
                 }
@@ -242,7 +253,7 @@ const AdminProperty = () => {
                 type={field.type || "text"}
                 className="w-full p-1 border rounded text-xs focus:ring-blue-500 focus:border-blue-500"
                 placeholder={field.placeholder}
-                value={formData[field.name] || ''}
+                value={formData[field.name] || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, [field.name]: e.target.value })
                 }
@@ -278,22 +289,25 @@ const AdminProperty = () => {
         options:
           formData.category === "residential"
             ? [
-              { value: "luxuryProjects", label: "Luxury Projects" },
-              { value: "upcomingProjects", label: "Upcoming Projects" },
-              { value: "highRiseApartments", label: "High Rise Apartments" }
-            ]
-            : formData.category === "commercial"
-              ? [
+                { value: "luxuryProjects", label: "Luxury Projects" },
+                { value: "upcomingProjects", label: "Upcoming Projects" },
+                { value: "highRiseApartments", label: "High Rise Apartments" }
+              ]
+            : formData.category === "commercial" ||
+              formData.category === "trending" ||
+              formData.category === "featured"
+            ? [
                 { value: "offices", label: "Offices" },
                 { value: "preLeasedOffices", label: "Pre-Leased Offices" },
                 { value: "preRented", label: "Pre-Rented" },
                 { value: "sco", label: "SCO" }
               ]
-              : [],
-        required: formData.category === "residential" || formData.category === "commercial"
+            : [],
+        required: formData.category === "residential" || formData.category === "commercial" || formData.category === "trending" || formData.category === "featured"
       }
     ]
   };
+
   const residentialFormSections = [
     {
       title: "Residential Details",
@@ -327,6 +341,7 @@ const AdminProperty = () => {
       ]
     }
   ];
+
   const nonResidentialFormSections = [
     {
       title: "Commercial/Other Details",
@@ -384,12 +399,15 @@ const AdminProperty = () => {
     }
   ];
 
+  // Updated additionalSections: trending and featured share the same form as commercial.
   const additionalSections =
     formData.category === "residential"
       ? residentialFormSections
-      : formData.category === "commercial"
-        ? nonResidentialFormSections
-        : [];
+      : (formData.category === "commercial" ||
+         formData.category === "trending" ||
+         formData.category === "featured")
+      ? nonResidentialFormSections
+      : [];
 
   return (
     <div className="p-4">
@@ -428,7 +446,7 @@ const AdminProperty = () => {
       {loading && <div className="text-center p-4">Loading properties...</div>}
       {error && !loading && (
         <div className="text-center p-4 bg-red-100 text-red-700 rounded mb-4">
-          Error: {error.message || 'Failed to load data.'}
+          Error: {error.message || "Failed to load data."}
           <button onClick={() => dispatch(clearError())} className="ml-4 text-red-900 font-bold">X</button>
         </div>
       )}
@@ -482,7 +500,11 @@ const AdminProperty = () => {
               <div className="flex justify-end gap-3 mt-4 pt-3 border-t">
                 <button
                   type="button"
-                  onClick={() => { setShowModal(false); resetForm(); dispatch(clearError()); }}
+                  onClick={() => {
+                    setShowModal(false);
+                    resetForm();
+                    dispatch(clearError());
+                  }}
                   className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-sm"
                 >
                   Cancel
@@ -493,13 +515,16 @@ const AdminProperty = () => {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm disabled:bg-blue-300 disabled:cursor-not-allowed"
                 >
                   {isSubmitting
-                    ? 'Submitting...'
-                    : (editingProperty ? "Update Property" : "Create Property")
-                  }
+                    ? "Submitting..."
+                    : editingProperty
+                    ? "Update Property"
+                    : "Create Property"}
                 </button>
               </div>
               {error && isSubmitting && (
-                <p className="text-red-600 text-xs mt-2 text-right">{error.message || 'Submission failed.'}</p>
+                <p className="text-red-600 text-xs mt-2 text-right">
+                  {error.message || "Submission failed."}
+                </p>
               )}
             </form>
           </div>
