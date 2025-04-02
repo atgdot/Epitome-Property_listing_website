@@ -18,14 +18,16 @@ import {
 
 const AdminProperty = () => {
   const dispatch = useDispatch();
-  const { properties, loading, error } = useSelector(state => state.property);
+  const { properties, loading, error } = useSelector((state) => state.property);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
   const [formData, setFormData] = useState({
-    category: "RESIDENTIAL", // Updated to match allowedCategories
-    subCategory: "Luxury Projects", // Update accordingly if needed
+    category: "RESIDENTIAL",
+    subCategory: "Luxury Projects",
     city: "GURGAON",
     status: "",
     title: "",
@@ -64,19 +66,12 @@ const AdminProperty = () => {
     }
   };
 
-  // Updated handleCategoryChange to support trending and featured as commercial
   const handleCategoryChange = (newCategory) => {
     let newSubCategory = "";
     if (newCategory === "RESIDENTIAL") {
       newSubCategory = "Luxury Projects";
-    } else if (
-      newCategory === "Commercial" ||
-      newCategory === "Trending" ||
-      newCategory === "Featured"
-    ) {
-      newSubCategory = "Offices";  // Ensure it matches allowed value ("Offices")
-    } else {
-      newSubCategory = "";
+    } else if (newCategory === "Commercial") {
+      newSubCategory = "Offices";
     }
     setFormData((prev) => ({
       ...prev,
@@ -84,7 +79,6 @@ const AdminProperty = () => {
       subCategory: newSubCategory,
     }));
   };
-  
 
   const resetForm = () => {
     setFormData({
@@ -105,7 +99,6 @@ const AdminProperty = () => {
     });
     setEditingProperty(null);
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -115,6 +108,7 @@ const AdminProperty = () => {
 
     const propertyDataToSend = { ...formData };
 
+    // Clean up price and currentRental values
     if (typeof propertyDataToSend.price === "string") {
       propertyDataToSend.price = propertyDataToSend.price.replace("₹ ", "").trim();
     }
@@ -122,6 +116,23 @@ const AdminProperty = () => {
       propertyDataToSend.currentRental = propertyDataToSend.currentRental.replace("₹ ", "").trim();
     }
 
+    // Convert subCategory string into an array (as required by the API)
+    if (propertyDataToSend.subCategory && typeof propertyDataToSend.subCategory === "string") {
+      propertyDataToSend.subCategory = [propertyDataToSend.subCategory];
+    }
+
+    // Map "sector" field to "location"
+    if (propertyDataToSend.sector) {
+      propertyDataToSend.location = propertyDataToSend.sector;
+      delete propertyDataToSend.sector;
+    }
+
+    // Remove status if it is empty or not required
+    if (!propertyDataToSend.status) {
+      delete propertyDataToSend.status;
+    }
+
+    // Remove image field if empty so that backend default takes over
     if (!propertyDataToSend.image) {
       delete propertyDataToSend.image;
     }
@@ -160,6 +171,8 @@ const AdminProperty = () => {
           typeof property.currentRental === "string"
             ? property.currentRental.replace("₹ ", "").trim()
             : property.currentRental || "",
+        // Use property.location to set the sector field for the form display.
+        sector: property.location || "",
         image: property.image || "",
       });
     } else {
@@ -186,16 +199,21 @@ const AdminProperty = () => {
   const filteredProperties = Array.isArray(properties)
     ? properties.filter((property) => {
         if (!property || typeof property !== "object") return false;
-        if (!searchQuery) return true;
-        const searchTerm = searchQuery.toLowerCase();
-        return (
-          property.title?.toLowerCase().includes(searchTerm) ||
-          property.city?.toLowerCase().includes(searchTerm) ||
-          property.sector?.toLowerCase().includes(searchTerm) ||
-          property.category?.toLowerCase().includes(searchTerm) ||
-          property.subCategory?.toLowerCase().includes(searchTerm) ||
-          property.description?.toLowerCase().includes(searchTerm)
-        );
+        if (filterCategory !== "all" && property.category !== filterCategory) {
+          return false;
+        }
+        if (searchQuery) {
+          const searchTerm = searchQuery.toLowerCase();
+          return (
+            property.title?.toLowerCase().includes(searchTerm) ||
+            property.city?.toLowerCase().includes(searchTerm) ||
+            property.location?.toLowerCase().includes(searchTerm) ||
+            property.category?.toLowerCase().includes(searchTerm) ||
+            property.subCategory?.toString().toLowerCase().includes(searchTerm) ||
+            property.description?.toLowerCase().includes(searchTerm)
+          );
+        }
+        return true;
       })
     : [];
 
@@ -268,46 +286,49 @@ const AdminProperty = () => {
     </div>
   );
 
+  const commonFields = [
+    {
+      name: "category",
+      label: "Category",
+      type: "select",
+      options: [
+        { value: "RESIDENTIAL", label: "RESIDENTIAL" },
+        { value: "Commercial", label: "Commercial" },
+        { value: "Trending", label: "Trending" },
+        { value: "Featured", label: "Featured" },
+      ],
+      onChange: handleCategoryChange,
+      required: true,
+    },
+  ];
+
+  if (formData.category !== "Trending" && formData.category !== "Featured") {
+    commonFields.push({
+      name: "subCategory",
+      label: "Sub Category",
+      type: "select",
+      options:
+        formData.category === "RESIDENTIAL"
+          ? [
+              { value: "Luxury Projects", label: "Luxury Projects" },
+              { value: "Upcoming Project", label: "Upcoming Project" },
+              { value: "High Rise Apartment", label: "High Rise Apartment" },
+            ]
+          : formData.category === "Commercial"
+          ? [
+              { value: "Offices", label: "Offices" },
+              { value: "Pre-Leased Offices", label: "Pre-Leased Offices" },
+              { value: "Pre-Rented", label: "Pre-Rented" },
+              { value: "SCO", label: "SCO" },
+            ]
+          : [],
+      required: formData.category === "RESIDENTIAL" || formData.category === "Commercial",
+    });
+  }
+
   const commonSection = {
     title: "Basic Information",
-    fields: [
-      {
-        name: "category",
-        label: "Category",
-        type: "select",
-        options: [
-          { value: "residential", label: "RESIDENTIAL" },
-          { value: "commercial", label: "Commercial" },
-          { value: "trending", label: "Trending" },
-          { value: "featured", label: "Featured" }
-        ],
-        onChange: handleCategoryChange,
-        required: true
-      },
-      {
-        name: "subCategory",
-        label: "Sub Category",
-        type: "select",
-        options:
-          formData.category === "residential"
-            ? [
-                { value: "luxuryProjects", label: "Luxury Projects" },
-                { value: "upcomingProjects", label: "Upcoming Projects" },
-                { value: "highRiseApartments", label: "High Rise Apartments" }
-              ]
-            : formData.category === "commercial" ||
-              formData.category === "trending" ||
-              formData.category === "featured"
-            ? [
-                { value: "offices", label: "Offices" },
-                { value: "preLeasedOffices", label: "Pre-Leased Offices" },
-                { value: "preRented", label: "Pre-Rented" },
-                { value: "sco", label: "SCO" }
-              ]
-            : [],
-        required: formData.category === "residential" || formData.category === "commercial" || formData.category === "trending" || formData.category === "featured"
-      }
-    ]
+    fields: commonFields,
   };
 
   const residentialFormSections = [
@@ -321,15 +342,15 @@ const AdminProperty = () => {
           name: "price",
           label: "Price (₹)",
           placeholder: "e.g., 4.86 Cr or 48600000",
-          required: true
+          required: true,
         },
         {
           name: "image",
           label: "Property Image (Optional)",
           type: "file",
-          required: false
-        }
-      ]
+          required: false,
+        },
+      ],
     },
     {
       title: "Description",
@@ -338,10 +359,10 @@ const AdminProperty = () => {
           name: "description",
           label: "Description",
           type: "textarea",
-          placeholder: "Short description of the property"
-        }
-      ]
-    }
+          placeholder: "Short description of the property",
+        },
+      ],
+    },
   ];
 
   const nonResidentialFormSections = [
@@ -356,9 +377,9 @@ const AdminProperty = () => {
           name: "image",
           label: "Property Image (Optional)",
           type: "file",
-          required: false
-        }
-      ]
+          required: false,
+        },
+      ],
     },
     {
       title: "Description",
@@ -367,9 +388,9 @@ const AdminProperty = () => {
           name: "description",
           label: "Description",
           type: "textarea",
-          placeholder: "Short description of the property"
-        }
-      ]
+          placeholder: "Short description of the property",
+        },
+      ],
     },
     {
       title: "Pricing Information",
@@ -377,19 +398,19 @@ const AdminProperty = () => {
         {
           name: "price",
           label: "Price (₹)",
-          placeholder: "e.g., 4.86 Cr or 48600000"
+          placeholder: "e.g., 4.86 Cr or 48600000",
         },
         {
           name: "rentalYield",
           label: "Rental Yield (%)",
-          placeholder: "e.g., 5.2"
+          placeholder: "e.g., 5.2",
         },
         {
           name: "currentRental",
           label: "Current Rental (₹)",
-          placeholder: "e.g., 2.6 Lakh/month or 260000"
-        }
-      ]
+          placeholder: "e.g., 2.6 Lakh/month or 260000",
+        },
+      ],
     },
     {
       title: "Property Details",
@@ -397,17 +418,16 @@ const AdminProperty = () => {
         { name: "area", label: "Area (sqft)", placeholder: "e.g., 3500" },
         { name: "tenure", label: "Lease Tenure", placeholder: "e.g., 9 years" },
         { name: "tenant", label: "Tenant Name" },
-      ]
-    }
+      ],
+    },
   ];
 
-  // Updated additionalSections: trending and featured share the same form as commercial.
   const additionalSections =
-    formData.category === "residential"
+    formData.category === "RESIDENTIAL"
       ? residentialFormSections
-      : (formData.category === "commercial" ||
-         formData.category === "trending" ||
-         formData.category === "featured")
+      : formData.category === "Commercial" ||
+        formData.category === "Trending" ||
+        formData.category === "Featured"
       ? nonResidentialFormSections
       : [];
 
@@ -418,7 +438,10 @@ const AdminProperty = () => {
       </h1>
 
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
-        <button className="flex items-center px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm">
+        <button
+          onClick={() => setShowFilterPanel(!showFilterPanel)}
+          className="flex items-center px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm"
+        >
           <FiFilter className="mr-2" /> Filter
         </button>
 
@@ -445,18 +468,37 @@ const AdminProperty = () => {
         </div>
       </div>
 
+      {showFilterPanel && (
+        <div className="mb-4">
+          <label className="mr-2 font-medium">Filter by Category:</label>
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="p-2 border rounded"
+          >
+            <option value="all">All</option>
+            <option value="RESIDENTIAL">Residential</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Trending">Trending</option>
+            <option value="Featured">Featured</option>
+          </select>
+        </div>
+      )}
+
       {loading && <div className="text-center p-4">Loading properties...</div>}
       {error && !loading && (
         <div className="text-center p-4 bg-red-100 text-red-700 rounded mb-4">
           Error: {error.message || "Failed to load data."}
-          <button onClick={() => dispatch(clearError())} className="ml-4 text-red-900 font-bold">X</button>
+          <button onClick={() => dispatch(clearError())} className="ml-4 text-red-900 font-bold">
+            X
+          </button>
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProperties.map((property) => {
-          const propertyId = property._id; // Ensure you use _id consistently
-          return property.category === "residential" ? (
+          const propertyId = property._id;
+          return property.category === "RESIDENTIAL" ? (
             <HighRiseCard
               key={propertyId}
               property={property}
@@ -495,10 +537,7 @@ const AdminProperty = () => {
             </h2>
             <form onSubmit={handleSubmit}>
               {renderFormSection(commonSection.title, commonSection.fields)}
-              {additionalSections.map((section) =>
-                renderFormSection(section.title, section.fields)
-              )}
-
+              {additionalSections.map((section) => renderFormSection(section.title, section.fields))}
               <div className="flex justify-end gap-3 mt-4 pt-3 border-t">
                 <button
                   type="button"
@@ -516,11 +555,7 @@ const AdminProperty = () => {
                   disabled={isSubmitting || loading}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm disabled:bg-blue-300 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting
-                    ? "Submitting..."
-                    : editingProperty
-                    ? "Update Property"
-                    : "Create Property"}
+                  {isSubmitting ? "Submitting..." : editingProperty ? "Update Property" : "Create Property"}
                 </button>
               </div>
               {error && isSubmitting && (

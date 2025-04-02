@@ -42,7 +42,7 @@ export const updateProperty = createAsyncThunk(
 );
 
 export const getPropertyDetails = createAsyncThunk(
-  'property/getPropertyDetails',
+  'property/details',
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${BASE_URL}/detail/${id}`);

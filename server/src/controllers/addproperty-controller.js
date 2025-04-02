@@ -8,6 +8,9 @@ const allowedSubCategories = ["Luxury Projects", "Upcoming Project", "High Rise 
 // Add Property
 export const createPropertyController = async (req, res) => {
   const errors = validationResult(req);
+  console.log("Received category:", req.body.category);
+console.log("Received subCategory:", req.body.subCategory);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ success: false, errors: errors.array() });
   }
