@@ -1,30 +1,51 @@
-import React, { useContext } from "react";
-import { CSSTransition } from "react-transition-group";
+import React, { useEffect, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllProperties } from "../utils/Store/slice/propertySlice";
 import HighRiseCard from "../components/HighRiseCard";
-import PropertyContext from "../Context/PropertycardContext";
 
 const LuxuryProjectsFull = () => {
-  const { properties } = useContext(PropertyContext);
-  const luxuryProjects = properties.residential.luxuryProjects;
+  const dispatch = useDispatch();
+  const { properties, loading, error } = useSelector((state) => state.property);
+
+  // Fetch all properties when component mounts
+  useEffect(() => {
+    dispatch(getAllProperties());
+  }, [dispatch]);
+
+  // Filter only luxury projects
+  const luxuryProjects = useMemo(() => {
+    return (properties || []).filter((property) => {
+      if (property.category !== "Residential") return false;
+      const subCategory = Array.isArray(property.subCategory)
+        ? property.subCategory[0]
+        : property.subCategory;
+      return subCategory.toLowerCase().includes("luxury");
+    });
+  }, [properties]);
+
+  // Handle loading state
+  if (loading) {
+    return <div className="text-center my-8">Loading Luxury Projects...</div>;
+  }
+
+  // Handle error state
+  if (error) {
+    return <div className="text-center text-red-500 my-8">Error: {error.message}</div>;
+  }
 
   return (
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
-      <h2 className="text-3xl font-semibold text-center mb-6">
-        Luxury Projects
-      </h2>
-      <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
+      <h2 className="text-3xl font-semibold text-center mb-6">Luxury Projects</h2>
+
+      {luxuryProjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {luxuryProjects.map((property, index) => (
-            <HighRiseCard 
-              key={index} 
-              property={property} 
-              onViewDetails={() => {
-                // Add view details handler
-              }} 
-            />
+          {luxuryProjects.map((property) => (
+            <HighRiseCard key={property.id} property={property} />
           ))}
         </div>
-      </CSSTransition>
+      ) : (
+        <p className="text-center text-gray-600">No Luxury Projects available.</p>
+      )}
     </div>
   );
 };

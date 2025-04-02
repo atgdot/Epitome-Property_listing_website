@@ -1,8 +1,13 @@
 import React, { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import Slider from "react-slick";
 import HighRiseCard from "./HighRiseCard";
 import { getAllProperties } from "../utils/Store/slice/propertySlice";
+
+// Import slick styles for proper styling
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const ResidentialProjects = () => {
   const dispatch = useDispatch();
@@ -112,6 +117,21 @@ const ResidentialProjects = () => {
     },
   ];
 
+  // Slider settings for react-slick with 4 cards in one row on larger screens
+  const sliderSettings = {
+    dots: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    swipeToSlide: true,
+    responsive: [
+      { breakpoint: 1024, settings: { slidesToShow: 3, slidesToScroll: 1 } },
+      { breakpoint: 768, settings: { slidesToShow: 2, slidesToScroll: 1 } },
+      { breakpoint: 480, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+    ],
+  };
+
   // Handle Loading State
   if (loading) {
     return (
@@ -152,23 +172,31 @@ const ResidentialProjects = () => {
         </p>
       )}
 
-      {/* Project Sections - Each section displays a single row with 4 cards */}
+      {/* Project Sections using react-slick Slider and including View All button */}
       {[
-        { title: "Luxury Projects", projects: luxuryProjects },
-        { title: "Upcoming Projects", projects: upcomingProjects },
-        { title: "High Rise Apartments", projects: highRiseApartments },
+        { title: "Luxury Projects", projects: luxuryProjects, route: "/luxury-projects" },
+        { title: "Upcoming Projects", projects: upcomingProjects, route: "/upcoming-projects" },
+        { title: "High Rise Apartments", projects: highRiseApartments, route: "/high-rise-apartments" },
       ].map(
         (section, idx) =>
           section.projects.length > 0 && (
-            <div key={idx} className="mb-12">
+            <div key={idx} className="mb-12 relative">
               <h3 className="text-2xl font-semibold text-center mb-4">
                 {section.title}
               </h3>
-              <div className="grid grid-cols-4 gap-4">
-                {section.projects.slice(0, 4).map((property, index) => (
-                  <HighRiseCard key={index} property={property} />
+              <Slider {...sliderSettings}>
+                {section.projects.map((property, index) => (
+                  <div key={index} className="px-2 h-64">
+                    <HighRiseCard property={property} />
+                  </div>
                 ))}
-              </div>
+              </Slider>
+              <Link
+                to={section.route}
+                className="absolute top-0 right-4 text-blue-800 hover:text-blue-600 font-semibold transition-colors"
+              >
+                View All
+              </Link>
             </div>
           )
       )}
