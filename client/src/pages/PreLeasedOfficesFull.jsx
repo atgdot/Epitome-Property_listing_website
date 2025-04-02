@@ -1,27 +1,75 @@
-import React, { useContext } from "react";
+import React, { useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
+import { useSelector, useDispatch } from "react-redux";
 import PropertyCard from "../components/PropertyCard";
-import PropertyContext from "../Context/PropertycardContext";
-
+import { getAllProperties } from "../utils/Store/slice/propertySlice";
 
 const PreLeasedOfficesFull = () => {
-  const { commercial } = useContext(PropertyContext);
-  const properties = commercial?.preLeasedOffices || [];
+  const dispatch = useDispatch();
+  const { properties, loading, error } = useSelector((state) => state.property);
+
+  // Fetch properties when the component mounts
+  useEffect(() => {
+    dispatch(getAllProperties());
+  }, [dispatch]);
+
+  // Filter properties for Pre-Leased Offices using useMemo for performance
+  const preLeasedOffices = useMemo(() => {
+    return (properties || []).filter((property) => {
+      if (property.category !== "Commercial") return false;
+      const subCategory = Array.isArray(property.subCategory)
+        ? property.subCategory[0]
+        : property.subCategory;
+      return subCategory === "Pre-Leased Offices";
+    });
+  }, [properties]);
+
+  // Handle Loading State
+  if (loading) {
+    return (
+      <div className="my-8 text-center">
+        Loading Pre-Leased Offices...
+      </div>
+    );
+  }
+
+  // Handle Error State
+  if (error) {
+    return (
+      <div className="my-8 text-center text-red-500">
+        Error loading projects: {error.message || "Unknown error"}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
-      <h2 className="text-3xl font-semibold text-center mb-6">Pre-Leased Offices</h2>
+      <h2 className="text-3xl font-semibold text-center mb-6">
+        Pre-Leased Offices
+      </h2>
       <CSSTransition in={true} timeout={500} classNames="fade" unmountOnExit>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {properties.length > 0 ? (
-            properties.map((property, index) => (
-              <PropertyCard key={index} property={property} />
+          {preLeasedOffices.length > 0 ? (
+            preLeasedOffices.map((property) => (
+              <PropertyCard key={property.id} property={property} />
             ))
           ) : (
-            <p className="text-center text-gray-600">No pre-leased offices available.</p>
+            <p className="text-center text-gray-600">
+              No pre-leased offices available.
+            </p>
           )}
         </div>
       </CSSTransition>
+      {/* Optional: A back button to return to Commercial Projects */}
+      <div className="mt-8 text-center">
+        <Link
+          to="/commercial"
+          className="text-blue-800 hover:text-blue-600 font-semibold transition-colors"
+        >
+          Back to Commercial Projects
+        </Link>
+      </div>
     </div>
   );
 };
