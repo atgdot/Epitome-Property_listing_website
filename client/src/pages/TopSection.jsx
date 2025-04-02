@@ -11,7 +11,7 @@ const RecommendationFlipCard = ({ property }) => (
       {/* Front Side: Show the image */}
       <div className="absolute w-full h-full rounded-xl overflow-hidden [backface-visibility:hidden]">
         <img
-          src={property.property_Image}
+          src={property.image}
           alt={property.title}
           className="w-full h-full object-cover"
         />
@@ -20,7 +20,7 @@ const RecommendationFlipCard = ({ property }) => (
       {/* Back Side: Show details */}
       <div className="absolute w-full h-full rounded-xl bg-gray-800 p-6 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center">
         <h3 className="text-2xl font-bold mb-4">{property.title}</h3>
-        <p className="text-lg">{property.location}</p>
+        <p className="text-lg">{property.address?.join(", ") || property.location}</p>
       </div>
     </div>
   </div>
@@ -48,39 +48,40 @@ const TopSection = () => {
       luxury: [],
     };
 
-    (properties || [])
-      .filter(property => property.category === 'Trending' ||
-        property.category === 'Featured' ||
-        property.category === 'Recommended' ||
-        property.category === 'Commercial' ||
-        property.category === 'RESIDENTIAL')
-      .forEach(property => {
-        // Handle subCategory if it's an array
-        const subCategory = Array.isArray(property.subCategory) ? property.subCategory[0] : property.subCategory;
+    (properties || []).forEach(property => {
+      // Map the property fields to match component expectations
+      const mappedProperty = {
+        ...property,
+        image: property.property_Image,
+        sector: property.location
+      };
 
-        // Group by category and subcategory
-        if (property.category === 'Trending') {
-          grouped.trending.push(property);
-        } else if (property.category === 'Featured') {
-          grouped.featured.push(property);
-        } else if (property.category === 'Recommended') {
-          grouped.recommended.push(property);
-        } else if (property.category === 'Commercial') {
-          if (subCategory === 'Pre-Leased Offices') {
-            grouped.preLeased.push(property);
-          } else if (subCategory === 'Offices') {
-            grouped.commercial.push(property);
-          } else if (subCategory === 'SCO') {
-            grouped.sco.push(property);
-          }
-        } else if (property.category === 'RESIDENTIAL') {
-          if (subCategory === 'Luxury Projects') {
-            grouped.luxury.push(property);
-          } else if (subCategory === 'Upcoming Projects') {
-            grouped.upcoming.push(property);
-          }
+      // Handle subCategory if it's an array
+      const subCategory = Array.isArray(property.subCategory) ? property.subCategory[0] : property.subCategory;
+
+      // Group by category and subcategory
+      if (property.category === 'Trending') {
+        grouped.trending.push(mappedProperty);
+      } else if (property.category === 'Featured') {
+        grouped.featured.push(mappedProperty);
+      } else if (property.category === 'Recommended') {
+        grouped.recommended.push(mappedProperty);
+      } else if (property.category === 'Commercial') {
+        if (subCategory === 'Pre-Leased Offices') {
+          grouped.preLeased.push(mappedProperty);
+        } else if (subCategory === 'Offices') {
+          grouped.commercial.push(mappedProperty);
+        } else if (subCategory === 'SCO') {
+          grouped.sco.push(mappedProperty);
         }
-      });
+      } else if (property.category === 'RESIDENTIAL') {
+        if (subCategory === 'Luxury Projects') {
+          grouped.luxury.push(mappedProperty);
+        } else if (subCategory === 'Upcoming Projects') {
+          grouped.upcoming.push(mappedProperty);
+        }
+      }
+    });
 
     return grouped;
   }, [properties]);
@@ -122,26 +123,21 @@ const TopSection = () => {
     );
   }
 
-  // Handle No Properties Found
-  const noPropertiesData = !loading && Object.values(propertiesByCategory).every(arr => arr.length === 0);
-
   return (
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
       {/* RECOMMENDATIONS SECTION (Flip Cards in a 4-Column Grid) */}
-      {propertiesByCategory.recommended.length > 0 && (
-        <div className="mb-10">
-          {/* Centered Title */}
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-semibold">RECOMMENDED</h2>
-          </div>
-          {/* Grid with 4 cards in one row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {propertiesByCategory.recommended.slice(0, 4).map((property, index) => (
-              <RecommendationFlipCard key={index} property={property} />
-            ))}
-          </div>
+      <div className="mb-10">
+        {/* Centered Title */}
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-semibold">RECOMMENDED</h2>
         </div>
-      )}
+        {/* Grid with 4 cards in one row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {propertiesByCategory.recommended.slice(0, 4).map((property, index) => (
+            <RecommendationFlipCard key={index} property={property} />
+          ))}
+        </div>
+      </div>
 
       {/* PROPERTY CATEGORY NAVIGATION */}
       <h2 className="text-3xl font-semibold text-center mb-6">Explore Our Properties</h2>
@@ -151,19 +147,14 @@ const TopSection = () => {
             key={btn.category}
             onClick={() => setSelectedCategory(btn.category)}
             className={`px-4 py-2 rounded-full hover:cursor-pointer ${selectedCategory === btn.category
-                ? "bg-[#043268] text-white"
-                : "bg-white border border-gray-600"
+              ? "bg-[#043268] text-white"
+              : "bg-white border border-gray-600"
               }`}
           >
             {btn.label}
           </button>
         ))}
       </div>
-
-      {/* Display message if no properties exist */}
-      {noPropertiesData && (
-        <p className="text-center text-gray-600 mb-12">No properties available at the moment.</p>
-      )}
 
       {/* PROPERTIES LISTING */}
       {propertiesList.length > 0 ? (
