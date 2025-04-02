@@ -30,6 +30,24 @@ const TopSection = () => {
   const dispatch = useDispatch();
   const { properties, loading, error } = useSelector((state) => state.property);
 
+  // Function to determine number of columns based on window width
+  const getColumns = () => {
+    if (typeof window !== "undefined") {
+      if (window.innerWidth >= 1024) return 3; // lg: 3 columns
+      if (window.innerWidth >= 768) return 2; // md: 2 columns
+      return 1; // sm: 1 column
+    }
+    return 1;
+  };
+
+  const [columns, setColumns] = useState(getColumns());
+
+  useEffect(() => {
+    const handleResize = () => setColumns(getColumns());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Fetch properties when component mounts
   useEffect(() => {
     dispatch(getAllProperties());
@@ -100,8 +118,14 @@ const TopSection = () => {
   const [selectedCategory, setSelectedCategory] = useState(navButtons[0].category);
   let propertiesList = propertiesByCategory[selectedCategory] || [];
 
-  // Always show all properties for trending; for other categories, limit to 3
-  propertiesList = selectedCategory === "trending" ? propertiesList : propertiesList.slice(0, 3);
+  // For Trending, show only 2 rows based on the current number of columns.
+  // For other categories, limit to 3 items.
+  if (selectedCategory === "trending") {
+    const maxTrendingCount = columns * 2;
+    propertiesList = propertiesList.slice(0, maxTrendingCount);
+  } else {
+    propertiesList = propertiesList.slice(0, 3);
+  }
 
   // Handle Loading State
   if (loading) {
