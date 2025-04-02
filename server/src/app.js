@@ -14,6 +14,7 @@ import addAgentRouter from "./routes/addAgent-router.js";
 import reviewRouter from "./routes/review-router.js";
 import feedbackRouter from "./routes/feedback-router.js";
 import recommendationCardRouter from "./routes/recommendationCard-router.js";
+import EnquiryForm from "./routes/enquiry-router.js"
 
 // Load environment variables and connect to the database once
 dotenv.config();
@@ -59,6 +60,7 @@ app.use("/api/v1/admin-dashboard/agent", addAgentRouter);
 app.use("/api/v1/admin-dashboard/review", reviewRouter);
 app.use("/api/v1/admin-dashboard/recommendation", recommendationCardRouter);
 app.use("/api/v1/feedback", feedbackRouter);
+app.use("/api/v1/enquiry_form", EnquiryForm)
 
 // Test route
 app.get("/test", (req, res) => {
