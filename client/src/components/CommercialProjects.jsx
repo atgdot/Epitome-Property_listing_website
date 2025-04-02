@@ -69,25 +69,25 @@ const CommercialProjects = () => {
       id: 1,
       title: "PRE LEASED",
       imageUrl: "https://i.ibb.co/hFFDQrXC/01bef475fa70b91b2561c1cad9b7a92f.jpg",
-      route: "/pre-leased",
+      route: "/commercial/preleased",
     },
     {
       id: 2,
       title: "OFFICE LEASE",
       imageUrl: "https://i.ibb.co/PZfXwZYG/329aa8999bf0e843299b5570492f960b.jpg",
-      route: "/office-lease",
+      route: "/commercial/preleased",
     },
     {
       id: 3,
       title: "OFFICE SALE",
       imageUrl: "https://i.ibb.co/XrSmRrxK/157eb9356453c4314baa1734c80619a3.jpg",
-      route: "/office-sale",
+      route: "/commercial/offices",
     },
     {
       id: 4,
       title: "PLOTS",
       imageUrl: "https://i.ibb.co/xQnsvYP/a9ed8d5db8a056350caa26a1cff75e0d.jpg",
-      route: "/plots",
+      route: "/commercial/prerented",
     },
     {
       id: 5,
@@ -99,7 +99,7 @@ const CommercialProjects = () => {
       id: 6,
       title: "SCO PLOTS",
       imageUrl: "https://i.ibb.co/N2T83XBv/a6fb8bac27dfb52af5cf85950b521da3.jpg",
-      route: "/sco-plots",
+      route: "/commercial/sco",
     },
   ];
 
