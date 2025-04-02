@@ -8,7 +8,7 @@ const addPropertySchema = new mongoose.Schema({
   },
   subCategory: {
     type: [String],
-    enum: ["luxury projects", "upcoming project", "high rise apartment"],
+    enum: ["luxury projects", "upcoming project", "high rise apartment","Offices","PRe-Leased Offices","Pre-Rented","SCO"],
     required: true,
   },
   city: {

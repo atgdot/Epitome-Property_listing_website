@@ -3,7 +3,7 @@ import addProperty from "../models/addproperty-model.js";
 
 // Allowed categories and subcategories
 const allowedCategories = ["residential", "commercial", "featured", "trending"];
-const allowedSubCategories = ["luxury projects", "upcoming project", "high rise apartment"];
+const allowedSubCategories = ["luxury projects", "upcoming project", "high rise apartment","Offices","PRe-Leased Offices","Pre-Rented","SCO"];
 
 // Add Property
 export const createPropertyController = async (req, res) => {
