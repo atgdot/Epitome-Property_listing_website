@@ -1,24 +1,20 @@
 // src/utils/Store/slice/propertySlice.js (or correct path)
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 // --- IMPORTANT: Define BASE_URL ---
-const BASE_URL = "http://localhost:3000/api/v1/admin-dashboard/property"; // Adjusted BASE_URL
+const BASE_URL = 'http://localhost:3000/api/v1/admin-dashboard/property'; // Adjusted BASE_URL
 // -----------------------------------
 
 // Helper for consistent error handling in rejectWithValue
 const handleApiError = (error) => {
-  return (
-    error.response?.data || {
-      message: error.message || "An unknown error occurred",
-    }
-  );
+  return error.response?.data || { message: error.message || 'An unknown error occurred' };
 };
 
 // --- Async Thunks ---
 
 export const createProperty = createAsyncThunk(
-  "property/createProperty",
+  'property/createProperty',
   async (propertyData, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${BASE_URL}/create`, propertyData);
@@ -30,9 +26,10 @@ export const createProperty = createAsyncThunk(
 );
 
 export const updateProperty = createAsyncThunk(
-  "property/updateProperty",
+  'property/updateProperty',
   async ({ id, propertyData }, { rejectWithValue }) => {
     try {
+      //const response = await axios.patch(`${BASE_URL}/update/${id}`, propertyData);
       const response = await axios.patch(
         `${BASE_URL}/update/${id}`,
         propertyData
@@ -45,7 +42,7 @@ export const updateProperty = createAsyncThunk(
 );
 
 export const getPropertyDetails = createAsyncThunk(
-  "property/getPropertyDetails",
+  'property/getPropertyDetails',
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${BASE_URL}/detail/${id}`);
@@ -57,13 +54,11 @@ export const getPropertyDetails = createAsyncThunk(
 );
 
 export const searchProperties = createAsyncThunk(
-  "property/searchProperties",
+  'property/searchProperties',
   async (searchTerm, { rejectWithValue }) => {
     try {
       const encodedSearchTerm = encodeURIComponent(searchTerm);
-      const response = await axios.get(
-        `${BASE_URL}/search/${encodedSearchTerm}`
-      );
+      const response = await axios.get(`${BASE_URL}/search/${encodedSearchTerm}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(handleApiError(error));
@@ -72,21 +67,22 @@ export const searchProperties = createAsyncThunk(
 );
 
 export const deleteProperty = createAsyncThunk(
-  "property/deleteProperty",
+  'property/deleteProperty',
   async (id, { rejectWithValue }) => {
     try {
+      console.log('Deleting property with ID:', id); // Add this line
       console.log("Deleting property with ID:", id); // Add this line
       await axios.delete(`${BASE_URL}/delete/${id}`);
       return id;
     } catch (error) {
-      console.error("Delete property error:", error); // Log the error
+      console.error('Delete property error:', error); // Log the error
       return rejectWithValue(handleApiError(error));
     }
   }
 );
 
 export const getAllProperties = createAsyncThunk(
-  "property/getAllProperties",
+  'property/getAllProperties',
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${BASE_URL}/all`);
@@ -108,7 +104,7 @@ const initialState = {
 };
 
 const propertySlice = createSlice({
-  name: "property",
+  name: 'property',
   initialState,
   reducers: {
     clearError: (state) => {
@@ -141,9 +137,7 @@ const propertySlice = createSlice({
       .addCase(updateProperty.fulfilled, (state, action) => {
         state.loading = false;
         if (action.payload && action.payload.data && action.payload.data._id) {
-          const index = state.properties.findIndex(
-            (prop) => prop._id === action.payload.data._id
-          );
+          const index = state.properties.findIndex(prop => prop._id === action.payload.data._id);
           if (index !== -1) {
             state.properties[index] = action.payload.data;
           }
@@ -189,9 +183,7 @@ const propertySlice = createSlice({
       .addCase(deleteProperty.fulfilled, (state, action) => {
         state.loading = false;
         const idToRemove = action.payload;
-        state.properties = state.properties.filter(
-          (prop) => prop._id !== idToRemove
-        );
+        state.properties = state.properties.filter(prop => prop._id !== idToRemove);
         if (state.currentProperty?._id === idToRemove) {
           state.currentProperty = null;
         }
@@ -209,14 +201,9 @@ const propertySlice = createSlice({
         if (Array.isArray(action.payload.data)) {
           state.properties = action.payload.data;
         } else {
-          console.error(
-            "getAllProperties fulfilled received non-array payload:",
-            action.payload
-          );
+          console.error('getAllProperties fulfilled received non-array payload:', action.payload);
           state.properties = [];
-          state.error = {
-            message: "Received invalid property data from server.",
-          };
+          state.error = { message: 'Received invalid property data from server.' };
         }
       })
       .addCase(getAllProperties.rejected, (state, action) => {
