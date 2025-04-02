@@ -5,7 +5,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import store  from "./utils/Store/store";
+import store from "./utils/Store/store";
 // Components & Pages
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
@@ -18,7 +18,7 @@ import Footer from "./components/Footer";
 import AdminDashboard from "./admin/AdminDashboard";
 import UserManagement from "./components/UserManagement";
 import Recommendations from "./components/Recommendation";
-import ErrorBoundary from './components/ErrorBoundary';
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Residential Full Listing Pages
 import LuxuryProjectsFull from "./pages/LuxuryProjectsFull";
@@ -40,6 +40,7 @@ import { PhotoProvider } from "./context/PhotoContext";
 
 import "./index.css";
 import { Provider } from "react-redux";
+import PropertyDetailPage from "./pages/PropertyDetailPage";
 
 function Layout() {
   const location = useLocation();
@@ -85,7 +86,7 @@ function Layout() {
             path="/residential/highrise"
             element={<HighRiseApartmentsFull />}
           />
-
+          <Route path="property/:id" element={<PropertyDetailPage />} />
           {/* Commercial Routes */}
           <Route path="/commercial/offices" element={<OfficesFull />} />
           <Route
