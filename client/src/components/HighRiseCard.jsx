@@ -16,7 +16,7 @@ const HighRiseCard = ({
 
   const handleViewDetails = () => {
     dispatch(setPropertyDetail(property)); // Redux me data store karo
-    navigate(`/property/${property.id}`); // Navigate to new page
+    navigate(`/property/${property._id}`); // Navigate to new page
   };
   return (
     <div className="bg-white rounded-2xl border-2 border-gray-200 p-5 shadow-lg hover:shadow-xl transition-shadow">
