@@ -20,7 +20,9 @@ const RecommendationFlipCard = ({ property }) => (
       {/* Back Side: Show details */}
       <div className="absolute w-full h-full rounded-xl bg-gray-800 p-6 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center">
         <h3 className="text-2xl font-bold mb-4">{property.title}</h3>
-        <p className="text-lg">{property.address?.join(", ") || property.location}</p>
+        <p className="text-lg">
+          {property.address?.join(", ") || property.location}
+        </p>
       </div>
     </div>
   </div>
@@ -57,7 +59,7 @@ const TopSection = () => {
   const propertiesByCategory = useMemo(() => {
     const grouped = {
       trending: [],
-      upcoming: [],
+      upcomingProjects: [],
       preLeased: [],
       featured: [],
       recommended: [],
@@ -66,37 +68,39 @@ const TopSection = () => {
       luxury: [],
     };
 
-    (properties || []).forEach(property => {
+    (properties || []).forEach((property) => {
       // Map the property fields to match component expectations
       const mappedProperty = {
         ...property,
         image: property.property_Image,
-        sector: property.location
+        sector: property.location,
       };
 
       // Handle subCategory if it's an array
-      const subCategory = Array.isArray(property.subCategory) ? property.subCategory[0] : property.subCategory;
+      const subCategory = Array.isArray(property.subCategory)
+        ? property.subCategory[0]
+        : property.subCategory;
 
       // Group by category and subcategory
-      if (property.category === 'Trending') {
+      if (property.category === "Trending") {
         grouped.trending.push(mappedProperty);
-      } else if (property.category === 'Featured') {
+      } else if (property.category === "Featured") {
         grouped.featured.push(mappedProperty);
-      } else if (property.category === 'Recommended') {
+      } else if (property.category === "Recommended") {
         grouped.recommended.push(mappedProperty);
-      } else if (property.category === 'Commercial') {
-        if (subCategory === 'Pre-Leased Offices') {
+      } else if (property.category === "Commercial") {
+        if (subCategory === "Pre-Leased Offices") {
           grouped.preLeased.push(mappedProperty);
-        } else if (subCategory === 'Offices') {
+        } else if (subCategory === "Offices") {
           grouped.commercial.push(mappedProperty);
-        } else if (subCategory === 'SCO') {
+        } else if (subCategory === "SCO") {
           grouped.sco.push(mappedProperty);
         }
-      } else if (property.category === 'RESIDENTIAL') {
-        if (subCategory === 'Luxury Projects') {
+      } else if (property.category === "RESIDENTIAL") {
+        if (subCategory === "Luxury Projects") {
           grouped.luxury.push(mappedProperty);
-        } else if (subCategory === 'Upcoming Projects') {
-          grouped.upcoming.push(mappedProperty);
+        } else if (subCategory === "Upcoming Projects") {
+          grouped.upcomingProjects.push(mappedProperty);
         }
       }
     });
@@ -104,9 +108,10 @@ const TopSection = () => {
     return grouped;
   }, [properties]);
 
+  // Update navigation buttons so that "Upcoming" now uses upcomingProjects
   const navButtons = [
     { label: "Trending", category: "trending" },
-    { label: "Upcoming", category: "upcoming" },
+    { label: "Upcoming", category: "upcomingProjects" },
     { label: "Pre-Leased", category: "preLeased" },
     { label: "Featured", category: "featured" },
     { label: "Recommended", category: "recommended" },
@@ -115,7 +120,9 @@ const TopSection = () => {
     { label: "Luxury", category: "luxury" },
   ];
 
-  const [selectedCategory, setSelectedCategory] = useState(navButtons[0].category);
+  const [selectedCategory, setSelectedCategory] = useState(
+    navButtons[0].category
+  );
   let propertiesList = propertiesByCategory[selectedCategory] || [];
 
   // For Trending, show only 2 rows based on the current number of columns.
@@ -141,7 +148,7 @@ const TopSection = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center text-red-500">
-          Error loading properties: {error.message || 'Unknown error'}
+          Error loading properties: {error.message || "Unknown error"}
         </div>
       </div>
     );
@@ -164,16 +171,19 @@ const TopSection = () => {
       </div>
 
       {/* PROPERTY CATEGORY NAVIGATION */}
-      <h2 className="text-3xl font-semibold text-center mb-6">Explore Our Properties</h2>
+      <h2 className="text-3xl font-semibold text-center mb-6">
+        Explore Our Properties
+      </h2>
       <div className="flex justify-center gap-4 flex-wrap mb-10">
         {navButtons.map((btn) => (
           <button
             key={btn.category}
             onClick={() => setSelectedCategory(btn.category)}
-            className={`px-4 py-2 rounded-full hover:cursor-pointer ${selectedCategory === btn.category
-              ? "bg-[#043268] text-white"
-              : "bg-white border border-gray-600"
-              }`}
+            className={`px-4 py-2 rounded-full hover:cursor-pointer ${
+              selectedCategory === btn.category
+                ? "bg-[#043268] text-white"
+                : "bg-white border border-gray-600"
+            }`}
           >
             {btn.label}
           </button>
@@ -184,11 +194,14 @@ const TopSection = () => {
       {propertiesList.length > 0 ? (
         <div>
           <h3 className="text-2xl font-semibold text-center mb-6">
-            {navButtons.find((btn) => btn.category === selectedCategory)?.label || ""} Properties
+            {navButtons.find((btn) => btn.category === selectedCategory)?.label ||
+              ""}{" "}
+            Properties
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {propertiesList.map((property, index) =>
-              selectedCategory === "upcoming" || selectedCategory === "luxury" ? (
+              selectedCategory === "upcomingProjects" ||
+              selectedCategory === "luxury" ? (
                 <HighRiseCard
                   key={index}
                   property={property}
@@ -203,7 +216,9 @@ const TopSection = () => {
           </div>
         </div>
       ) : (
-        <p className="text-center text-gray-600">No properties available for this category.</p>
+        <p className="text-center text-gray-600">
+          No properties available for this category.
+        </p>
       )}
     </div>
   );

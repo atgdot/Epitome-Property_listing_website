@@ -13,6 +13,11 @@ const ResidentialProjects = () => {
     dispatch(getAllProperties());
   }, [dispatch]);
 
+  // Debug: Log fetched properties to verify data structure
+  useEffect(() => {
+    console.log("Fetched properties:", properties);
+  }, [properties]);
+
   // Group residential properties by subcategory using useMemo for performance
   const residentialPropertiesGrouped = useMemo(() => {
     const grouped = {
@@ -22,68 +27,87 @@ const ResidentialProjects = () => {
     };
 
     (properties || [])
-      .filter(property => property.category === 'RESIDENTIAL')
-      .forEach(property => {
+      .filter(
+        (property) =>
+          property.category &&
+          property.category.toLowerCase() === "residential"
+      )
+      .forEach((property) => {
         // Handle subCategory if it's an array
-        const subCategory = Array.isArray(property.subCategory) ? property.subCategory[0] : property.subCategory;
+        let subCategory = property.subCategory;
+        if (Array.isArray(subCategory)) {
+          subCategory = subCategory[0];
+        }
+        if (typeof subCategory === "string") {
+          const normalizedSubCategory = subCategory.trim().toLowerCase();
 
-        // Group by subcategory
-        if (subCategory === 'Luxury Projects') {
-          grouped.luxuryProjects.push(property);
-        } else if (subCategory === 'Upcoming Projects') {
-          grouped.upcomingProjects.push(property);
-        } else if (subCategory === 'High Rise Apartments') {
-          grouped.highRiseApartments.push(property);
+          // Use flexible matching to group properties
+          if (normalizedSubCategory.includes("luxury")) {
+            grouped.luxuryProjects.push(property);
+          } else if (normalizedSubCategory.includes("upcoming")) {
+            grouped.upcomingProjects.push(property);
+          } else if (normalizedSubCategory.includes("high rise")) {
+            grouped.highRiseApartments.push(property);
+          }
         }
       });
 
+    console.log("Grouped Residential Properties:", grouped);
     return grouped;
   }, [properties]);
 
-  const { luxuryProjects, upcomingProjects, highRiseApartments } = residentialPropertiesGrouped;
+  const { luxuryProjects, upcomingProjects, highRiseApartments } =
+    residentialPropertiesGrouped;
 
   // Static menu items for Prime Locations
   const menuItems = [
     {
       id: 1,
       title: "GOLF COURSE ROAD",
-      imageUrl: "https://i.ibb.co/YFPCnnPT/7ede1e912c87693b20468d5a7fffc9b3.jpg",
+      imageUrl:
+        "https://i.ibb.co/YFPCnnPT/7ede1e912c87693b20468d5a7fffc9b3.jpg",
       route: "/luxury-projects",
     },
     {
       id: 2,
       title: "GOLF COURSE EXT ROAD",
-      imageUrl: "https://i.ibb.co/XxwFmG6z/2a37a116a205074c935e4eae2e30b575.jpg",
+      imageUrl:
+        "https://i.ibb.co/XxwFmG6z/2a37a116a205074c935e4eae2e30b575.jpg",
       route: "/upcoming-projects",
     },
     {
       id: 3,
       title: "MG ROAD",
-      imageUrl: "https://i.ibb.co/sY1PvLF/31a1a4c136196eae034b164809cc2349.jpg",
+      imageUrl:
+        "https://i.ibb.co/sY1PvLF/31a1a4c136196eae034b164809cc2349.jpg",
       route: "/high-rise-apartments",
     },
     {
       id: 4,
       title: "NH 48",
-      imageUrl: "https://i.ibb.co/pv6JpqVd/9e502bb841d3bfc9f5efb82eb825169b.jpg",
+      imageUrl:
+        "https://i.ibb.co/pv6JpqVd/9e502bb841d3bfc9f5efb82eb825169b.jpg",
       route: "/high-rise-apartments",
     },
     {
       id: 5,
       title: "SOHNA ROAD",
-      imageUrl: "https://i.ibb.co/Z6JBTnZS/5ab6c48e59bc6ce01278adefc81ee651.jpg",
+      imageUrl:
+        "https://i.ibb.co/Z6JBTnZS/5ab6c48e59bc6ce01278adefc81ee651.jpg",
       route: "/high-rise-apartments",
     },
     {
       id: 6,
       title: "HUDA CITY METRO",
-      imageUrl: "https://i.ibb.co/4gnYYL3M/4a823844acdba47e641ab8825ed2687a.jpg",
+      imageUrl:
+        "https://i.ibb.co/4gnYYL3M/4a823844acdba47e641ab8825ed2687a.jpg",
       route: "/high-rise-apartments",
     },
     {
       id: 7,
       title: "SPR ROAD",
-      imageUrl: "https://i.ibb.co/G41H2CLt/dd19b3798a1b605440d5daea20d96fe6.jpg",
+      imageUrl:
+        "https://i.ibb.co/G41H2CLt/dd19b3798a1b605440d5daea20d96fe6.jpg",
       route: "/high-rise-apartments",
     },
   ];
@@ -102,14 +126,15 @@ const ResidentialProjects = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center text-red-500">
-          Error loading projects: {error.message || 'Unknown error'}
+          Error loading projects: {error.message || "Unknown error"}
         </div>
       </div>
     );
   }
 
   // Handle No Residential Projects Found
-  const noResidentialData = !loading &&
+  const noResidentialData =
+    !loading &&
     luxuryProjects.length === 0 &&
     upcomingProjects.length === 0 &&
     highRiseApartments.length === 0;
@@ -122,33 +147,30 @@ const ResidentialProjects = () => {
 
       {/* Display message if no residential properties exist */}
       {noResidentialData && (
-        <p className="text-center text-gray-600 mb-12">No residential properties available at the moment.</p>
+        <p className="text-center text-gray-600 mb-12">
+          No residential properties available at the moment.
+        </p>
       )}
 
-      {/* Project Sections */}
+      {/* Project Sections - Each section displays a single row with 4 cards */}
       {[
-        { title: "Luxury Projects", projects: luxuryProjects, route: "luxury" },
-        { title: "Upcoming Projects", projects: upcomingProjects, route: "upcoming" },
-        { title: "High Rise Apartments", projects: highRiseApartments, route: "highrise" }
-      ].map((section, idx) =>
-        section.projects.length > 0 && (
-          <div key={idx} className="relative mb-12">
-            <div className="relative mb-4 text-center">
-              <h3 className="text-2xl font-semibold">{section.title}</h3>
-              <Link
-                to={`/residential/${section.route}`}
-                className="absolute top-0 right-4 text-blue-800 hover:text-blue-600 font-semibold transition-colors"
-              >
-                View All
-              </Link>
+        { title: "Luxury Projects", projects: luxuryProjects },
+        { title: "Upcoming Projects", projects: upcomingProjects },
+        { title: "High Rise Apartments", projects: highRiseApartments },
+      ].map(
+        (section, idx) =>
+          section.projects.length > 0 && (
+            <div key={idx} className="mb-12">
+              <h3 className="text-2xl font-semibold text-center mb-4">
+                {section.title}
+              </h3>
+              <div className="grid grid-cols-4 gap-4">
+                {section.projects.slice(0, 4).map((property, index) => (
+                  <HighRiseCard key={index} property={property} />
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {section.projects.map((property, index) => (
-                <HighRiseCard key={index} property={property} />
-              ))}
-            </div>
-          </div>
-        )
+          )
       )}
 
       {/* Prime Locations Section */}
@@ -156,7 +178,7 @@ const ResidentialProjects = () => {
         <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
           Prime Locations
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-4 gap-6">
           {menuItems.map((item) => (
             <Link
               to={item.route}
