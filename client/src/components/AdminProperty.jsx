@@ -24,8 +24,8 @@ const AdminProperty = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingProperty, setEditingProperty] = useState(null);
   const [formData, setFormData] = useState({
-    category: "residential",
-    subCategory: "luxuryProjects",
+    category: "RESIDENTIAL", // Updated to match allowedCategories
+    subCategory: "Luxury Projects", // Update accordingly if needed
     city: "GURGAON",
     status: "",
     title: "",
@@ -67,14 +67,14 @@ const AdminProperty = () => {
   // Updated handleCategoryChange to support trending and featured as commercial
   const handleCategoryChange = (newCategory) => {
     let newSubCategory = "";
-    if (newCategory === "residential") {
-      newSubCategory = "luxuryProjects";
+    if (newCategory === "RESIDENTIAL") {
+      newSubCategory = "Luxury Projects";
     } else if (
-      newCategory === "commercial" ||
-      newCategory === "trending" ||
-      newCategory === "featured"
+      newCategory === "Commercial" ||
+      newCategory === "Trending" ||
+      newCategory === "Featured"
     ) {
-      newSubCategory = "offices";
+      newSubCategory = "Offices";  // Ensure it matches allowed value ("Offices")
     } else {
       newSubCategory = "";
     }
@@ -84,11 +84,12 @@ const AdminProperty = () => {
       subCategory: newSubCategory,
     }));
   };
+  
 
   const resetForm = () => {
     setFormData({
-      category: "residential",
-      subCategory: "luxuryProjects",
+      category: "RESIDENTIAL",
+      subCategory: "Luxury Projects",
       city: "GURGAON",
       status: "",
       title: "",
@@ -104,6 +105,7 @@ const AdminProperty = () => {
     });
     setEditingProperty(null);
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

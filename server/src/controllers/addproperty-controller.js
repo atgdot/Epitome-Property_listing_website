@@ -2,8 +2,8 @@ import { validationResult } from "express-validator";
 import addProperty from "../models/addproperty-model.js";
 
 // Allowed categories and subcategories
-const allowedCategories = ["residential", "commercial", "featured", "trending"];
-const allowedSubCategories = ["luxuryProjects", "upcoming project", "high rise apartment","Offices","PRe-Leased Offices","Pre-Rented","SCO"];
+const allowedCategories = ["RESIDENTIAL", "Commercial", "Featured", "Trending"];
+const allowedSubCategories = ["Luxury Projects", "Upcoming Project", "High Rise Apartment","Offices","Pre-Leased Offices","Pre-Rented","SCO"];
 
 // Add Property
 export const createPropertyController = async (req, res) => {
