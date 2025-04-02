@@ -1,5 +1,8 @@
 import React from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setPropertyDetail } from "../utils/Store/slice/propertyDetailSlice";
 
 const HighRiseCard = ({
   property,
@@ -8,6 +11,13 @@ const HighRiseCard = ({
   onDelete,
   onViewDetails,
 }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    dispatch(setPropertyDetail(property)); // Redux me data store karo
+    navigate(`/property/${property.id}`); // Navigate to new page
+  };
   return (
     <div className="bg-white rounded-2xl border-2 border-gray-200 p-5 shadow-lg hover:shadow-xl transition-shadow">
       <div className="flex justify-between items-start mb-4">
@@ -36,7 +46,7 @@ const HighRiseCard = ({
         {/* Price */}
         <div className="text-lg font-bold text-red-600">{property.price}</div>
         <button
-          onClick={onViewDetails}
+          onClick={handleViewDetails}
           className="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
         >
           View Details
