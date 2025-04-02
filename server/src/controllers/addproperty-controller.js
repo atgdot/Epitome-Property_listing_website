@@ -3,7 +3,7 @@ import addProperty from "../models/addproperty-model.js";
 
 // Allowed categories and subcategories
 const allowedCategories = ["residential", "commercial", "featured", "trending"];
-const allowedSubCategories = ["luxury projects", "upcoming project", "high rise apartment","Offices","PRe-Leased Offices","Pre-Rented","SCO"];
+const allowedSubCategories = ["luxuryProjects", "upcoming project", "high rise apartment","Offices","PRe-Leased Offices","Pre-Rented","SCO"];
 
 // Add Property
 export const createPropertyController = async (req, res) => {
@@ -25,12 +25,21 @@ export const createPropertyController = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid subCategory" });
     }
 
+    // Create property in database
     const property = await addProperty.create(req.body);
-    res.status(201).json({ success: true, message: "Property added successfully", data: property });
+
+    // Return success response with ID
+    res.status(201).json({
+      success: true,
+      message: "Property added successfully",
+      id: property._id,  // Returning the newly created property ID
+      data: property
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // Update Property by ID
 export const updatePropertyController = async (req, res) => {
