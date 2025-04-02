@@ -27,7 +27,7 @@ export const createUser = createAsyncThunk(
 
 // 2️⃣ Get All Users
 export const getAllUsers = createAsyncThunk(
-  'user/getAllUsers',
+  'user/all',
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${BASE_URL}/all`);

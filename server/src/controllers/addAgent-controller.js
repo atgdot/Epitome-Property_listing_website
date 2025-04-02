@@ -159,20 +159,28 @@ export const deleteAgentById = async (req, res) => {
 // GET ALL AGENTS
 export const getAllAgents = async (req, res) => {
   try {
-    console.log("[DEBUG] Fetching All Agents...");
-    
+    console.log("📡 [DEBUG] Incoming GET request to fetch all agents");
+
+    // Fetching agents from the database
     const agents = await addAgent.find();
 
+    // Debug: Log the retrieved agents count
+    console.log(`📊 [DEBUG] Total agents found: ${agents.length}`);
+
     if (agents.length === 0) {
+      console.log("⚠️ [DEBUG] No agents found in the database.");
       return res.status(404).json({ success: false, message: "No agents found" });
     }
 
+    console.log("✅ [DEBUG] Agents fetched successfully.");
+    
     res.status(200).json({
       success: true,
       agents
     });
   } catch (error) {
-    console.error("[ERROR] Fetching All Agents Failed:", error.message);
+    console.error("❌ [ERROR] Fetching All Agents Failed:", error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+

@@ -5,6 +5,7 @@ import {
   updateUser,
   searchUserByName,
   deleteUserById,
+  getAllUsers
 } from "../controllers/addUser-controllers.js";
 
 const router = express.Router();
@@ -36,6 +37,8 @@ const userValidationRules = [
     .withMessage("Invalid upload image URL"),
 ];
 
+
+router.get("/all", getAllUsers)
 //  Create User Route
 router.post("/create", userValidationRules, createUser);
 

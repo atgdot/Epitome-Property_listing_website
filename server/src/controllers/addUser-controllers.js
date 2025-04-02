@@ -139,3 +139,26 @@ export const deleteUserById = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
+// GET ALL USERS
+export const getAllUsers = async (req, res) => {
+  console.log("📩 [DEBUG] Incoming GET /user/all Request");
+
+  try {
+    console.log("🔍 [DEBUG] Fetching All Users from Database");
+    
+    const users = await addUser.find();
+
+    if (users.length === 0) {
+      console.log("❌ [DEBUG] No Users Found in Database");
+      return res.status(404).json({ success: false, message: "No users found" });
+    }
+
+    console.log("✅ [DEBUG] Users Retrieved Successfully:", users);
+
+    res.status(200).json({ success: true, data: users });
+  } catch (error) {
+    console.error("🔥 [ERROR] Server Error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
