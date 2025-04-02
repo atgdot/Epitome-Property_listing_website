@@ -6,42 +6,8 @@ import PropertyCard from "../components/PropertyCard";
 import { getAllProperties } from "../utils/Store/slice/propertySlice";
 
 const PreLeasedOfficesFull = () => {
-  const dispatch = useDispatch();
-  const { properties, loading, error } = useSelector((state) => state.property);
-
-  // Fetch properties when the component mounts
-  useEffect(() => {
-    dispatch(getAllProperties());
-  }, [dispatch]);
-
-  // Filter properties for Pre-Leased Offices using useMemo for performance
-  const preLeasedOffices = useMemo(() => {
-    return (properties || []).filter((property) => {
-      if (property.category !== "Commercial") return false;
-      const subCategory = Array.isArray(property.subCategory)
-        ? property.subCategory[0]
-        : property.subCategory;
-      return subCategory === "Pre-Leased Offices";
-    });
-  }, [properties]);
-
-  // Handle Loading State
-  if (loading) {
-    return (
-      <div className="my-8 text-center">
-        Loading Pre-Leased Offices...
-      </div>
-    );
-  }
-
-  // Handle Error State
-  if (error) {
-    return (
-      <div className="my-8 text-center text-red-500">
-        Error loading projects: {error.message || "Unknown error"}
-      </div>
-    );
-  }
+  const { commercial } = useContext(PropertyContext);
+  const properties = commercial?.preLeasedOffices || [];
 
   return (
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">

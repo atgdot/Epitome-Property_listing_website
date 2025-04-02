@@ -6,42 +6,8 @@ import PropertyCard from "../components/PropertyCard";
 import { getAllProperties } from "../utils/Store/slice/propertySlice";
 
 const PreRentedFull = () => {
-  const dispatch = useDispatch();
-  const { properties, loading, error } = useSelector((state) => state.property);
-
-  // Fetch properties on component mount
-  useEffect(() => {
-    dispatch(getAllProperties());
-  }, [dispatch]);
-
-  // Filter for Pre-Rented properties using useMemo for performance
-  const preRentedProperties = useMemo(() => {
-    return (properties || []).filter((property) => {
-      if (property.category !== "Commercial") return false;
-      const subCategory = Array.isArray(property.subCategory)
-        ? property.subCategory[0]
-        : property.subCategory;
-      return subCategory === "Pre-Rented";
-    });
-  }, [properties]);
-
-  // Handle Loading State
-  if (loading) {
-    return (
-      <div className="my-8 text-center">
-        Loading Pre-Rented Projects...
-      </div>
-    );
-  }
-
-  // Handle Error State
-  if (error) {
-    return (
-      <div className="my-8 text-center text-red-500">
-        Error loading projects: {error.message || "Unknown error"}
-      </div>
-    );
-  }
+  const { properties } = useContext(PropertyContext);
+  const preRentedProperties = properties.commercial.preRented;
 
   return (
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
