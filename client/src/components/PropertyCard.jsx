@@ -1,7 +1,22 @@
 import React from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setPropertyDetail } from "../utils/Store/slice/propertyDetailSlice";
 
-const PropertyCard = ({ property, editable = false, onEdit, onDelete, onViewDetails }) => {
+const PropertyCard = ({
+  property,
+  editable = false,
+  onEdit,
+  onDelete,
+  onViewDetails,
+}) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleViewDetails = () => {
+    dispatch(setPropertyDetail(property)); // Redux me data store karo
+    navigate(`/property/${property._id}`); // Navigate to new page
+  };
   const formatCategory = (category) => {
     return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
   };
@@ -67,7 +82,7 @@ const PropertyCard = ({ property, editable = false, onEdit, onDelete, onViewDeta
 
       <div className="flex flex-col gap-2">
         <button
-          onClick={onViewDetails}
+          onClick={handleViewDetails}
           className="w-full px-4 py-2 bg-[#043268] text-white font-semibold rounded-lg hover:bg-[#03244a]"
         >
           View Details
