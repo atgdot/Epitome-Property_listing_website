@@ -93,7 +93,7 @@ const CommercialProjects = () => {
       id: 5,
       title: "HIGH RISE APARTMENTS",
       imageUrl: "https://i.ibb.co/LDh5r2Hw/bc0ff8be9ee6178ff662b7b1e84c9679.jpg",
-      route: "/high-rise-apartments",
+      route: "/residential/highrise",
     },
     {
       id: 6,

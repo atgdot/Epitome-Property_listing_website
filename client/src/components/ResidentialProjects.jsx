@@ -174,9 +174,9 @@ const ResidentialProjects = () => {
 
       {/* Project Sections using react-slick Slider and including View All button */}
       {[
-        { title: "Luxury Projects", projects: luxuryProjects, route: "/luxury-projects" },
-        { title: "Upcoming Projects", projects: upcomingProjects, route: "/upcoming-projects" },
-        { title: "High Rise Apartments", projects: highRiseApartments, route: "/high-rise-apartments" },
+        { title: "Luxury Projects", projects: luxuryProjects, route: "/residential/luxury"},
+        { title: "Upcoming Projects", projects: upcomingProjects, route: "/residential/upcoming" },
+        { title: "High Rise Apartments", projects: highRiseApartments, route: "/residential/highrise" },
       ].map(
         (section, idx) =>
           section.projects.length > 0 && (
