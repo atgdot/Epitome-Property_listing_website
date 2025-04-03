@@ -1,11 +1,55 @@
-import React, { useContext } from "react";
+import React, { useEffect, useMemo } from "react";
 import { CSSTransition } from "react-transition-group";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllProperties } from "../utils/Store/slice/propertySlice";
 import HighRiseCard from "../components/HighRiseCard";
-import PropertyContext from "../Context/PropertycardContext";
 
 const UpcomingProjectsFull = () => {
-  const { properties } = useContext(PropertyContext);
-  const upcomingProjects = properties.residential.upcomingProjects;
+  const dispatch = useDispatch();
+  const { properties, loading, error } = useSelector((state) => state.property);
+
+  // Fetch all properties when component mounts
+  useEffect(() => {
+    dispatch(getAllProperties());
+  }, [dispatch]);
+
+  // Filter only upcoming projects
+  const upcomingProjects = useMemo(() => {
+    return (properties || []).filter((property) => {
+      // Check if the property belongs to the Residential category
+      if (property.category?.toLowerCase() !== "residential") return false;
+      
+      // Handle subCategory if it's an array
+      let subCategory = property.subCategory;
+      if (Array.isArray(subCategory)) {
+        subCategory = subCategory[0];
+      }
+      
+      // Check if subCategory indicates upcoming projects
+      if (typeof subCategory === "string") {
+        const normalizedSubCategory = subCategory.trim().toLowerCase();
+        return (
+          normalizedSubCategory.includes("upcoming") ||
+          subCategory === "Upcoming Projects"
+        );
+      }
+      return false;
+    });
+  }, [properties]);
+
+  // Handle loading state
+  if (loading) {
+    return <div className="text-center my-8">Loading Upcoming Projects...</div>;
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <div className="text-center text-red-500 my-8">
+        Error: {error.message}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
@@ -19,7 +63,7 @@ const UpcomingProjectsFull = () => {
               key={index}
               property={property}
               onViewDetails={() => {
-                // Add view details handler here
+                // Add view details handler here if needed
               }}
             />
           ))}

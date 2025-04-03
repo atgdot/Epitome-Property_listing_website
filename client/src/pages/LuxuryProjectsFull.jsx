@@ -15,11 +15,16 @@ const LuxuryProjectsFull = () => {
   // Filter only luxury projects
   const luxuryProjects = useMemo(() => {
     return (properties || []).filter((property) => {
-      if (property.category !== "Residential") return false;
-      const subCategory = Array.isArray(property.subCategory)
-        ? property.subCategory[0]
-        : property.subCategory;
-      return subCategory.toLowerCase().includes("luxury");
+      if (property.category?.toLowerCase() !== "residential") return false;
+      // Handle subCategory if it's an array
+      let subCategory = property.subCategory;
+      if (Array.isArray(subCategory)) {
+        subCategory = subCategory[0];
+      }
+      if (typeof subCategory === "string") {
+        return subCategory.trim().toLowerCase().includes("luxury");
+      }
+      return false;
     });
   }, [properties]);
 
@@ -30,7 +35,11 @@ const LuxuryProjectsFull = () => {
 
   // Handle error state
   if (error) {
-    return <div className="text-center text-red-500 my-8">Error: {error.message}</div>;
+    return (
+      <div className="text-center text-red-500 my-8">
+        Error: {error.message}
+      </div>
+    );
   }
 
   return (
