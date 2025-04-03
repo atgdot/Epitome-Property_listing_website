@@ -31,13 +31,13 @@ export const getAllUsers = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${BASE_URL}/all`);
-      
       // Improved response handling with proper logging
       let users = [];
-      if (response.data && response.data.users) {
-        users = response.data.users;
-      } else if (Array.isArray(response.data)) {
-        users = response.data;
+      const userData = response.data.data;
+      if (userData) {
+        users = userData;
+      } else if (Array.isArray(userData)) {
+        users = userData;
       } else {
         console.warn('Unexpected API response format:', response.data);
         users = [];

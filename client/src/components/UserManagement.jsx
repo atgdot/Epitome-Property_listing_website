@@ -43,25 +43,7 @@ const UserManagement = () => {
   };
   const [formData, setFormData] = useState(initialFormState);
 
-  // Load data on component mount
-  useEffect(() => {
-    // Initial data loading
-    fetchAllData();
-    
-    // Set up interval to periodically check for data
-    const dataCheckInterval = setInterval(() => {
-      if ((activeTab === "User" && (!users || users.length === 0)) || 
-          (activeTab === "Agent" && (!agents || agents.length === 0))) {
-        console.log("No data found, retrying fetch...");
-        fetchAllData();
-      }
-    }, 5000); // Check every 5 seconds
-    
-    // Clean up interval on component unmount
-    return () => clearInterval(dataCheckInterval);
-  }, []);
-
-  // Load data when tab changes
+  // Load data on component mount and tab change
   useEffect(() => {
     // Clear any previous errors
     dispatch(clearErrors());
@@ -69,13 +51,9 @@ const UserManagement = () => {
     // Reset selected items when changing tabs
     setSelectedItems([]);
     
-    // Fetch data based on active tab
-    if (activeTab === "User") {
-      fetchUsers();
-    } else {
-      fetchAgents();
-    }
-  }, [activeTab]);
+    // Fetch data
+    fetchAllData();
+  }, [activeTab]); // Only fetch when activeTab changes or on mount
 
   // Separate fetch functions for better control
   const fetchAllData = () => {

@@ -4,6 +4,7 @@ import { validationResult } from "express-validator";
 // CREATE USER
 export const createUser = async (req, res) => {
   console.log("📩 [DEBUG] Incoming POST /user/create Request Body:", req.body);
+  console.log("📂 [DEBUG] Uploaded Files:", req.files);
 
   // Check validation errors
   const errors = validationResult(req);
@@ -13,11 +14,11 @@ export const createUser = async (req, res) => {
   }
 
   try {
-    const { name, email, phone, propertyNumber, license, action } = req.body;
+    const { name, email, phone, propertyNumber, action } = req.body;
+    const license = req.files?.license ? req.files.license[0].path : null;
+    const profileImage = req.files?.profileImage ? req.files.profileImage[0].path : null;
 
-    console.log("📝 [DEBUG] Creating User with Data:", {
-      name, email, phone, propertyNumber, license, action
-    });
+    console.log("📝 [DEBUG] Creating User with Data:", { name, email, phone, propertyNumber, license, profileImage, action });
 
     const newUser = new addUser({
       name,
@@ -25,8 +26,10 @@ export const createUser = async (req, res) => {
       phone,
       propertyNumber,
       license,
+      profileImage,
       action,
     });
+
     await newUser.save();
 
     console.log("✅ [DEBUG] User Created Successfully:", newUser);
@@ -34,13 +37,11 @@ export const createUser = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "User created successfully",
+      data: newUser,
     });
   } catch (error) {
     console.error("🔥 [ERROR] Server Error:", error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
 };
 
@@ -48,6 +49,7 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   console.log("📩 [DEBUG] Incoming PUT /user/update Request Body:", req.body);
   console.log("🆔 [DEBUG] User ID from Params:", req.params.id);
+  console.log("📂 [DEBUG] Uploaded Files:", req.files);
 
   // Check validation errors
   const errors = validationResult(req);
@@ -58,13 +60,15 @@ export const updateUser = async (req, res) => {
 
   try {
     const { id } = req.params;
-    const { name, phone, propertyNumber, email, license, action } = req.body;
+    const { name, phone, propertyNumber, email, action } = req.body;
+    const license = req.files?.license ? req.files.license[0].path : undefined;
+    const profileImage = req.files?.profileImage ? req.files.profileImage[0].path : undefined;
 
-    console.log("📝 [DEBUG] Updating User Data:", { id, name, phone, propertyNumber, email, license, action });
+    console.log("📝 [DEBUG] Updating User Data:", { id, name, phone, propertyNumber, email, license, profileImage, action });
 
     const updatedUser = await addUser.findByIdAndUpdate(
       id,
-      { name, phone, propertyNumber, email, license, action },
+      { name, phone, propertyNumber, email, action, ...(license && { license }), ...(profileImage && { profileImage }) },
       { new: true, runValidators: true }
     );
 
@@ -78,10 +82,11 @@ export const updateUser = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "User updated successfully",
+      data: updatedUser,
     });
   } catch (error) {
     console.error("🔥 [ERROR] Server Error:", error);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
 };
 
@@ -99,7 +104,7 @@ export const searchUserByName = async (req, res) => {
 
     console.log("🔍 [DEBUG] Searching for Users with Name:", name);
 
-    const users = await addUser.find({ name: { $regex: name, $options: "i" } });
+    const users = await addUser.find({ name: { $regex: new RegExp(name, "i") } });
 
     if (users.length === 0) {
       console.log("❌ [DEBUG] No Users Found for Name:", name);
@@ -111,7 +116,7 @@ export const searchUserByName = async (req, res) => {
     res.status(200).json({ success: true, data: users });
   } catch (error) {
     console.error("🔥 [ERROR] Server Error:", error);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
 };
 
@@ -128,25 +133,23 @@ export const deleteUserById = async (req, res) => {
 
     if (!deletedUser) {
       console.log("❌ [DEBUG] User Not Found for ID:", id);
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     console.log("✅ [DEBUG] User Deleted Successfully:", deletedUser);
 
-    res.status(200).json({ message: "User deleted successfully" });
+    res.status(200).json({ success: true, message: "User deleted successfully" });
   } catch (error) {
     console.error("🔥 [ERROR] Server Error:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
 };
 
 // GET ALL USERS
 export const getAllUsers = async (req, res) => {
-  console.log("📩 [DEBUG] Incoming GET /user/all Request");
 
   try {
-    console.log("🔍 [DEBUG] Fetching All Users from Database");
-    
+
     const users = await addUser.find();
 
     if (users.length === 0) {
@@ -159,6 +162,6 @@ export const getAllUsers = async (req, res) => {
     res.status(200).json({ success: true, data: users });
   } catch (error) {
     console.error("🔥 [ERROR] Server Error:", error);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
 };

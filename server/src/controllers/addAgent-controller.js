@@ -1,186 +1,127 @@
-import addAgent from "../models/adduser-model.js";
+import addAgent from "../models/addAgent-model.js";
 import { validationResult } from "express-validator";
 
-// CREATE AGENT
 export const createAgent = async (req, res) => {
-  console.log("[DEBUG] Inside createAgent Controller");
-  
-  // Check validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log("[DEBUG] Validation Errors:", errors.array());
     return res.status(400).json({ success: false, errors: errors.array() });
   }
 
   try {
-    const { name, email, phone, propertyNumber, license } = req.body;
+    const { name, email, phone, propertyNumber } = req.body;
+    const Profile_Image = req.files?.profileImage ? req.files.profileImage[0].path : null;
+    const licenseFile = req.files?.license ? req.files.license[0].path : null;
 
     const newAgent = new addAgent({
       name,
       email,
       phone,
       propertyNumber,
-      license,
+      license: licenseFile,
       Profile_Image
     });
 
     const savedAgent = await newAgent.save();
-
-    console.log("[DEBUG] Agent Created:", savedAgent);
     
     res.status(201).json({
       success: true,
       message: "Agent created successfully",
-      agentId: savedAgent._id  // ✅ Return the ID of the newly created agent
+      agentId: savedAgent._id
     });
   } catch (error) {
-    console.error("[ERROR] Create Agent Failed:", error.message);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// GET AGENT BY ID
-export const getAgentById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    console.log("[DEBUG] Fetching Agent with ID:", id);
-
-    const agent = await addAgent.findById(id);
-
-    if (!agent) {
-      console.log("[DEBUG] Agent Not Found:", id);
-      return res.status(404).json({ success: false, message: "Agent not found" });
-    }
-
-    res.status(200).json({
-      success: true,
-      agent
-    });
-  } catch (error) {
-    console.error("[ERROR] Fetching Agent Failed:", error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// UPDATE USER
-export const updateAgent = async (req, res) => {
-  console.log("[DEBUG] Inside updateAgent Controller");
+export const getAgentById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const agent = await addAgent.findById(id);
 
+    if (!agent) {
+      return res.status(404).json({ success: false, message: "Agent not found" });
+    }
+
+    res.status(200).json({ success: true, agent });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const updateAgent = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log("[DEBUG] Validation Errors:", errors.array());
     return res.status(400).json({ success: false, errors: errors.array() });
   }
 
   try {
-    console.log("[DEBUG] Updating user:", req.params.id, req.body);
-
     const { id } = req.params;
-    const { name, phone, propertyNumber, license } = req.body;
+    const { name, phone, propertyNumber } = req.body;
+    const Profile_Image = req.files?.profileImage ? req.files.profileImage[0].path : null;
+    const licenseFile = req.files?.license ? req.files.license[0].path : null;
 
     const updatedUser = await addAgent.findByIdAndUpdate(
       id,
-      { name, phone, propertyNumber, license },
+      { name, phone, propertyNumber, license: licenseFile, Profile_Image },
       { new: true, runValidators: true }
     );
 
     if (!updatedUser) {
-      console.log("[DEBUG] User not found for update:", id);
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    console.log("[DEBUG] User updated successfully:", updatedUser);
-
     res.status(200).json({ success: true, message: "User updated successfully" });
   } catch (error) {
-    console.error("[ERROR] Failed to update user:", error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// SEARCH USER BY NAME
 export const searchAgentByName = async (req, res) => {
-  console.log("[DEBUG] Inside searchAgentByName Controller");
-
   try {
     const { name } = req.query;
     if (!name) {
-      console.log("[DEBUG] Name query param missing");
       return res.status(400).json({ success: false, message: "Name is required for searching" });
     }
-
-    console.log("[DEBUG] Searching for users with name:", name);
 
     const users = await addAgent.find({
       name: { $regex: name, $options: "i" },
     });
 
     if (users.length === 0) {
-      console.log("[DEBUG] No users found for name:", name);
       return res.status(404).json({ success: false, message: "No users found" });
     }
 
-    console.log("[DEBUG] Found users:", users);
-
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, users });
   } catch (error) {
-    console.error("[ERROR] Failed to search users:", error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// DELETE USER BY ID
 export const deleteAgentById = async (req, res) => {
-  console.log("[DEBUG] Inside deleteAgentById Controller");
-
   try {
     const { id } = req.params;
-    console.log("[DEBUG] Deleting user with ID:", id);
-
     const deletedUser = await addAgent.findByIdAndDelete(id);
 
     if (!deletedUser) {
-      console.log("[DEBUG] User not found for deletion:", id);
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log("[DEBUG] User deleted successfully:", deletedUser);
-
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    console.error("[ERROR] Failed to delete user:", error.message);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-// GET ALL AGENTS
 export const getAllAgents = async (req, res) => {
   try {
-    console.log("📡 [DEBUG] Incoming GET request to fetch all agents");
-
-    // Fetching agents from the database
     const agents = await addAgent.find();
 
-    // Debug: Log the retrieved agents count
-    console.log(`📊 [DEBUG] Total agents found: ${agents.length}`);
-
     if (agents.length === 0) {
-      console.log("⚠️ [DEBUG] No agents found in the database.");
       return res.status(404).json({ success: false, message: "No agents found" });
     }
 
-    console.log("✅ [DEBUG] Agents fetched successfully.");
-    
-    res.status(200).json({
-      success: true,
-      agents
-    });
+    res.status(200).json({ success: true, agents });
   } catch (error) {
-    console.error("❌ [ERROR] Fetching All Agents Failed:", error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
