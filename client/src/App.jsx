@@ -56,13 +56,13 @@ const HIDE_NAVBAR_PATTERNS = [
   "/user-management",
   "/property",
   "/PropertyDetails",
-  "/property/:id"
+  "/property/:id",
 ];
 
 const HIDE_FOOTER_PATTERNS = [
   "/admin-dashboard",
   "/user-management",
-  "/property/:id"
+  "/property/:id",
 ];
 
 function Layout() {
@@ -70,7 +70,7 @@ function Layout() {
 
   // Helper function to check if current path matches any of the patterns
   const shouldHideElement = (patterns) => {
-    return patterns.some(pattern => {
+    return patterns.some((pattern) => {
       const match = matchPath(pattern, location.pathname);
       return match !== null;
     });
@@ -102,16 +102,25 @@ function Layout() {
               </div>
             }
           />
-          <Route path="/property/:id" element={<PropertyDetailPage />} />
+          <Route path="/property/:_id" element={<PropertyDetailPage />} />
 
           {/* Residential Routes */}
           <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />
-          <Route path="/residential/upcoming" element={<UpcomingProjectsFull />} />
-          <Route path="/residential/highrise" element={<HighRiseApartmentsFull />} />
+          <Route
+            path="/residential/upcoming"
+            element={<UpcomingProjectsFull />}
+          />
+          <Route
+            path="/residential/highrise"
+            element={<HighRiseApartmentsFull />}
+          />
 
           {/* Commercial Routes */}
           <Route path="/commercial/offices" element={<OfficesFull />} />
-          <Route path="/commercial/preleased" element={<PreLeasedOfficesFull />} />
+          <Route
+            path="/commercial/preleased"
+            element={<PreLeasedOfficesFull />}
+          />
           <Route path="/commercial/prerented" element={<PreRentedFull />} />
           <Route path="/commercial/sco" element={<ScoProjectsFull />} />
 

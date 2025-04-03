@@ -263,7 +263,10 @@ const PropertyDetailPage = () => {
                     {unit.size}
                   </p>
                 </div>
-                <button className="mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                <button
+                  onClick={() => navigate("/PropertyDetails")}
+                  className="mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center"
+                >
                   Get Details <FaArrowRight className="ml-2" />
                 </button>
               </div>
