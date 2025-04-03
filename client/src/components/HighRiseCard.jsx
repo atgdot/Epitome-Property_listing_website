@@ -1,3 +1,80 @@
+// import React from "react";
+// import { MdEdit, MdDelete } from "react-icons/md";
+// import { useDispatch } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+// import { setPropertyDetail } from "../utils/Store/slice/propertyDetailSlice";
+
+// const HighRiseCard = ({
+//   property,
+//   editable = false,
+//   onEdit,
+//   onDelete,
+//   onViewDetails,
+// }) => {
+//   const dispatch = useDispatch();
+//   const navigate = useNavigate();
+
+//   const handleViewDetails = () => {
+//     dispatch(setPropertyDetail(property)); // Redux me data store karo
+//     navigate(`/property/${property._id}`); // Navigate to new page
+//   };
+//   return (
+//     <div className="bg-white rounded-2xl border-2 border-gray-200 p-5 shadow-lg hover:shadow-xl transition-shadow">
+//       <div className="flex justify-between items-start mb-4">
+//         <div>
+//           {/* Title */}
+//           <h3 className="text-xl font-bold text-red-600">{property.title}</h3>
+//           {/* Sector */}
+//           <p className="text-gray-600 text-sm mt-1">{property.sector}</p>
+//         </div>
+//         {/* City */}
+//         <span className="text-gray-500 text-sm">{property.city}</span>
+//       </div>
+
+//       {/* Image */}
+//       {property.image && (
+//         <div className="mb-4">
+//           <img
+//             src={property.image}
+//             alt={property.title}
+//             className="w-full h-48 object-cover rounded-xl"
+//           />
+//         </div>
+//       )}
+
+//       <div className="flex justify-between items-center mb-4">
+//         {/* Price */}
+//         <div className="text-lg font-bold text-red-600">{property.price}</div>
+//         <button
+//           onClick={handleViewDetails}
+//           className="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
+//         >
+//           View Details
+//         </button>
+//       </div>
+
+//       {/* Edit and Delete buttons (only if editable is true) */}
+//       {editable && (
+//         <div className="flex justify-end gap-2 border-t pt-3">
+//           <button
+//             onClick={onEdit}
+//             className="flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+//           >
+//             <MdEdit /> Edit
+//           </button>
+//           <button
+//             onClick={onDelete}
+//             className="flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+//           >
+//             <MdDelete /> Delete
+//           </button>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default HighRiseCard;
 import React from "react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { useDispatch } from "react-redux";
@@ -15,58 +92,66 @@ const HighRiseCard = ({
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
-    dispatch(setPropertyDetail(property)); // Redux me data store karo
-    navigate(`/property/${property._id}`); // Navigate to new page
+    dispatch(setPropertyDetail(property));
+    navigate(`/property/${property._id}`);
   };
+
   return (
-    <div className="bg-white rounded-2xl border-2 border-gray-200 p-5 shadow-lg hover:shadow-xl transition-shadow">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          {/* Title */}
-          <h3 className="text-xl font-bold text-red-600">{property.title}</h3>
-          {/* Sector */}
-          <p className="text-gray-600 text-sm mt-1">{property.sector}</p>
+    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-md hover:shadow-lg transition-all duration-300 w-full max-w-md mx-auto">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-4">
+        <div className="flex-1">
+          <h3 className="text-xl font-bold text-[#043268]">{property.title}</h3>
+          <p className="text-gray-600 text-sm mt-1">
+            <span className="font-medium">Sector:</span> {property.sector}
+          </p>
         </div>
-        {/* City */}
-        <span className="text-gray-500 text-sm">{property.city}</span>
+        <span className="bg-[#043268]/10 text-[#043268] text-sm px-2 py-1 rounded-full whitespace-nowrap">
+          {property.city}
+        </span>
       </div>
 
-      {/* Image */}
+      {/* Image Section */}
       {property.image && (
-        <div className="mb-4">
+        <div className="mb-4 overflow-hidden rounded-lg">
           <img
             src={property.image}
             alt={property.title}
-            className="w-full h-48 object-cover rounded-xl"
+            className="w-full h-48 sm:h-56 object-cover hover:scale-105 transition-transform duration-300"
           />
         </div>
       )}
 
-      <div className="flex justify-between items-center mb-4">
-        {/* Price */}
-        <div className="text-lg font-bold text-red-600">{property.price}</div>
+      {/* Price and Button Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <div className="space-y-1">
+          <p className="text-gray-500 text-sm">Price</p>
+          <div className="text-xl font-bold text-[#043268]">
+            {property.price}
+          </div>
+        </div>
         <button
           onClick={handleViewDetails}
-          className="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
+          className="px-6 py-2 bg-[#043267] text-white font-medium rounded-lg hover:bg-[#03244a] transition-colors w-full sm:w-auto text-center"
         >
           View Details
         </button>
       </div>
 
-      {/* Edit and Delete buttons (only if editable is true) */}
+      {/* Edit/Delete Buttons */}
       {editable && (
-        <div className="flex justify-end gap-2 border-t pt-3">
+        <div className="flex justify-end gap-2 border-t border-gray-100 pt-3">
           <button
             onClick={onEdit}
-            className="flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+            className="flex items-center gap-1 px-3 py-2 bg-blue-50 text-[#043268] rounded-lg hover:bg-blue-100 transition-colors"
           >
-            <MdEdit /> Edit
+            <MdEdit className="text-lg" /> Edit
           </button>
           <button
             onClick={onDelete}
-            className="flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+            className="flex items-center gap-1 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
           >
-            <MdDelete /> Delete
+            <MdDelete className="text-lg" /> Delete
           </button>
         </div>
       )}
