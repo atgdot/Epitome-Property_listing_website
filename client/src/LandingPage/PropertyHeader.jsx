@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import CallbackModal from "./CallbackModal";
+import { useNavigate } from "react-router-dom";
 
 const PropertyHeader = ({ property }) => {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <>
@@ -22,8 +24,11 @@ const PropertyHeader = ({ property }) => {
             >
               get a CallBack
             </button>
-            <button className="px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition">
-              Download Brochure
+            <button
+              onClick={() => navigate("/")}
+              className="px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition"
+            >
+              Go Back
             </button>
           </div>
         </div>

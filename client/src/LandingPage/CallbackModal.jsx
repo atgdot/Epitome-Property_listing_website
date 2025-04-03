@@ -4,8 +4,8 @@ const CallbackModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+    <div className="fixed inset-0 bg-gradient-to-b from-gray-900/80 to-gray-800/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md relative shadow-xl">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-blue-800">Instant Callback</h2>
           <button
@@ -45,8 +45,9 @@ const CallbackModal = ({ isOpen, onClose }) => {
             />
           </div>
 
-          <p className="text-sm text-gray-500 mt-2">
-            Your information will be kept confidential.
+          <p className="text-sm text-gray-500 mt-2 italic">
+            * Your information will be kept strictly confidential and will not
+            be shared, sold, or otherwise disclosed.
           </p>
 
           <button
