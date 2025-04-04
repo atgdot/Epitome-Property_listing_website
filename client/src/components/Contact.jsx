@@ -36,7 +36,7 @@ const Contact = () => {
   };
 
   return (
-    <>
+    <div>
       <h2 className="text-2xl font-semibold text-black text-center mb-6">
         Consult A Property Expert Now
       </h2>
@@ -128,7 +128,7 @@ const Contact = () => {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
