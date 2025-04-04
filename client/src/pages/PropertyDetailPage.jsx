@@ -8,6 +8,7 @@ import { FaWhatsapp, FaPhone, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import CallbackModal from "../LandingPage/CallbackModal";
 
 const PropertyDetailPage = () => {
   const propertyLocation = { lat: 28.4595, lng: 77.0266 };
@@ -16,6 +17,7 @@ const PropertyDetailPage = () => {
   );
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
 
   // Sample gallery images (replace with your actual images)
   const sampleImages = [
@@ -264,7 +266,7 @@ const PropertyDetailPage = () => {
                   </p>
                 </div>
                 <button
-                  onClick={() => navigate("/PropertyDetails")}
+                  onClick={() => setIsCallbackModalOpen(true)}
                   className="mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center"
                 >
                   Get Details <FaArrowRight className="ml-2" />
@@ -419,7 +421,10 @@ const PropertyDetailPage = () => {
           </div>
         </section>
       </div>
-
+      <CallbackModal
+        isOpen={isCallbackModalOpen}
+        onClose={() => setIsCallbackModalOpen(false)}
+      />
       <PropertyFooter property={property} />
     </div>
   );
