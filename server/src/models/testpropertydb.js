@@ -52,18 +52,23 @@ const basicPropertySchema = new mongoose.Schema({
   Tenant: {
     type: String,
   },
+  property_Image: {
+    type: String,
+    default: DEFAULT_PROPERTY_IMAGE,
+  },
 });
 
 // Add pre-remove hook here
-basicPropertySchema.pre('remove', async function(next) {
-    try {
-      await PropertyLocation.deleteMany({ property: this._id });
-      await PropertyMedia.deleteMany({ property: this._id });
-      next();
-    } catch (err) {
-      next(err);
-    }
-  });
+basicPropertySchema.pre('deleteOne', { document: true, query: false }, async function(next) {
+  try {
+    await PropertyLocation.deleteMany({ property: this._id });
+    await PropertyMedia.deleteMany({ property: this._id });
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 const BasicProperty = mongoose.model("BasicProperty", basicPropertySchema);
 
@@ -95,10 +100,6 @@ const propertyLocationSchema = new mongoose.Schema({
     default: "",
   },
   // The property image that uses the same default as the original property_Image
-  property_Image: {
-    type: String,
-    default: DEFAULT_PROPERTY_IMAGE,
-  },
 });
 
 const PropertyLocation = mongoose.model("PropertyLocation", propertyLocationSchema);

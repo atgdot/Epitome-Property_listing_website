@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
-import { BasicProperty } from "../models/testpropertydb.js";
+import { BasicProperty, PropertyLocation, PropertyMedia } from "../models/testpropertydb.js";
+import mongoose from "mongoose";
 
 const allowedCategories = ["RESIDENTIAL", "Commercial", "Featured", "Trending"];
 const allowedSubCategories = [
@@ -20,25 +21,23 @@ export const createPropertyController = async (req, res) => {
   }
 
   try {
-    let { category, subCategory, title } = req.body;
+    let { category, subCategory, title, locationDetails, mediaDetails } = req.body;
 
     if (!title || typeof title !== "string") {
       return res.status(400).json({ success: false, message: "Title is required" });
     }
 
-    // Advanced normalization: remove all special chars, extra spaces, and convert to lowercase
     const normalizeTitle = (str) => {
       return str
         .toLowerCase()
-        .replace(/[^\w\s]/g, '')  // Remove all non-word chars except spaces
-        .replace(/\s+/g, ' ')     // Convert multiple spaces to single space
-        .trim()                   // Trim whitespace
-        .replace(/\s/g, '');      // Finally remove all spaces
+        .replace(/[^\w\s]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/\s/g, '');
     };
 
     const normalizedTitle = normalizeTitle(title);
 
-    // Check for existing property with similar title
     const existingProperties = await BasicProperty.find({});
     const isDuplicate = existingProperties.some(property => {
       const existingNormalized = normalizeTitle(property.title);
@@ -53,7 +52,6 @@ export const createPropertyController = async (req, res) => {
       });
     }
 
-    // Handle subCategory
     if (!subCategory || subCategory === "") {
       subCategory = [];
     }
@@ -62,32 +60,58 @@ export const createPropertyController = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid subCategory format" });
     }
 
-    // Validate category
     if (!allowedCategories.includes(category)) {
       return res.status(400).json({ success: false, message: "Invalid category" });
     }
 
-    // Validate subCategory
     if (subCategory.length > 0 && !subCategory.every(sub => allowedSubCategories.includes(sub))) {
       return res.status(400).json({ success: false, message: "Invalid subCategory" });
     }
 
-    // Create new property
+    // 1️⃣ Create Basic Property
     const property = await BasicProperty.create({ 
       ...req.body, 
       subCategory,
-      originalTitle: title, // Store original title
-      normalizedTitle      // Store normalized version for future checks
+      originalTitle: title,
+      normalizedTitle
     });
 
+    console.log("✅ Basic property created:", property);
+
+    // 2️⃣ Create Location Details (if provided)
+    let createdLocation = null;
+    if (locationDetails) {
+      createdLocation = await PropertyLocation.create({
+        ...locationDetails,
+        property: property._id
+      });
+      console.log("📍 Location created:", createdLocation);
+    }
+
+    // 3️⃣ Create Media Details (if provided)
+    let createdMedia = null;
+    if (mediaDetails) {
+      createdMedia = await PropertyMedia.create({
+        ...mediaDetails,
+        property: property._id
+      });
+      console.log("🖼️ Media created:", createdMedia);
+    }
+
+    // ✅ Send full response back
     res.status(201).json({
       success: true,
       message: "Property created successfully",
       propertyId: property._id,
-      data: property,
+      data: {
+        basicDetails: property,
+        locationDetails: createdLocation || {},
+        mediaDetails: createdMedia || {}
+      }
     });
+
   } catch (error) {
-    console.error("Property creation error:", error);
+    console.error("❌ Property creation error:", error);
     res.status(500).json({ 
       success: false, 
       message: "Internal server error",
@@ -97,15 +121,17 @@ export const createPropertyController = async (req, res) => {
 };
 
 
+
+
 export const updatePropertyController = async (req, res) => {
   const errors = validationResult(req);
-
   const { id } = req.params;
-console.log("[DEBUG] Extracted Property ID:", id);
 
-if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-  return res.status(400).json({ success: false, message: "Invalid property ID format" });
-}
+  console.log("[DEBUG] Extracted Property ID:", id);
+
+  if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(400).json({ success: false, message: "Invalid property ID format" });
+  }
 
   if (!errors.isEmpty()) {
     console.log("Validation Errors:", errors.array());
@@ -113,45 +139,62 @@ if (!id.match(/^[0-9a-fA-F]{24}$/)) {
   }
 
   try {
-    const { category, subCategory } = req.body;
+    const { category, subCategory, locationDetails, mediaDetails } = req.body;
+
     console.log("Incoming Update Data:", req.body);
-    console.log("Property ID:", req.params.id);
 
     // ✅ Validate category if provided
     if (category && !allowedCategories.includes(category)) {
-      console.log("Invalid Category Provided:", category);
       return res.status(400).json({ success: false, message: "Invalid category" });
     }
 
     // ✅ Validate subCategory if provided
-    if (
-      subCategory &&
-      (!Array.isArray(subCategory) || !subCategory.every((sub) => allowedSubCategories.includes(sub)))
-    ) {
-      console.log("Invalid SubCategory Provided:", subCategory);
+    if (subCategory &&
+      (!Array.isArray(subCategory) || !subCategory.every((sub) => allowedSubCategories.includes(sub)))) {
       return res.status(400).json({ success: false, message: "Invalid subCategory" });
     }
 
-    // ✅ Use BasicProperty instead of old model
-    const updatedProperty = await BasicProperty.findByIdAndUpdate(req.params.id, req.body, {
+    // ✅ Update Basic Property
+    const updatedProperty = await BasicProperty.findByIdAndUpdate(id, req.body, {
       new: true,
     });
 
     if (!updatedProperty) {
-      console.log("No Property Found with ID:", req.params.id);
       return res.status(404).json({ success: false, message: "Property not found" });
     }
 
-    console.log("Property Updated Successfully:", updatedProperty);
+    // ✅ Update Location Details if provided
+    let updatedLocation = null;
+    if (locationDetails) {
+      updatedLocation = await PropertyLocation.findOneAndUpdate(
+        { property: id },
+        locationDetails,
+        { new: true, upsert: true }
+      );
+    }
+
+    // ✅ Update Media Details if provided
+    let updatedMedia = null;
+    if (mediaDetails) {
+      updatedMedia = await PropertyMedia.findOneAndUpdate(
+        { property: id },
+        mediaDetails,
+        { new: true, upsert: true }
+      );
+    }
 
     res.status(200).json({
       success: true,
       message: "Property updated successfully",
-      data: updatedProperty,
+      data: {
+        basicDetails: updatedProperty,
+        locationDetails: updatedLocation || {},
+        mediaDetails: updatedMedia || {}
+      }
     });
   } catch (error) {
     console.error("Error Updating Property:", error.message);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -159,32 +202,51 @@ if (!id.match(/^[0-9a-fA-F]{24}$/)) {
 export const getPropertyDetailsController = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("📥 [DEBUG] Incoming GET Request for property ID:", id);
 
+    // Validate MongoDB ObjectId format
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      console.error("❌ [ERROR] Invalid property ID format:", id);
       return res.status(400).json({ success: false, message: "Invalid property ID format" });
     }
 
-    // Fetch property details from all three collections
+    // Fetch basic property details
     const basicDetails = await BasicProperty.findById(id);
-    const locationDetails = await PropertyLocation.findOne({ propertyId: id });
-    const mediaDetails = await PropertyMedia.findOne({ propertyId: id });
+    console.log("✅ [DEBUG] Basic Details:", basicDetails);
 
+    // Fetch location details
+    const locationDetails = await PropertyLocation.findOne({ property: id });
+    console.log("✅ [DEBUG] Location Details:", locationDetails);
+
+    // Fetch media details
+    const mediaDetails = await PropertyMedia.findOne({ property: id });
+    console.log("✅ [DEBUG] Media Details:", mediaDetails);
+
+    // Handle property not found
     if (!basicDetails) {
+      console.warn("⚠️ [WARN] Property not found for ID:", id);
       return res.status(404).json({ success: false, message: "Property not found" });
     }
 
-    res.status(200).json({
+    // Return full response
+    const responseData = {
       success: true,
       data: {
         basicDetails,
         locationDetails: locationDetails || {},
         mediaDetails: mediaDetails || {},
       },
-    });
+    };
+    
+    console.log("📤 [DEBUG] Full Response:", responseData);
+    res.status(200).json(responseData);
+
   } catch (error) {
+    console.error("🔥 [ERROR] Internal Server Error:", error.message);
     res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };
+
 
 
 export const getAllPropertyController = async (req, res) => {
@@ -248,12 +310,16 @@ export const deletePropertyController = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid property ID" });
     }
 
-    // This will trigger the pre-remove hook
-    const deletedProperty = await BasicProperty.findByIdAndDelete(id);
+    // First find the document
+    const property = await BasicProperty.findById(id);
 
-    if (!deletedProperty) {
+
+    if (!property) {
       return res.status(404).json({ success: false, message: "Property not found" });
     }
+
+    // This will trigger the pre-remove hook if defined
+    await property.deleteOne(); // triggers pre('deleteOne') if defined with {document: true}
 
     res.status(200).json({ success: true, message: "Property and all related data deleted successfully" });
   } catch (error) {
@@ -265,5 +331,6 @@ export const deletePropertyController = async (req, res) => {
     });
   }
 };
+
 
 
