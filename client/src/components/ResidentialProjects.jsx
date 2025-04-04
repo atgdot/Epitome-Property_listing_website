@@ -71,49 +71,49 @@ const ResidentialProjects = () => {
       title: "GOLF COURSE ROAD",
       imageUrl:
         "https://i.ibb.co/YFPCnnPT/7ede1e912c87693b20468d5a7fffc9b3.jpg",
-      route: "/luxury-projects",
+      route: "/golf-course-road",
     },
     {
       id: 2,
       title: "GOLF COURSE EXT ROAD",
       imageUrl:
         "https://i.ibb.co/XxwFmG6z/2a37a116a205074c935e4eae2e30b575.jpg",
-      route: "/upcoming-projects",
+      route: "/golf-course-ext-road" ,
     },
     {
       id: 3,
       title: "MG ROAD",
       imageUrl:
         "https://i.ibb.co/sY1PvLF/31a1a4c136196eae034b164809cc2349.jpg",
-      route: "/high-rise-apartments",
+      route: "/mg-road",
     },
     {
       id: 4,
       title: "NH 48",
       imageUrl:
         "https://i.ibb.co/pv6JpqVd/9e502bb841d3bfc9f5efb82eb825169b.jpg",
-      route: "/high-rise-apartments",
+      route: "/nh-48",
     },
     {
       id: 5,
       title: "SOHNA ROAD",
       imageUrl:
         "https://i.ibb.co/Z6JBTnZS/5ab6c48e59bc6ce01278adefc81ee651.jpg",
-      route: "/high-rise-apartments",
+      route: "/sohna-road",
     },
     {
       id: 6,
       title: "HUDA CITY METRO",
       imageUrl:
         "https://i.ibb.co/4gnYYL3M/4a823844acdba47e641ab8825ed2687a.jpg",
-      route: "/high-rise-apartments",
+      route: "/huda-city-metro",
     },
     {
       id: 7,
       title: "SPR ROAD",
       imageUrl:
         "https://i.ibb.co/G41H2CLt/dd19b3798a1b605440d5daea20d96fe6.jpg",
-      route: "/high-rise-apartments",
+      route:"/spr-road",
     },
   ];
 

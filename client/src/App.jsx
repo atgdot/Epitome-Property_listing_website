@@ -46,6 +46,15 @@ import ScoProjectsFull from "./pages/ScoProjectsFull";
 // Admin Pages
 import AdminDashboard from "./Admin/AdminDashboard";
 
+// *** Dedicated Pages for Each Location ***
+import GolfCourseRoad from "./pages/GolfCourseRoad";
+import GolfCourseExtRoad from "./pages/GolfCourseExtRoad";
+import MgRoad from "./pages/MgRoad";
+import Nh48 from "./pages/Nh48";
+import SohnaRoad from "./pages/SohnaRoad";
+import HudaCityMetro from "./pages/HudaCityMetro";
+import SprRoad from "./pages/SprRoad";
+
 // Styles
 import "./index.css";
 
@@ -106,26 +115,26 @@ function Layout() {
 
           {/* Residential Routes */}
           <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />
-          <Route
-            path="/residential/upcoming"
-            element={<UpcomingProjectsFull />}
-          />
-          <Route
-            path="/residential/highrise"
-            element={<HighRiseApartmentsFull />}
-          />
+          <Route path="/residential/upcoming" element={<UpcomingProjectsFull />} />
+          <Route path="/residential/highrise" element={<HighRiseApartmentsFull />} />
 
           {/* Commercial Routes */}
           <Route path="/commercial/offices" element={<OfficesFull />} />
-          <Route
-            path="/commercial/preleased"
-            element={<PreLeasedOfficesFull />}
-          />
+          <Route path="/commercial/preleased" element={<PreLeasedOfficesFull />} />
           <Route path="/commercial/prerented" element={<PreRentedFull />} />
           <Route path="/commercial/sco" element={<ScoProjectsFull />} />
 
           {/* Other Routes */}
           <Route path="/subsections" element={<Subsections />} />
+
+          {/* Dedicated Location Pages */}
+          <Route path="/golf-course-road" element={<GolfCourseRoad />} />
+          <Route path="/golf-course-ext-road" element={<GolfCourseExtRoad />} />
+          <Route path="/mg-road" element={<MgRoad />} />
+          <Route path="/nh-48" element={<Nh48 />} />
+          <Route path="/sohna-road" element={<SohnaRoad />} />
+          <Route path="/huda-city-metro" element={<HudaCityMetro />} />
+          <Route path="/spr-road" element={<SprRoad />} />
 
           {/* Admin Routes */}
           <Route path="/admin-dashboard/*" element={<AdminDashboard />} />
