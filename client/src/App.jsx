@@ -28,9 +28,10 @@ import UserManagement from "./components/UserManagement";
 
 // Pages
 import IndiaBulls from "./pages/IndiaBulls";
-import Property from "./pages/Property";
-import PropertyDetailPage from "./pages/PropertyDetailPage";
-import Subsections from "./pages/Subsections";
+// Import the updated PropertyPage component from components folder
+import PropertyPage from "./components/PropertyPage";
+// Import the new PropertydetailPhotos component
+import PropertydetailPhotos from "./components/PropertydetailPhotos";
 
 // Residential Full Listing Pages
 import LuxuryProjectsFull from "./pages/LuxuryProjectsFull";
@@ -46,7 +47,7 @@ import ScoProjectsFull from "./pages/ScoProjectsFull";
 // Admin Pages
 import AdminDashboard from "./Admin/AdminDashboard";
 
-// *** Dedicated Pages for Each Location ***
+// Dedicated Pages for Each Location
 import GolfCourseRoad from "./pages/GolfCourseRoad";
 import GolfCourseExtRoad from "./pages/GolfCourseExtRoad";
 import MgRoad from "./pages/MgRoad";
@@ -54,6 +55,9 @@ import Nh48 from "./pages/Nh48";
 import SohnaRoad from "./pages/SohnaRoad";
 import HudaCityMetro from "./pages/HudaCityMetro";
 import SprRoad from "./pages/SprRoad";
+
+// Other Pages
+import Subsections from "./pages/Subsections";
 
 // Styles
 import "./index.css";
@@ -63,7 +67,7 @@ const HIDE_NAVBAR_PATTERNS = [
   "/indiabulls",
   "/admin-dashboard",
   "/user-management",
-  "/property",
+  "/property", // This hides Navbar on /property route if needed; adjust as desired
   "/PropertyDetails",
   "/property/:id",
 ];
@@ -97,7 +101,10 @@ function Layout() {
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/indiabulls" element={<IndiaBulls />} />
-          <Route path="/property" element={<Property />} />
+          {/* Updated PropertyPage route */}
+          <Route path="/property" element={<PropertyPage />} />
+          {/* New route for property detail photos */}
+          <Route path="/propertydetailphotos" element={<PropertydetailPhotos />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/PropertyListing" element={<PropertyListing />} />
 
@@ -111,7 +118,7 @@ function Layout() {
               </div>
             }
           />
-          <Route path="/property/:_id" element={<PropertyDetailPage />} />
+          <Route path="/property/:_id" element={<PropertyDetails />} />
 
           {/* Residential Routes */}
           <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />

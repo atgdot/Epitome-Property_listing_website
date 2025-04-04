@@ -16,8 +16,11 @@ import UserManagement from "../components/UserManagement";
 import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
 import AdminRecommendation from "../components/AdminRecommendation";
-import AdminPhoto from "../components/AdminPhoto"; // Import AdminPhoto
+import AdminPhoto from "../components/AdminPhoto";
 import BannerManagement from "../components/BannerManagement";
+import PropertyPage from "../components/PropertyPage";
+import PropertydetailPhotos from "../components/PropertydetailPhotos"; // Import the new page
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("Dashboard");
@@ -135,7 +138,8 @@ const AdminDashboard = () => {
         );
       case "Property":
         return <AdminProperty />;
-
+      case "PropertyPage":
+        return <PropertyPage />;
       case "User":
         return <UserManagement />;
       case "Reviews":
@@ -144,20 +148,23 @@ const AdminDashboard = () => {
         return <AdminRecommendation />;
       case "Photo":
         return <AdminPhoto />;
+      case "PropertydetailPhotos": // New case for the new page
+        return <PropertydetailPhotos />;
       default:
         return null;
     }
   };
 
-  // Updated navigation to include "PropertyDetail"
+  // Updated navigation items to include "PropertydetailPhotos"
   const navItems = [
     "Dashboard",
     "Property",
-    "PropertyDetail", // New nav item for property editing
+    "PropertyPage",
     "User",
     "Reviews",
     "Recommendations",
     "Photo",
+    "PropertydetailPhotos", // Added new navigation item
   ];
 
   return (
