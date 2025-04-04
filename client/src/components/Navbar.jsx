@@ -22,7 +22,7 @@ const Navbar = () => {
       className={`fixed w-full flex justify-between items-center md:px-10 px-6  py-4 shadow-md transition-all duration-500
         ${
           isScrolled
-            ? "bg-blue-900 rounded-b-4xl top-0 z-50"
+            ? " bg-[#043268] rounded-b-4xl top-0 z-50"
             : "bg-transparent relative"
         }`}
     >
