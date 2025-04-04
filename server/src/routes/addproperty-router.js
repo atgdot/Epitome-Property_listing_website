@@ -43,7 +43,7 @@ const propertyValidationRules = [
       }
       return true;
     }),
-  body("city").notEmpty().withMessage("City is required"),
+  //body("city").notEmpty().withMessage("City is required"),
   // body("status")
   //   .isIn(["active", "inactive", "pending"])
   //   .withMessage("Invalid status"),
@@ -67,11 +67,12 @@ const idValidationRule = [
 // Routes
 router.post("/create", propertyValidationRules, createPropertyController);
 router.patch(
-  "/update/:id",
+  "/:id",
   idValidationRule,
   propertyValidationRules,
   updatePropertyController
-);router.get("/detail/:id", getPropertyDetailsController);
+);
+router.get("/detail/:id", getPropertyDetailsController);
 
 // router.get("/all", getAllPropertiesController); 
 router.get("/all", getAllPropertyController); 
