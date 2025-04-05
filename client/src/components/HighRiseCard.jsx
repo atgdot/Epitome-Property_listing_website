@@ -19,6 +19,15 @@ const HighRiseCard = ({
     navigate(`/property/${property._id}`);
   };
 
+  // Get the first image if available, or use default
+  const displayImage =
+    property.property_Image ||
+    property.PropertyMedia?.header_images?.[0] ||
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSTWFa-5clKaN3zrnAriHY10BICdAFuXvTg&s";
+
+  // Get location details
+  const location = property.PropertyLocation?.[0] || {};
+
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-md hover:shadow-lg transition-all duration-300 w-full max-w-md mx-auto">
       {/* Header Section */}
@@ -26,11 +35,12 @@ const HighRiseCard = ({
         <div className="flex-1">
           <h3 className="text-xl font-bold text-[#043268]">{property.title}</h3>
           <p className="text-gray-600 text-sm mt-1">
-            <span className="font-medium">Sector:</span> {property.sector}
+            <span className="font-medium">Location:</span>{" "}
+            {location.location || "N/A"}
           </p>
         </div>
         <span className="bg-[#043268]/10 text-[#043268] text-sm px-2 py-1 rounded-full whitespace-nowrap">
-          {property.city}
+          {property.city || "N/A"}
         </span>
       </div>
 
@@ -50,7 +60,7 @@ const HighRiseCard = ({
         <div className="space-y-1">
           <p className="text-gray-500 text-sm">Price</p>
           <div className="text-xl font-bold text-[#043268]">
-            {property.price}
+            {property.price || "Price on request"}
           </div>
         </div>
         <button

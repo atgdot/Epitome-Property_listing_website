@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import PropertyHeader from "../LandingPage/PropertyHeader";
@@ -11,7 +11,6 @@ import "slick-carousel/slick/slick-theme.css";
 import CallbackModal from "../LandingPage/CallbackModal";
 
 const PropertyDetailPage = () => {
-  const propertyLocation = { lat: 28.4595, lng: 77.0266 };
   const property = useSelector(
     (state) => state.propertyDetail.selectedProperty
   );
@@ -19,13 +18,38 @@ const PropertyDetailPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
 
-  // Sample gallery images (replace with your actual images)
-  const sampleImages = [
-    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
-    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
-    "https://images.unsplash.com/photo-1493809842364-78817add7ffb",
-    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
-  ];
+  // Get property details from backend structure
+  const propertyMedia = property.PropertyMedia?.[0] || {};
+  const propertyLocation = property.PropertyLocation?.[0] || {};
+
+  // Use actual images from backend or defaults
+  const galleryImages =
+    propertyMedia.header_images?.length > 0
+      ? propertyMedia.header_images.map((img, index) => ({
+          src: img,
+          title: `Property Image ${index + 1}`,
+        }))
+      : [
+          {
+            src: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
+            title: "Default Property Image",
+          },
+        ];
+
+  const floorPlans =
+    propertyMedia.floor_plans?.length > 0
+      ? propertyMedia.floor_plans.map((plan, index) => ({
+          type: plan.description || `Floor Plan ${index + 1}`,
+          image: plan.image || galleryImages[0].src,
+          size: plan.area ? `${plan.area} SQ.FT` : "Size not specified",
+        }))
+      : [
+          {
+            type: "Sample Floor Plan",
+            image: galleryImages[0].src,
+            size: "2000 SQ.FT",
+          },
+        ];
 
   const gallerySettings = {
     dots: true,
@@ -79,58 +103,22 @@ const PropertyDetailPage = () => {
     );
   }
 
-  // Data for units
-  const unitTypes = [
-    { name: "4 BHK + SR + Type C", size: "3380 SQ.FT" },
-    { name: "3 BHK + SR - Type B", size: "2642 SQ.FT" },
-    { name: "3 BHK + SR - Type D", size: "2957 SQ.FT" },
-  ];
-
+  // Create highlights from available data
   const highlights = [
-    "36000 SQ.FT CLUBHOUSE",
-    "HIGH SPEED 6 LIFTS IN EACH TOWERS",
-    "SKY DECK ON TOP & SKY WALK",
-    "GLASS FACADE TEXTURE CONSTRUCTION",
-  ];
+    property.description && `Description: ${property.description}`,
+    property.Rental_Yield && `Rental Yield: ${property.Rental_Yield}`,
+    property.current_Renatal && `Current Rental: ${property.current_Renatal}`,
+    property.Area && `Area: ${property.Area}`,
+    property.Tenure && `Tenure: ${property.Tenure}`,
+    property.Tenant && `Tenant: ${property.Tenant}`,
+  ].filter(Boolean);
 
   const locationFeatures = [
-    "Sector 56 Gurgaon Metro Station (3 mins)",
-    "CK Birla Hospital, Gurgaon (15 mins)",
-    "Heritage School Sector 58 Campus (10 mins)",
-    "Omaxe Celebration Mall (10 mins)",
-  ];
-
-  const siteFeatures = [
-    "Main Entry",
-    "Security Check",
-    "Driveway",
-    "Tower A Drop Off",
-    "Club Royal Drop Off",
-    "Tower B Drop Off",
-    "Waterbody",
-    "Exit Ramps (Basement & Podium)",
-    "Entry Ramps (Basement & Podium)",
-    "Exit Gate",
-    "Multipurpose Court",
-    "Outdoor Gym",
-    "Open Lawn/Greens",
-    "Banquet",
-    "Kids' Play Area",
-    "Residents' Lounge",
-  ];
-
-  const galleryImages = sampleImages.map((img, index) => ({
-    src: img,
-    title: ["Main View", "Meditation area", "Clubhouse", "Multipurpose hall"][
-      index
-    ],
-  }));
-
-  const floorPlans = [
-    { type: "3 BHK (Type B)", image: sampleImages[0] },
-    { type: "3 BHK (Type D)", image: sampleImages[1] },
-    { type: "4 BHK (Type C)", image: sampleImages[2] },
-  ];
+    propertyLocation.address && `Address: ${propertyLocation.address}`,
+    propertyLocation.city && `City: ${propertyLocation.city}`,
+    propertyLocation.pincode && `Pincode: ${propertyLocation.pincode}`,
+    propertyLocation.location && `Location: ${propertyLocation.location}`,
+  ].filter(Boolean);
 
   return (
     <div className="bg-white relative">
@@ -170,7 +158,8 @@ const PropertyDetailPage = () => {
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6">
           <h1 className="text-4xl font-bold text-white">{property.title}</h1>
           <p className="text-xl text-white mt-2">
-            {property.city}, {property.sector}
+            {propertyLocation.city || "N/A"},{" "}
+            {propertyLocation.location || "N/A"}
           </p>
         </div>
       </div>
@@ -180,29 +169,28 @@ const PropertyDetailPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 bg-gray-100 p-6 rounded-lg">
           <div className="text-center p-4">
             <p className="text-3xl font-bold text-blue-800">
-              {property.landArea || "2.1 Acres"}
+              {property.Area || "N/A"}
             </p>
-            <p className="text-gray-600 uppercase text-sm font-medium">
-              Land Area
-            </p>
+            <p className="text-gray-600 uppercase text-sm font-medium">Area</p>
           </div>
           <div className="text-center p-4 border-x border-gray-200">
             <p className="text-3xl font-bold text-blue-800">
-              {property.possession || "Jun, 2029"}
+              {property.Tenure || "N/A"}
             </p>
             <p className="text-gray-600 uppercase text-sm font-medium">
-              Possession
+              Tenure
             </p>
           </div>
           <div className="text-center p-4">
             <p className="text-3xl font-bold text-blue-800">
-              {property.units || "2 Tower - 168 Unit"}
+              {property.Tenant || "N/A"}
             </p>
             <p className="text-gray-600 uppercase text-sm font-medium">
-              About Project
+              Tenant
             </p>
           </div>
         </div>
+
         {/* About Project */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
@@ -213,68 +201,32 @@ const PropertyDetailPage = () => {
               {property.title}
             </h3>
             <p className="text-gray-700 leading-relaxed">
-              The design journey at {property.title} begins with a subtle
-              integration of elements that infuse warmth and comfort into every
-              space. This vision comes to life through the exceptional talents
-              of Morphogenesis, Habitat Architect, and Coopers Hill, whose
-              collaborative genius creates a truly rare and exclusive
-              masterpiece. The twin towers reveal a majestic, wave-inspired
-              design at the podium level, embellished with aluminium perforated
-              sheets. Here, living larger than life isn't just a choice—it's a
-              way of life. From the intricate design of the homes to the
-              luxurious amenities at your fingertips, residents are offered a
-              lifestyle worthy of royalty, where every whim is catered to at any
-              time of the day.
+              {property.description ||
+                "No description available for this property."}
             </p>
           </div>
         </section>
 
         {/* Highlights */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
-            Highlights
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {highlights.map((highlight, index) => (
-              <div
-                key={index}
-                className="flex items-start bg-blue-50 p-4 rounded-lg"
-              >
-                <span className="text-blue-600 mr-3 mt-1">•</span>
-                <p className="text-gray-800 font-medium">{highlight}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-        {/* Unit Types */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
-            Unit Types
-          </h2>
-          <div className="space-y-6">
-            {unitTypes.map((unit, index) => (
-              <div
-                key={index}
-                className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition"
-              >
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    {unit.name}
-                  </h3>
-                  <p className="text-gray-600 bg-blue-100 px-3 py-1 rounded-full">
-                    {unit.size}
-                  </p>
-                </div>
-                <button
-                  onClick={() => setIsCallbackModalOpen(true)}
-                  className="mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center"
+        {highlights.length > 0 && (
+          <section className="mb-12">
+            <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
+              Highlights
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {highlights.map((highlight, index) => (
+                <div
+                  key={index}
+                  className="flex items-start bg-blue-50 p-4 rounded-lg"
                 >
-                  Get Details <FaArrowRight className="ml-2" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </section>
+                  <span className="text-blue-600 mr-3 mt-1">•</span>
+                  <p className="text-gray-800 font-medium">{highlight}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Floor Plans */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
@@ -296,17 +248,15 @@ const PropertyDetailPage = () => {
                 />
                 <div className="p-4">
                   <h4 className="font-medium text-lg text-gray-800">
-                    Unit Plan - {plan.type}
+                    {plan.type}
                   </h4>
-                  <p className="text-gray-600 mt-1">{unitTypes[index]?.name}</p>
-                  <p className="text-blue-600 font-medium mt-2">
-                    {unitTypes[index]?.size}
-                  </p>
+                  <p className="text-blue-600 font-medium mt-2">{plan.size}</p>
                 </div>
               </div>
             ))}
           </div>
         </section>
+
         {/* Gallery */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
@@ -333,6 +283,7 @@ const PropertyDetailPage = () => {
             ))}
           </div>
         </section>
+
         {/* Location Map */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
@@ -353,10 +304,11 @@ const PropertyDetailPage = () => {
               </div>
             </div>
             <div className="bg-gray-100 rounded-lg overflow-hidden h-96">
-              <PropertyMap location={propertyLocation} />
+              <PropertyMap location={{ lat: 28.4595, lng: 77.0266 }} />
             </div>
           </div>
         </section>
+
         {/* Contact Form */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
@@ -411,10 +363,19 @@ const PropertyDetailPage = () => {
               <div className="text-center p-6">
                 <h4 className="text-xl font-semibold mb-4">Visit Our Office</h4>
                 <p className="text-gray-700 mb-4">
-                  Sector 56, Golf Course Road, Gurugram
+                  {propertyLocation.address ||
+                    "Sector 56, Golf Course Road, Gurugram"}
                 </p>
                 <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <p className="text-gray-500">Office Image</p>
+                  {propertyMedia.logo_image ? (
+                    <img
+                      src={propertyMedia.logo_image}
+                      alt="Company Logo"
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  ) : (
+                    <p className="text-gray-500">Office Image</p>
+                  )}
                 </div>
               </div>
             </div>
