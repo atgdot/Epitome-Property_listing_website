@@ -8,6 +8,7 @@ import {
   deletePropertyController,
   getPropertyDetailsController,
   getAllPropertyController,
+  getPropertiesByLocation,
 } from "../controllers/addproperty-controller.js";
 
 const router = express.Router();
@@ -78,5 +79,6 @@ router.get("/detail/:id", getPropertyDetailsController);
 router.get("/all", getAllPropertyController); 
 router.get("/search/:searchTerm", searchPropertiesController);
 router.delete("/delete/:id", idValidationRule, deletePropertyController);
+router.get("/location", getPropertiesByLocation);
 
 export default router;

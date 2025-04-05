@@ -251,22 +251,48 @@ export const getPropertyDetailsController = async (req, res) => {
 
 export const getAllPropertyController = async (req, res) => {
   try {
-    const { category, subcategory } = req.body; // Using body instead of query for filters
+    const { category, subcategory } = req.body;
 
-    let filter = {};
-    if (category) filter.category = category;
-    if (subcategory) filter.subCategory = subcategory;
+    let matchStage = {};
+    if (category) matchStage.category = category;
+    if (subcategory) matchStage.subCategory = { $in: [subcategory] };
 
-    // Fetch properties from BasicProperty model
-    const properties = await BasicProperty.find(filter);
+    console.log("[DEBUG] Fetching properties with filter:", matchStage);
+
+    const properties = await BasicProperty.aggregate([
+      { $match: matchStage },
+
+      // Lookup media
+      {
+        $lookup: {
+          from: "propertymedia", // MongoDB collection name (always lowercase + plural)
+          localField: "_id",
+          foreignField: "property",
+          as: "media"
+        }
+      },
+
+      // Lookup location
+      {
+        $lookup: {
+          from: "propertylocations",
+          localField: "_id",
+          foreignField: "property",
+          as: "location"
+        }
+      }
+    ]);
 
     if (!properties.length) {
       return res.status(404).json({ success: false, message: "No properties found" });
     }
 
+    console.log(`[DEBUG] Fetched ${properties.length} properties`);
     res.status(200).json({ success: true, data: properties });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("[ERROR] getAllPropertyController failed:", error.message);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
@@ -331,6 +357,94 @@ export const deletePropertyController = async (req, res) => {
     });
   }
 };
+
+
+export const getPropertiesByLocation = async (req, res) => {
+  const { location } = req.body;
+
+  if (!location) {
+    return res.status(400).json({ success: false, message: "Location is required" });
+  }
+
+  // Normalize input: lowercase, remove hyphens, spaces, etc.
+  const normalizedInput = location.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  try {
+    const properties = await BasicProperty.aggregate([
+      // Join with PropertyLocation
+      {
+        $lookup: {
+          from: "propertylocations", // must be lowercase plural of model name
+          localField: "_id",
+          foreignField: "property",
+          as: "locationInfo"
+        }
+      },
+      {
+        $unwind: "$locationInfo"
+      },
+      {
+        $addFields: {
+          normalizedLocation: {
+            $replaceAll: {
+              input: { $toLower: "$locationInfo.location" },
+              find: " ",
+              replacement: ""
+            }
+          }
+        }
+      },
+      {
+        $addFields: {
+          normalizedLocation: {
+            $replaceAll: {
+              input: "$normalizedLocation",
+              find: "-",
+              replacement: ""
+            }
+          }
+        }
+      },
+      {
+        $match: {
+          normalizedLocation: normalizedInput
+        }
+      },
+      // Optionally join media as well
+      {
+        $lookup: {
+          from: "propertymedia",
+          localField: "_id",
+          foreignField: "property",
+          as: "media"
+        }
+      }
+    ]);
+
+    if (!properties.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No properties found for this location"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: properties.length,
+      data: properties
+    });
+
+  } catch (error) {
+    console.error("Aggregation error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message
+    });
+  }
+};
+
+
 
 
 
