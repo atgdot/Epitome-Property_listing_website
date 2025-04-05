@@ -67,11 +67,11 @@ const PropertyCard = ({
 
       <ul className="space-y-2 mb-4">
         {[
-          { label: "Area:", value: property.area },
-          { label: "Current Rental:", value: property.currentRental },
-          { label: "Tenure:", value: property.tenure },
-          { label: "Tenant:", value: property.tenant },
-          { label: "Location:", value: property.sector },
+          { label: "Area:", value: property.Area },
+          { label: "Current Rental:", value: property.current_Renatal  },
+          { label: "Tenure:", value: property.Tenure },
+          { label: "Tenant:", value: property.Tenant },
+          { label: "Location:", value: property.location?.[0]?.location || "N/A" },
         ].map((item, index) => (
           <li key={index} className="flex justify-between text-sm">
             <span className="text-gray-600">{item.label}</span>
