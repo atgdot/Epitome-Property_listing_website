@@ -101,6 +101,12 @@ const Footer = () => {
               <li className="hover:text-blue-600 cursor-pointer">
                 Enquire Now
               </li>
+              <li
+                onClick={() => navigate("/admin-dashboard")}
+                className="hover:text-blue-600 cursor-pointer"
+              >
+                Admin
+              </li>
             </ul>
           </div>
           <div>
