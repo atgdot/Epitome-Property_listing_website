@@ -24,7 +24,7 @@ const HighRiseCard = ({ property, editable = false, onEdit, onDelete }) => {
           </p>
         </div>
         <span className="bg-[#043268]/10 text-[#043268] text-sm px-2 py-1 rounded-full whitespace-nowrap">
-          {property.propertyLocation?.city || "N/A"}
+          {property.propertyLocation?.city || "City"}
         </span>
       </div>
 

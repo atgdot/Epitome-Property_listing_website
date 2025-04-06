@@ -18,6 +18,7 @@ const PropertyCard = ({
     navigate(`/property/${property._id}`); // Navigate to new page
   };
   const formatCategory = (category) => {
+    if (!category) return "N/A"; // or return an empty string "" if you prefer
     return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
   };
 
@@ -47,7 +48,9 @@ const PropertyCard = ({
         {property.status}
       </div>
 
-      <h3 className="text-xl font-bold mb-2">{property.title}</h3>
+      <h3 className="text-xl font-bold mb-2">
+        {property.title || "Untitled Property"}
+      </h3>
 
       <p className="text-gray-600 text-sm mb-4 line-clamp-3">
         {property.description}
@@ -68,10 +71,13 @@ const PropertyCard = ({
       <ul className="space-y-2 mb-4">
         {[
           { label: "Area:", value: property.Area },
-          { label: "Current Rental:", value: property.current_Renatal  },
+          { label: "Current Rental:", value: property.current_Renatal },
           { label: "Tenure:", value: property.Tenure },
           { label: "Tenant:", value: property.Tenant },
-          { label: "Location:", value: property.location?.[0]?.location || "N/A" },
+          {
+            label: "Location:",
+            value: property.location?.[0]?.location || "N/A",
+          },
         ].map((item, index) => (
           <li key={index} className="flex justify-between text-sm">
             <span className="text-gray-600">{item.label}</span>
