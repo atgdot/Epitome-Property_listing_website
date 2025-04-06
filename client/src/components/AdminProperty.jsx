@@ -29,8 +29,8 @@ const AdminProperty = () => {
 
   // Form state with all media fields as arrays and subCategory stored as an array
   const initialFormData = {
-    category: "residential",
-    subCategory: ["luxury projects"],
+    category: "RESIDENTIAL",
+    subCategory: [],
     city: "",
     title: "",
     location: "",
@@ -96,7 +96,7 @@ const AdminProperty = () => {
   // Category & Subcategory handling
   const handleCategoryChange = (value) => {
     // For 'residential' we use a default subCategory; for 'featured' and 'trending', we store an empty array.
-    const defaultSub = value === "residential" ? "luxury projects" : "";
+    const defaultSub = value === "RESIDENTIAL" ? "luxury projects" : "";
     setFormData((prev) => ({
       ...prev,
       category: value,
@@ -136,8 +136,8 @@ const AdminProperty = () => {
     if (property) {
       // Populate formData from existing property
       setFormData({
-        category: property.category,
-        subCategory: property.subCategory || [],
+        category: [property.category],
+        subCategory: [property.subCategory] || [],
         city: property.city,
         title: property.title,
         location: property.location || "",
@@ -374,7 +374,7 @@ const AdminProperty = () => {
                         }
                         required
                       >
-                        {formData.category === "residential" && (
+                        {formData.category === "RESIDENTIAL" && (
                           <>
                             <option value="luxury projects">
                               Luxury Projects
