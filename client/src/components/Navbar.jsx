@@ -58,7 +58,7 @@ const Navbar = () => {
           ${
             isScrolled
               ? "bg-white text-blue-900 hover:bg-gray-100"
-              : "bg-blue-900 text-white hover:bg-blue-800"
+              : "bg-blue-900 text-white hover:bg-blue-700"
           }`}
         >
           Contact Us
