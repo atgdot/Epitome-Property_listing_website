@@ -20,6 +20,7 @@ const AdminProperty = () => {
   const dispatch = useDispatch();
   const { properties, loading, error } = useSelector((state) => state.property);
 
+
   // Modal & UI state
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
@@ -54,6 +55,7 @@ const AdminProperty = () => {
 
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  console.log(formData)
 
   // Fetch all properties on mount
   useEffect(() => {
@@ -141,6 +143,7 @@ const AdminProperty = () => {
         city: property.city,
         title: property.title,
         location: property.location || "",
+        sector: property.sector || "",
         address: property.address || "",
         pincode: property.pincode || "",
         description: property.description,
@@ -225,16 +228,16 @@ const AdminProperty = () => {
   // Filter & search logic
   const filtered = Array.isArray(properties)
     ? properties.filter((p) => {
-        if (filterCategory !== "all" && p.category !== filterCategory)
-          return false;
-        if (searchQuery) {
-          const term = searchQuery.toLowerCase();
-          return [p.title, p.city, p.location].some((v) =>
-            v?.toLowerCase().includes(term)
-          );
-        }
-        return true;
-      })
+      if (filterCategory !== "all" && p.category !== filterCategory)
+        return false;
+      if (searchQuery) {
+        const term = searchQuery.toLowerCase();
+        return [p.title, p.city, p.location].some((v) =>
+          v?.toLowerCase().includes(term)
+        );
+      }
+      return true;
+    })
     : [];
 
   return (
@@ -352,16 +355,16 @@ const AdminProperty = () => {
                     onChange={(e) => handleCategoryChange(e.target.value)}
                     required
                   >
-                    <option value="residential">Residential</option>
-                    <option value="commercial">Commercial</option>
-                    <option value="trending">Trending</option>
-                    <option value="featured">Featured</option>
+                    <option value="Residential">Residential</option>
+                    <option value="Commercial">Commercial</option>
+                    <option value="Trending">Trending</option>
+                    <option value="Featured">Featured</option>
                   </select>
                 </div>
 
                 {/* Render SubCategory only if category is not "featured" or "trending" */}
-                {formData.category !== "featured" &&
-                  formData.category !== "trending" && (
+                {formData.category !== "Featured" &&
+                  formData.category !== "Trending" && (
                     <div>
                       <label className="block text-xs font-medium mb-1">
                         Sub Category*
@@ -374,27 +377,27 @@ const AdminProperty = () => {
                         }
                         required
                       >
-                        {formData.category === "RESIDENTIAL" && (
+                        {formData.category === "Residential" && (
                           <>
-                            <option value="luxury projects">
+                            <option value="Luxury Projects">
                               Luxury Projects
                             </option>
-                            <option value="upcoming project">
+                            <option value="Upcoming Project">
                               Upcoming Project
                             </option>
-                            <option value="high rise apartment">
+                            <option value="High Rise Apartment">
                               High Rise Apartment
                             </option>
                           </>
                         )}
-                        {formData.category === "commercial" && (
+                        {formData.category === "Commercial" && (
                           <>
-                            <option value="offices">Offices</option>
-                            <option value="pre-leased offices">
+                            <option value="Offices">Offices</option>
+                            <option value="Pre-Leased Offices">
                               Pre-Leased Offices
                             </option>
-                            <option value="pre-rented">Pre-Rented</option>
-                            <option value="sco">SCO</option>
+                            <option value="Pre-Rented">Pre-Rented</option>
+                            <option value="SCO">SCO</option>
                           </>
                         )}
                       </select>
@@ -439,7 +442,7 @@ const AdminProperty = () => {
                 {/* Location */}
                 <div>
                   <label className="block text-xs font-medium mb-1">
-                    Location/Sector*
+                    Location
                   </label>
                   <input
                     type="text"
@@ -449,6 +452,24 @@ const AdminProperty = () => {
                       setFormData((prev) => ({
                         ...prev,
                         location: e.target.value,
+                      }))
+                    }
+                    required
+                  />
+                  {/* Sector */}
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1">
+                    Sector
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full p-2 border rounded text-xs"
+                    value={formData.sector}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        sector: e.target.value,
                       }))
                     }
                     required
@@ -811,8 +832,8 @@ const AdminProperty = () => {
                   {isSubmitting
                     ? "Submitting..."
                     : editingProperty
-                    ? "Update Property"
-                    : "Create Property"}
+                      ? "Update Property"
+                      : "Create Property"}
                 </button>
               </div>
 

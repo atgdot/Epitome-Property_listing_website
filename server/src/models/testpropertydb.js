@@ -9,7 +9,7 @@ const DEFAULT_PROPERTY_IMAGE =
 const basicPropertySchema = new mongoose.Schema({
   category: {
     type: String,
-    enum: ["RESIDENTIAL", "Commercial", "Featured", "Trending"],
+    enum: ["Residential", "Commercial", "Featured", "Trending"],
     required: true,
   },
   subCategory: {
@@ -33,6 +33,10 @@ const basicPropertySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  city:{
+    type: String,
+    required: true
+  },
   price: {
     type: String,
     required: true,
@@ -40,7 +44,7 @@ const basicPropertySchema = new mongoose.Schema({
   Rental_Yield: {
     type: String,
   },
-  current_Renatal: {
+  current_Rental: {
     type: String,
   },
   Area: {
@@ -56,6 +60,7 @@ const basicPropertySchema = new mongoose.Schema({
     type: String,
     default: DEFAULT_PROPERTY_IMAGE,
   },
+
 });
 
 // Add pre-remove hook here

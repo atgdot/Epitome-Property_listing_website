@@ -21,7 +21,7 @@ export const createPropertyController = async (req, res) => {
   }
 
   try {
-    let { category, subCategory, title, locationDetails, mediaDetails } = req.body;
+    let { category,subCategory,city,title,location,sector,address,pincode,description,price,Rental_Yeild,current_Rental,Area,Tenure,Tenant,property_Image,logo_image,header_image,about_image,highlight_image,gallery_image,floor_plans} = req.body;
 
     if (!title || typeof title !== "string") {
       return res.status(400).json({ success: false, message: "Title is required" });
@@ -70,19 +70,18 @@ export const createPropertyController = async (req, res) => {
 
     // 1️⃣ Create Basic Property
     const property = await BasicProperty.create({ 
-      ...req.body, 
-      subCategory,
-      originalTitle: title,
-      normalizedTitle
+      category,subCategory,city,title:normalizedTitle,location,sector,address,pincode,description,price,Rental_Yeild,current_Rental,Area,Tenure,Tenant,property_Image,
+      
     });
+    
 
     console.log("✅ Basic property created:", property);
 
     // 2️⃣ Create Location Details (if provided)
     let createdLocation = null;
-    if (locationDetails) {
+    if (location) {
       createdLocation = await PropertyLocation.create({
-        ...locationDetails,
+        location,
         property: property._id
       });
       console.log("📍 Location created:", createdLocation);
@@ -90,9 +89,9 @@ export const createPropertyController = async (req, res) => {
 
     // 3️⃣ Create Media Details (if provided)
     let createdMedia = null;
-    if (mediaDetails) {
+    if (logo_image || header_image || about_image || highlight_image ||gallery_image||floor_plans) {
       createdMedia = await PropertyMedia.create({
-        ...mediaDetails,
+        logo_image,header_image,about_image,highlight_image,gallery_image,floor_plans,
         property: property._id
       });
       console.log("🖼️ Media created:", createdMedia);

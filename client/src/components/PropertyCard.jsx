@@ -34,10 +34,10 @@ const PropertyCard = ({
         <div className="h-[2px] bg-gray-300 my-2"></div>
       </div>
 
-      {property.image && (
+      {property.property_Image && (
         <div className="mb-4">
           <img
-            src={property.image}
+            src={property.property_Image}
             alt={property.title}
             className="w-full h-48 object-cover rounded-xl"
           />
@@ -71,7 +71,7 @@ const PropertyCard = ({
       <ul className="space-y-2 mb-4">
         {[
           { label: "Area:", value: property.Area },
-          { label: "Current Rental:", value: property.current_Renatal },
+          { label: "Current Rental:", value: property.current_Rental },
           { label: "Tenure:", value: property.Tenure },
           { label: "Tenant:", value: property.Tenant },
           {
