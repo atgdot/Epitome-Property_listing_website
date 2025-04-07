@@ -42,7 +42,7 @@ const AdminLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className={`bg-white p-8 rounded-lg shadow-xl w-full max-w-md transition-all duration-500 transform ${animation ? 'scale-105 opacity-0' : 'scale-100 opacity-100'}`}>
         <div className="flex justify-center mb-6">
-          <img src="/logo.png" alt="Logo" className="h-16" />
+          <img src="/logoblack.png" alt="Logo" className="h-16" />
         </div>
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Admin Dashboard Login
