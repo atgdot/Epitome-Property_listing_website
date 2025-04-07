@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import PropertyCard from "../components/PropertyCard";
 import HighRiseCard from "../components/HighRiseCard";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllProperties } from "../utils/Store/slice/propertySlice";
+import { RecommendationContext } from "../Context/RecommendationContext";
+import AnimatedCard from "../components/AnimatedCard";
 
 // Flip Card Component that displays the image on the front and details on the back.
 const RecommendationFlipCard = ({ property }) => (
@@ -29,6 +31,7 @@ const RecommendationFlipCard = ({ property }) => (
 );
 
 const TopSection = () => {
+  const { recommendations } = useContext(RecommendationContext);
   const dispatch = useDispatch();
   const { properties, loading, error } = useSelector((state) => state.property);
 
@@ -158,18 +161,37 @@ const TopSection = () => {
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
       {/* RECOMMENDATIONS SECTION (Flip Cards in a 4-Column Grid) */}
       <div className="mb-10">
-        {/* Centered Title */}
         <div className="text-center mb-6">
           <h2 className="text-3xl font-semibold">RECOMMENDED</h2>
         </div>
-        {/* Grid with 4 cards in one row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {propertiesByCategory.recommended.slice(0, 4).map((property, index) => (
-            <RecommendationFlipCard key={index} property={property} />
+          {recommendations.properties.slice(0, 4).map((property, index) => (
+            <AnimatedCard key={index} property={property} />
           ))}
         </div>
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {recommendations.properties.slice(0, 4).map((property, index) => (
+            <div
+              key={index}
+              className="relative h-72 w-full bg-white rounded-lg shadow-md overflow-hidden group"
+            >
+              <img
+                src={property.image || "https://via.placeholder.com/300"}
+                alt={property.title || "No Title"}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                <h3 className="text-white text-lg font-semibold translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                  {property.title || "Untitled"}
+                </h3>
+                <p className="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {property.address?.join(", ") || "Address not specified"}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div> */}
       </div>
-
       {/* PROPERTY CATEGORY NAVIGATION */}
       <h2 className="text-3xl font-semibold text-center mb-6">
         Explore Our Properties
@@ -194,8 +216,8 @@ const TopSection = () => {
       {propertiesList.length > 0 ? (
         <div>
           <h3 className="text-2xl font-semibold text-center mb-6">
-            {navButtons.find((btn) => btn.category === selectedCategory)?.label ||
-              ""}{" "}
+            {navButtons.find((btn) => btn.category === selectedCategory)
+              ?.label || ""}{" "}
             Properties
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

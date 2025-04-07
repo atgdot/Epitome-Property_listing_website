@@ -2,7 +2,9 @@ import React, { useContext, useState, useEffect } from "react";
 import { RecommendationContext } from "../Context/RecommendationContext";
 
 const AdminRecommendation = () => {
-  const { recommendations, updateRecommendations } = useContext(RecommendationContext);
+  const { recommendations, updateRecommendations } = useContext(
+    RecommendationContext
+  );
   const [formData, setFormData] = useState({ properties: [] });
 
   // Initialize state with context data
@@ -59,7 +61,15 @@ const AdminRecommendation = () => {
   // Submit and update context
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateRecommendations(formData);
+    // Add default price if not set
+    const propertiesWithPrice = formData.properties.map((property) => ({
+      ...property,
+      price: property.price || "Price on request",
+    }));
+    updateRecommendations({
+      ...formData,
+      properties: propertiesWithPrice,
+    });
     alert("Recommendations updated!");
   };
 
@@ -82,7 +92,9 @@ const AdminRecommendation = () => {
             <input
               type="text"
               value={property.title}
-              onChange={(e) => handlePropertyChange(index, "title", e.target.value)}
+              onChange={(e) =>
+                handlePropertyChange(index, "title", e.target.value)
+              }
               className="border p-2 w-full mb-2"
               placeholder="Enter property title"
             />
@@ -91,7 +103,9 @@ const AdminRecommendation = () => {
                 key={addrIndex}
                 type="text"
                 value={addr}
-                onChange={(e) => handleAddressChange(index, addrIndex, e.target.value)}
+                onChange={(e) =>
+                  handleAddressChange(index, addrIndex, e.target.value)
+                }
                 className="border p-2 w-full mb-2"
                 placeholder={`Address ${addrIndex + 1}`}
               />
@@ -99,7 +113,9 @@ const AdminRecommendation = () => {
             <input
               type="text"
               value={property.image}
-              onChange={(e) => handlePropertyChange(index, "image", e.target.value)}
+              onChange={(e) =>
+                handlePropertyChange(index, "image", e.target.value)
+              }
               className="border p-2 w-full mb-2"
               placeholder="Image URL"
             />
@@ -111,10 +127,17 @@ const AdminRecommendation = () => {
             />
           </div>
         ))}
-        <button type="button" onClick={handleAdd} className="bg-green-500 text-white px-4 py-2 rounded">
+        <button
+          type="button"
+          onClick={handleAdd}
+          className="bg-green-500 text-white px-4 py-2 rounded"
+        >
           Add New Card
         </button>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded ml-4">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded ml-4"
+        >
           Save Changes
         </button>
       </form>
@@ -123,10 +146,18 @@ const AdminRecommendation = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {recommendations.properties.map((property, index) => (
           <div key={index} className="border p-4 rounded-lg shadow-lg">
-            {property.image && <img src={property.image} alt={property.title} className="w-full h-40 object-cover mb-2 rounded" />}
+            {property.image && (
+              <img
+                src={property.image}
+                alt={property.title}
+                className="w-full h-40 object-cover mb-2 rounded"
+              />
+            )}
             <h3 className="text-xl font-semibold">{property.title}</h3>
             {property.address.map((addr, addrIndex) => (
-              <p key={addrIndex} className="text-gray-600">{addr}</p>
+              <p key={addrIndex} className="text-gray-600">
+                {addr}
+              </p>
             ))}
           </div>
         ))}
