@@ -54,7 +54,7 @@ const AdminProperty = () => {
 
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  console.log(formData)
+  console.log(formData.subCategory)
 
   // Fetch all properties on mount
   useEffect(() => {
@@ -97,7 +97,7 @@ const AdminProperty = () => {
   // Category & Subcategory handling
   const handleCategoryChange = (value) => {
     // For 'residential' we use a default subCategory; for 'featured' and 'trending', we store an empty array.
-    const defaultSub = value === "Residential" ? "Luxury projects" : "";
+    const defaultSub = value === "Residential" ? "Luxury Projects" : "Offices";
     setFormData((prev) => ({
       ...prev,
       category: value,
@@ -376,24 +376,27 @@ const AdminProperty = () => {
                       <select
                         className="w-full p-2 border rounded text-xs"
                         value={formData.subCategory}
+                        
                         onChange={(e) => handleSubCategoryChange(e.target.value)}
                         required
                       >
-                        {formData.category === "Residential" && (
+                        {formData.category === "Residential" ? (
                           <>
                             <option value="Luxury Project">Luxury Project</option>
                             <option value="Upcoming Project">Upcoming Project</option>
                             <option value="High Rise Apartment">High Rise Apartment</option>
                           </>
-                        )}
-                        {formData.category === "Commercial" && (
-                          <>
-                            <option value="Offices">Offices</option>
-                            <option value="Pre Leased Offices">Pre-Leased Offices</option>
-                            <option value="Pre-Rented">Pre-Rented</option>
-                            <option value="SCO">SCO</option>
-                          </>
-                        )}
+                        ) :
+                          (
+                            <>
+                              <option value="Offices">Offices</option>
+                              <option value="Pre Leased Offices">Pre-Leased Offices</option>
+                              <option value="Pre-Rented">Pre-Rented</option>
+                              <option value="SCO">SCO</option>
+                            </>
+                          )
+                          }
+
                       </select>
                     </div>
                   )}
