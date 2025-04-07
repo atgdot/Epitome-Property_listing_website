@@ -13,13 +13,13 @@ const basicPropertySchema = new mongoose.Schema({
     required: true,
   },
   subCategory: {
-    type: [String],
+    type: String,
     enum: [
       "Luxury Projects",
       "Upcoming Project",
       "High Rise Apartment",
       "Offices",
-      "Pre-Leased Offices",
+      "Pre Leased Offices",
       "Pre-Rented",
       "SCO",
     ],
