@@ -13,6 +13,20 @@ import {
 
 const router = express.Router();
 
+//import parser from "../middleware/multer.js";
+
+// For multiple fields (e.g., property_Image, logo_image, etc.)
+// router.post('/create', parser.fields([
+//   { name: 'property_Image', maxCount: 1 },
+//   { name: 'logo_image', maxCount: 1 },
+//   { name: 'header_images', maxCount: 10 },
+//   { name: 'about_image', maxCount: 10 },
+//   { name: 'highlight_image', maxCount: 10 },
+//   { name: 'gallery_image', maxCount: 10 },
+//   { name: 'floor_plan_images', maxCount: 10 }, // Used below
+// ]), createPropertyController);
+
+
 // Validation rules
 // const propertyValidationRules = [
 //   body("category")

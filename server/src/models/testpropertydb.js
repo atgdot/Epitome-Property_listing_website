@@ -6,148 +6,74 @@ const DEFAULT_PROPERTY_IMAGE =
 // -----------------
 // Step 1: Basic Property Information
 // -----------------
+const allowedCategories = ["Residential", "Commercial", "Featured", "Trending"];
+const allowedSubCategories = [
+  "Luxury Project",
+  "Upcoming Project",
+  "High Rise Apartment",
+  "Offices",
+  "Pre Leased Offices",
+  "Pre-Rented",
+  "SCO",
+];
+
 const basicPropertySchema = new mongoose.Schema({
   category: {
     type: String,
-    enum: ["Residential", "Commercial", "Featured", "Trending"],
+    enum: allowedCategories,
     required: true,
   },
   subCategory: {
-    type: String,
-    enum: [
-      "Luxury Projects",
-      "Upcoming Project",
-      "High Rise Apartment",
-      "Offices",
-      "Pre Leased Offices",
-      "Pre-Rented",
-      "SCO",
-    ],
+    type: [String], 
+    enum: allowedSubCategories,
     default: [],
   },
-  title: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  city:{
-    type: String,
-    required: true
-  },
-  price: {
-    type: String,
-    required: true,
-  },
-  Rental_Yield: {
-    type: String,
-  },
-  current_Rental: {
-    type: String,
-  },
-  Area: {
-    type: String,
-  },
-  Tenure: {
-    type: String,
-  },
-  Tenant: {
-    type: String,
-  },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  city: { type: String, required: true },
+  price: { type: String, required: true },
+  Rental_Yield: { type: String },
+  current_Rental: { type: String },
+  Area: { type: String },
+  Tenure: { type: String },
+  Tenant: { type: String },
   property_Image: {
     type: String,
     default: DEFAULT_PROPERTY_IMAGE,
   },
-
 });
-
-// Add pre-remove hook here
-basicPropertySchema.pre('deleteOne', { document: true, query: false }, async function(next) {
-  try {
-    await PropertyLocation.deleteMany({ property: this._id });
-    await PropertyMedia.deleteMany({ property: this._id });
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
-
-
-const BasicProperty = mongoose.model("BasicProperty", basicPropertySchema);
 
 // -----------------
 // Step 2: Location & Address Details
 // -----------------
 const propertyLocationSchema = new mongoose.Schema({
-  // In propertyLocationSchema and propertyMediaSchema
-  property: { 
+  property: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "BasicProperty",
     required: true,
-    index: true // Add this for better query performance
+    index: true,
   },
-  city: {
-    type: String,
-    required: false,
-  },
-  location: {
-    type: String,
-    required: false, 
-  },
-  address: {
-    type: String,
-    default: "",
-  },
-  pincode: {
-    type: String,
-    default: "",
-  },
-  // The property image that uses the same default as the original property_Image
+  city: String,
+  location: String,
+  address: { type: String, default: "" },
+  pincode: { type: String, default: "" },
 });
-
-const PropertyLocation = mongoose.model("PropertyLocation", propertyLocationSchema);
 
 // -----------------
 // Step 3: Media & Visuals
 // -----------------
-
-// Define a constant for the default property image URL
-
-
 const propertyMediaSchema = new mongoose.Schema({
   property: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "BasicProperty",
     required: true,
   },
-  // This boolean represents the radio button option to show the logo
-  show_logo: {
-    type: Boolean,
-    default: false,
-  },
-  logo_image: {
-    type: String,
-    default: "",
-  },
-  
-  header_images: {
-  type: [String],
-  default: [],
-  },
-  about_image: {
-    type: [String],
-    default: [],
-  },
-  highlight_image: {
-    type: [String],
-    default: [],
-  },
-  gallery_image: {
-    type: [String],
-    default: [],
-  },
+  show_logo: { type: Boolean, default: false },
+  logo_image: { type: String, default: "" },
+  header_images: { type: [String], default: [] },
+  about_image: { type: [String], default: [] },
+  highlight_image: { type: [String], default: [] },
+  gallery_image: { type: [String], default: [] },
   floor_plans: {
     type: [
       {
@@ -160,8 +86,7 @@ const propertyMediaSchema = new mongoose.Schema({
   },
 });
 
-// Pre-save hook: if show_logo is enabled but no logo_image is provided,
-// assign the default property image URL to logo_image.
+// Auto-assign logo if `show_logo` is enabled but no image provided
 propertyMediaSchema.pre("save", function (next) {
   if (this.show_logo && (!this.logo_image || this.logo_image.trim() === "")) {
     this.logo_image = DEFAULT_PROPERTY_IMAGE;
@@ -169,6 +94,24 @@ propertyMediaSchema.pre("save", function (next) {
   next();
 });
 
-const PropertyMedia = mongoose.model("PropertyMedia", propertyMediaSchema);
+// -----------------
+// Safe Model Creation (Prevents Redefinition in Hot-Reloading)
+// -----------------
+const BasicProperty = mongoose.models.BasicProperty || mongoose.model("BasicProperty", basicPropertySchema);
+const PropertyLocation = mongoose.models.PropertyLocation || mongoose.model("PropertyLocation", propertyLocationSchema);
+const PropertyMedia = mongoose.models.PropertyMedia || mongoose.model("PropertyMedia", propertyMediaSchema);
+
+// -----------------
+// Attach pre-deleteOne HOOK after dependent models are declared
+// -----------------
+basicPropertySchema.pre("deleteOne", { document: true, query: false }, async function (next) {
+  try {
+    await PropertyLocation.deleteMany({ property: this._id });
+    await PropertyMedia.deleteMany({ property: this._id });
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 export { BasicProperty, PropertyLocation, PropertyMedia };

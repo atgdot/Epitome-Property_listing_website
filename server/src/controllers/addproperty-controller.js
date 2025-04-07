@@ -62,9 +62,9 @@ export const createPropertyController = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid category" });
     }
 
-    // if (subCategory.length > 0 && !subCategory.every(sub => allowedSubCategories.includes(sub))) {
-    //   return res.status(400).json({ success: false, message: "Invalid subCategory" });
-    // }
+    if (subCategory.length > 0 && !subCategory.every(sub => allowedSubCategories.includes(sub))) {
+      return res.status(400).json({ success: false, message: "Invalid subCategory" });
+    }
 
     // 1️⃣ Create Basic Property
     const property = await BasicProperty.create({ 
