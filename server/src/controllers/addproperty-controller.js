@@ -4,21 +4,21 @@ import mongoose from "mongoose";
 
 const allowedCategories = ["Residential", "Commercial", "Featured", "Trending"];
 const allowedSubCategories = [
-  "Luxury Projects",
+  "Luxury Project",
   "Upcoming Project",
   "High Rise Apartment",
   "Offices",
-  "Pre-Leased Offices",
+  "Pre Leased Offices",
   "Pre-Rented",
   "SCO",
 ];
 
 export const createPropertyController = async (req, res) => {
-  const errors = validationResult(req);
+  // const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ success: false, errors: errors.array() });
-  }
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({ success: false, errors: errors.array() });
+  // }
 
   try {
     let { category,subCategory,city,title,location,sector,address,pincode,description,price,Rental_Yeild,current_Rental,Area,Tenure,Tenant,property_Image,logo_image,header_image,about_image,highlight_image,gallery_image,floor_plans} = req.body;
@@ -53,20 +53,18 @@ export const createPropertyController = async (req, res) => {
     }
 
     if (!subCategory || subCategory === "") {
-      subCategory = [];
+      subCategory = "";
     }
 
-    if (!Array.isArray(subCategory)) {
-      return res.status(400).json({ success: false, message: "Invalid subCategory format" });
-    }
+    
 
     if (!allowedCategories.includes(category)) {
       return res.status(400).json({ success: false, message: "Invalid category" });
     }
 
-    if (subCategory.length > 0 && !subCategory.every(sub => allowedSubCategories.includes(sub))) {
-      return res.status(400).json({ success: false, message: "Invalid subCategory" });
-    }
+    // if (subCategory.length > 0 && !subCategory.every(sub => allowedSubCategories.includes(sub))) {
+    //   return res.status(400).json({ success: false, message: "Invalid subCategory" });
+    // }
 
     // 1️⃣ Create Basic Property
     const property = await BasicProperty.create({ 
