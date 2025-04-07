@@ -12,15 +12,16 @@ const GolfCourseRoad = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get ("http://localhost:3000/api/v1/admin-dashboard/property/location", location);
+        const response = await axios.post("http://localhost:3000/api/v1/admin-dashboard/property/location", { location });
 
         if (response.data.success) {
           setProperties(response.data.data);
+          
         } else {
           setError("Failed to fetch properties");
         }
       } catch (err) {
-        setError(err.message || "Error fetching properties");
+        setError( response.data.data);
       } finally {
         setLoading(false);
       }

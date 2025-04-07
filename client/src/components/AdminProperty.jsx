@@ -54,7 +54,7 @@ const AdminProperty = () => {
 
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  console.log(formData.subCategory)
+
 
   // Fetch all properties on mount
   useEffect(() => {
@@ -105,10 +105,10 @@ const AdminProperty = () => {
     }));
   };
   const handleSubCategoryChange = (value) => {
-    console.log("SubCategory value being set:", value);
+
     setFormData((prev) => {
       const newData = { ...prev, subCategory: value };
-      console.log("Updated formData:", newData);
+
       return newData;
     });
   };
@@ -142,8 +142,8 @@ const AdminProperty = () => {
     if (property) {
       // Populate formData from existing property
       setFormData({
-        category: [property.category],
-        subCategory: [property.subCategory] || [],
+        category: property.category,
+        subCategory: property.subCategory,
         city: property.city,
         title: property.title,
         location: property.location || "",
@@ -376,7 +376,7 @@ const AdminProperty = () => {
                       <select
                         className="w-full p-2 border rounded text-xs"
                         value={formData.subCategory}
-                        
+
                         onChange={(e) => handleSubCategoryChange(e.target.value)}
                         required
                       >
@@ -395,7 +395,7 @@ const AdminProperty = () => {
                               <option value="SCO">SCO</option>
                             </>
                           )
-                          }
+                        }
 
                       </select>
                     </div>

@@ -79,6 +79,6 @@ router.get("/detail/:id", getPropertyDetailsController);
 router.get("/all", getAllPropertyController); 
 router.get("/search/:searchTerm", searchPropertiesController);
 router.delete("/delete/:id", deletePropertyController);
-router.get("/location", getPropertiesByLocation);
+router.post("/location", getPropertiesByLocation);
 
 export default router;
