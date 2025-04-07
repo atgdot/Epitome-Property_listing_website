@@ -24,7 +24,7 @@ const HighRiseCard = ({ property, editable = false, onEdit, onDelete }) => {
           </p>
         </div>
         <span className="bg-[#043268]/10 text-[#043268] text-sm px-2 py-1 rounded-full whitespace-nowrap">
-          {property.propertyLocation?.city || "City"}
+          {property.city || "City"}
         </span>
       </div>
 
@@ -69,7 +69,7 @@ const HighRiseCard = ({ property, editable = false, onEdit, onDelete }) => {
           <div>
             <p className="text-gray-500">Tenant</p>
             <p className="font-medium">{property.Tenant}</p>
-          </div>
+          </div>  
         )}
       </div>
 
