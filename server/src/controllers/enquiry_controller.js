@@ -1,44 +1,47 @@
-import Enquiry from '../models/enquiry_model.js';
+import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
+import Enquiry from '../models/enquiry_model.js';
 
-// Setup Nodemailer
+dotenv.config(); // Load environment variables
+
+// Nodemailer setup
 const transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth: { 
-        user: 'your_admin_email@gmail.com', 
-        pass: 'your_email_password' 
+    auth: {
+        user: process.env.ADMIN_EMAIL,
+        pass: process.env.ADMIN_PASSWORD
     }
 });
 
-// Submit Enquiry API
+// Submit Enquiry Controller
 export const submitEnquiry = async (req, res) => {
     try {
         const { name, email, phone, description } = req.body;
 
-        // Validate Input
-        if (!name || !email || !phone || !description) {
-            return res.status(400).json({ error: 'All fields are required' });
+        // Validation
+        if (!name || !email || !phone) {
+            return res.status(400).json({ error: 'Name, email, and phone are required.' });
         }
 
-        // Save Enquiry to Database
+        // Save to database
         const newEnquiry = new Enquiry({ name, email, phone, description });
         await newEnquiry.save();
 
         // Email to Admin
         const adminMailOptions = {
-            from: 'your_admin_email@gmail.com',
-            to: 'admin@example.com',
-            subject: 'New Enquiry Received',
-            text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nDescription: ${description}`
+            from: `"${process.env.ADMIN_NAME}" <${process.env.ADMIN_EMAIL}>`,
+            to: process.env.ADMIN_RECEIVER,
+            subject: '📩 New Enquiry Received',
+            text: `You have a new enquiry:\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nDescription: ${description || 'N/A'}\n\nSubmitted on: ${new Date().toLocaleString()}`
         };
         await transporter.sendMail(adminMailOptions);
 
-        // Thank-You Email to User
+        // Welcome email to customer
         const userMailOptions = {
-            from: 'your_admin_email@gmail.com',
+            from: `"${process.env.ADMIN_NAME}" <${process.env.ADMIN_EMAIL}>`,
             to: email,
-            subject: 'Thank You for Your Enquiry',
-            text: `Hi ${name},\n\nThank you for reaching out! We have received your enquiry and will get back to you soon.\n\nBest Regards,\nYour Company`
+            subject: '🎉 Welcome to Epitome!',
+            text: `Hi ${name},\n\nThank you for reaching out to Epitome! We've received your enquiry and will get back to you shortly.\n\nBest regards,\n${process.env.ADMIN_NAME}`
         };
         await transporter.sendMail(userMailOptions);
 
@@ -46,6 +49,6 @@ export const submitEnquiry = async (req, res) => {
 
     } catch (error) {
         console.error('Error submitting enquiry:', error);
-        return res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Something went wrong on our end.' });
     }
 };

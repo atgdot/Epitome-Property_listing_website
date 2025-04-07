@@ -2,7 +2,7 @@ import { validationResult } from "express-validator";
 import { BasicProperty, PropertyLocation, PropertyMedia } from "../models/testpropertydb.js";
 import mongoose from "mongoose";
 
-const allowedCategories = ["RESIDENTIAL", "Commercial", "Featured", "Trending"];
+const allowedCategories = ["Residential", "Commercial", "Featured", "Trending"];
 const allowedSubCategories = [
   "Luxury Projects",
   "Upcoming Project",
