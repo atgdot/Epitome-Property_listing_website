@@ -38,6 +38,10 @@ const AdminLogin = () => {
     }
   };
 
+  const handleBackToHome = () => {
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className={`bg-white p-8 rounded-lg shadow-xl w-full max-w-md transition-all duration-500 transform ${animation ? 'scale-105 opacity-0' : 'scale-100 opacity-100'}`}>
@@ -81,26 +85,41 @@ const AdminLogin = () => {
               required
             />
           </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition duration-300 ${
-              isLoading ? "opacity-70 cursor-not-allowed flex justify-center items-center" : ""
-            }`}
-          >
-            {isLoading ? (
-              <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Logging in...
-              </>
-            ) : (
-              "Login"
-            )}
-          </button>
+          <div className="flex space-x-4">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`flex-1 bg-blue-900 text-white py-2 px-4 rounded-md hover:bg-blue-800 transition duration-300 ${
+                isLoading ? "opacity-70 cursor-not-allowed flex justify-center items-center" : ""
+              }`}
+            >
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={handleBackToHome}
+              className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition duration-300 flex justify-center items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              </svg>
+              Back to Home
+            </button>
+          </div>
         </form>
+        <div className="mt-6 text-center text-sm text-gray-500">
+          <p>This login is for administrative purposes only.</p>
+        </div>
       </div>
     </div>
   );
