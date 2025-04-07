@@ -5,6 +5,7 @@ import {
   Route,
   useLocation,
   matchPath,
+  Navigate,
 } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./utils/Store/store";
@@ -45,6 +46,7 @@ import ScoProjectsFull from "./pages/ScoProjectsFull";
 
 // Admin Pages
 import AdminDashboard from "./Admin/AdminDashboard";
+import AdminLogin from "./Admin/AdminLogin";
 
 // *** Dedicated Pages for Each Location ***
 import GolfCourseRoad from "./pages/GolfCourseRoad";
@@ -62,6 +64,7 @@ import "./index.css";
 const HIDE_NAVBAR_PATTERNS = [
   "/indiabulls",
   "/admin-dashboard",
+  "/admin-login",
   "/user-management",
   "/property",
   "/PropertyDetails",
@@ -70,9 +73,21 @@ const HIDE_NAVBAR_PATTERNS = [
 
 const HIDE_FOOTER_PATTERNS = [
   "/admin-dashboard",
+  "/admin-login",
   "/user-management",
   "/property/:id",
 ];
+
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
+  
+  if (!isLoggedIn) {
+    return <Navigate to="/admin-login" replace />;
+  }
+  
+  return children;
+};
 
 function Layout() {
   const location = useLocation();
@@ -100,6 +115,27 @@ function Layout() {
           <Route path="/property" element={<Property />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/PropertyListing" element={<PropertyListing />} />
+
+          {/* Auth Routes */}
+          <Route path="/admin-login" element={<AdminLogin />} />
+          
+          {/* Protected Admin Routes */}
+          <Route 
+            path="/admin-dashboard/*" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/user-management" 
+            element={
+              <ProtectedRoute>
+                <UserManagement />
+              </ProtectedRoute>
+            } 
+          />
 
           {/* Property Details Routes */}
           <Route
@@ -144,10 +180,6 @@ function Layout() {
           <Route path="/sohna-road" element={<SohnaRoad />} />
           <Route path="/huda-city-metro" element={<HudaCityMetro />} />
           <Route path="/spr-road" element={<SprRoad />} />
-
-          {/* Admin Routes */}
-          <Route path="/admin-dashboard/*" element={<AdminDashboard />} />
-          <Route path="/user-management" element={<UserManagement />} />
 
           {/* 404 Route */}
           <Route
