@@ -363,15 +363,12 @@ export const getPropertiesByLocation = async (req, res) => {
     return res.status(400).json({ success: false, message: "Location is required" });
   }
 
-  // Normalize input: lowercase, remove hyphens, spaces, etc.
-  const normalizedInput = location.toLowerCase().replace(/[^a-z0-9]/g, "");
-
   try {
     const properties = await BasicProperty.aggregate([
       // Join with PropertyLocation
       {
         $lookup: {
-          from: "propertylocations", // must be lowercase plural of model name
+          from: "propertylocations",
           localField: "_id",
           foreignField: "property",
           as: "locationInfo"
@@ -381,33 +378,11 @@ export const getPropertiesByLocation = async (req, res) => {
         $unwind: "$locationInfo"
       },
       {
-        $addFields: {
-          normalizedLocation: {
-            $replaceAll: {
-              input: { $toLower: "$locationInfo.location" },
-              find: " ",
-              replacement: ""
-            }
-          }
-        }
-      },
-      {
-        $addFields: {
-          normalizedLocation: {
-            $replaceAll: {
-              input: "$normalizedLocation",
-              find: "-",
-              replacement: ""
-            }
-          }
-        }
-      },
-      {
         $match: {
-          normalizedLocation: normalizedInput
+          "locationInfo.location": location
         }
       },
-      // Optionally join media as well
+      // Optionally join media
       {
         $lookup: {
           from: "propertymedia",
@@ -440,8 +415,3 @@ export const getPropertiesByLocation = async (req, res) => {
     });
   }
 };
-
-
-
-
-
