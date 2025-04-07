@@ -81,26 +81,24 @@ const Footer = () => {
                 Home
               </li>
               <li
-                onClick={() => navigate("/PropertyListing")}
+                onClick={() => navigate("/commercial/offices")}
                 className="hover:text-blue-600 cursor-pointer"
               >
-                Resale
+                Offices
               </li>
               <li
-                onClick={() => navigate("/PropertyListing")}
+                onClick={() => navigate("/commercial/prerented" )}
                 className="hover:text-blue-600 cursor-pointer"
               >
                 Rentors
               </li>
               <li
-                onClick={() => navigate("/projects")}
+                onClick={() => navigate("/residential/upcoming")}
                 className="hover:text-blue-600 cursor-pointer"
               >
                 Projects
               </li>
-              <li className="hover:text-blue-600 cursor-pointer">
-                Enquire Now
-              </li>
+           
               <li
                 onClick={() => navigate("/admin-dashboard")}
                 className="hover:text-blue-600 cursor-pointer"
