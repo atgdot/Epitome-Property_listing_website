@@ -31,7 +31,7 @@ const AdminProperty = () => {
   // Form state with all media fields as arrays and subCategory stored as an array
   const initialFormData = {
     category: "Residential",
-    subCategory: "Luxury Projects",
+    subCategory: "Luxury Project",
     title: "",
     location: "",
     address: "",
@@ -97,7 +97,7 @@ const AdminProperty = () => {
   // Category & Subcategory handling
   const handleCategoryChange = (value) => {
     // For 'residential' we use a default subCategory; for 'featured' and 'trending', we store an empty array.
-    const defaultSub = value === "Residential" ? "Luxury Projects" : "Offices";
+    const defaultSub = value === "Residential" ? "Luxury Project" : "Offices";
     setFormData((prev) => ({
       ...prev,
       category: value,
