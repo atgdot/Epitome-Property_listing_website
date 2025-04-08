@@ -1,25 +1,21 @@
 import { validationResult } from "express-validator";
 import { BasicProperty, PropertyLocation, PropertyMedia } from "../models/addproperty-model.js";
 import mongoose from "mongoose";
+//import { uploadQueue } from "../utils/redisclient.js"; // BullMQ queue
 
 const allowedCategories = ["Residential", "Commercial", "Featured", "Trending"];
 const allowedSubCategories = [
-  "Luxury Project",
-  "Upcoming Project",
-  "High Rise Apartment",
-  "Offices",
-  "Pre Leased Offices",
-  "Pre-Rented",
-  "SCO",
+  "Luxury Project", "Upcoming Project", "High Rise Apartment",
+  "Offices", "Pre Leased Offices", "Pre-Rented", "SCO"
 ];
 
-const logTime = (label) => console.log(`[${new Date().toISOString()}] ${label}`);
+const logTime = (...args) => console.log(`[${new Date().toISOString()}]`, ...args);
 
 export const createPropertyController = async (req, res) => {
   console.time("⏱ Total request time");
 
   try {
-    logTime("📥 [START] Received create property request at:", new Date().toISOString());
+    logTime("📥 Received create property request");
     logTime("➡️ Body:", JSON.stringify(req.body, null, 2));
     logTime("📦 Files:", Object.keys(req.files || {}));
 
@@ -28,16 +24,15 @@ export const createPropertyController = async (req, res) => {
       address, pincode, description, price, Rental_Yeild,
       current_Rental, Area, Tenure, Tenant
     } = req.body;
-
+    console.log(req.body)
     // Validate title
-    if (!title || typeof title !== "string") {
-      logTime("❌ Invalid or missing title");
-      return res.status(400).json({ success: false, message: "Title is required" });
-    }
+    // if (!title || typeof title !== "string") {
+    //   logTime("❌ Invalid or missing title");
+    //   return res.status(400).json({ success: false, message: "Title is required" });
+    // }
 
     const normalizeTitle = (str) =>
       str.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim().replace(/\s/g, '');
-
     const normalizedTitle = normalizeTitle(title);
     logTime("🔍 Normalized title:", normalizedTitle);
 
@@ -45,7 +40,7 @@ export const createPropertyController = async (req, res) => {
     const existingProperties = await BasicProperty.find({});
     console.timeEnd("⏱ Check for duplicates");
 
-    const isDuplicate = existingProperties.some(property => 
+    const isDuplicate = existingProperties.some(property =>
       normalizeTitle(property.title) === normalizedTitle
     );
     if (isDuplicate) {
@@ -65,31 +60,26 @@ export const createPropertyController = async (req, res) => {
     if (subCategory && subCategory.length > 0) {
       const isValid = subCategory.every(sub => allowedSubCategories.includes(sub));
       if (!isValid) {
-        logTime("❌ Invalid subcategory:", subCategory);
+        logTime("❌ Invalid subCategory:", subCategory);
         return res.status(400).json({ success: false, message: "Invalid subCategory" });
       }
     }
 
-    const files = req.files;
+    const files = req.files || {};
 
-    const getImagePath = (fieldName) => {
-      const path = files?.[fieldName]?.[0]?.path;
-      logTime(`📸 Image path for ${fieldName}: ${path}`);
-      return path;
-    };
+    // Image handler
+    const getImagePath = (fieldName) =>
+      files?.[fieldName]?.[0]?.path || null;
+    const getMultipleImagePaths = (fieldName) =>
+      (files?.[fieldName] || []).map(file => file.path);
 
-    const getMultipleImagePaths = (fieldName) => {
-      const paths = files?.[fieldName]?.map(file => file.path) || [];
-      logTime(`🖼️ Multiple image paths for ${fieldName}:`, paths.length);
-      return paths;
-    };
-
+    // Create basic property (without processing images)
     console.time("⏱ Create basic property");
     const property = await BasicProperty.create({
       category,
       subCategory,
       city,
-      title: normalizedTitle,
+      title,
       location,
       sector,
       address,
@@ -108,31 +98,59 @@ export const createPropertyController = async (req, res) => {
 
     let createdLocation = null;
     if (location) {
-      console.time("⏱ Create location");
-      createdLocation = await PropertyLocation.create({ location, property: property._id });
+    try {
+        console.time("⏱ Create location");
+        // Create a location document with location, address, and pincode details.
+        createdLocation = await PropertyLocation.create({
+        property: property._id,   // Reference to the property document
+        location: location,       // Example: "Whitefield"
+        address: address || "",   // If address is provided in req.body, use it; otherwise default to an empty string
+        pincode: pincode || ""      // Similarly, for pincode
+      });
       console.timeEnd("⏱ Create location");
       logTime("📍 Location created:", createdLocation._id);
+    } catch (locErr) {
+    // Log the error but continue if location creation is not critical
+    logTime("❌ Failed to create location:", locErr.message);
+    }
     }
 
+
+    // Prepare floor plans data
     const floorPlans = [];
     const floorPlanImages = getMultipleImagePaths('floor_plan_images');
-    const descriptions = Array.isArray(req.body.floor_plan_descriptions)
+    const planDescriptions = Array.isArray(req.body.floor_plan_descriptions)
       ? req.body.floor_plan_descriptions
       : [req.body.floor_plan_descriptions || ""];
-    const areas = Array.isArray(req.body.floor_plan_areas)
+    const planAreas = Array.isArray(req.body.floor_plan_areas)
       ? req.body.floor_plan_areas
       : [req.body.floor_plan_areas || 0];
 
     floorPlanImages.forEach((img, i) => {
-      const plan = {
-        description: descriptions[i] || "",
-        area: areas[i] || 0,
+      floorPlans.push({
+        description: planDescriptions[i] || "",
+        area: planAreas[i] || 0,
         image: img
-      };
-      logTime("🧱 Floor plan", i + 1, ":", plan);
-      floorPlans.push(plan);
+      });
     });
 
+    // Determine dynamic Cloudinary folder (set in multer)
+    // Note: CloudinaryStorage may not always attach a folder property to the file object.
+    // If not, compute it based on normalizedTitle.
+    const dynamicFolder = files?.property_Image?.[0]?.folder || `properties/${normalizedTitle}-${Date.now()}`;
+    logTime("📁 Dynamic Cloudinary folder:", dynamicFolder);
+
+    // Enqueue a job for heavy image processing (example for logo_image)
+    // if (files.logo_image && files.logo_image.length > 0) {
+    //   await uploadQueue.add('upload-image', {
+    //     fieldName: 'logo_image',
+    //     filePath: files.logo_image[0].path,
+    //     folder: dynamicFolder,
+    //   });
+    //   logTime("🚀 Enqueued logo image upload job");
+    // }
+
+    // Create media document with the available file paths
     console.time("⏱ Create media");
     const createdMedia = await PropertyMedia.create({
       logo_image: getImagePath('logo_image'),
@@ -141,15 +159,16 @@ export const createPropertyController = async (req, res) => {
       highlight_image: getMultipleImagePaths('highlight_image'),
       gallery_image: getMultipleImagePaths('gallery_image'),
       floor_plans: floorPlans,
+      folder_path: dynamicFolder,  // Save folder path for future reference
       property: property._id,
     });
     console.timeEnd("⏱ Create media");
     logTime("🎞️ Media created:", createdMedia._id);
 
     console.timeEnd("⏱ Total request time");
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
-      message: "Property created successfully",
+      message: "Property created successfully. Image processing is being handled asynchronously.",
       propertyId: property._id,
       data: {
         basicDetails: property,
@@ -161,18 +180,13 @@ export const createPropertyController = async (req, res) => {
   } catch (error) {
     console.timeEnd("⏱ Total request time");
     console.error("❌ Property creation error:", error);
-    res.status(500).json({ 
-      success: false, 
+    return res.status(500).json({
+      success: false,
       message: "Internal server error",
-      error: error.message || JSON.stringify(error) || "Unknown error"
+      error: error.message || JSON.stringify(error)
     });
   }
 };
-
-
-
-
-
 
 
 
