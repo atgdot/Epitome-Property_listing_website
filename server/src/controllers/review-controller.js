@@ -4,10 +4,10 @@ import { validationResult } from "express-validator";
 // CREATE REVIEW
 export const createReview = async (req, res) => {
   // Validate request data
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ success: false, errors: errors.array() });
-  }
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({ success: false, errors: errors.array() });
+  // }
 
   try {
     const {
@@ -38,5 +38,23 @@ export const createReview = async (req, res) => {
       });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+export const getAllReview = async (req, res) => {
+  try {
+    const reviews = await Review.find({});
+    res.status(200).json({
+      success: true,
+      count: reviews.length,
+      data: reviews
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch reviews",
+      error: error.message
+    });
   }
 };

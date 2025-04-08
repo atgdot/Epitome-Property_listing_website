@@ -1,5 +1,5 @@
 import express from "express";
-import { createReview } from "../controllers/review-controller.js";
+import { createReview, getAllReview } from "../controllers/review-controller.js";
 import { check } from "express-validator";
 
 const router = express.Router();
@@ -15,6 +15,7 @@ router.post(
   ],
   createReview
 );
+router.get("/all",getAllReview)
 
 
 
