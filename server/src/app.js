@@ -1,6 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser"; // bodyParser is built into express >= 4.16, express.json() is used
- // bodyParser is built into express >= 4.16, express.json() is used
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
@@ -48,11 +47,19 @@ app.use(
 // Debug middleware to log every request
 app.use((req, res, next) => {
   console.log(`📡 [DEBUG] Incoming ${req.method} Request to ${req.originalUrl}`);
-  if (Object.keys(req.body).length) console.log("📥 [DEBUG] Request Body:", req.body);
-  if (Object.keys(req.query).length) console.log("🔍 [DEBUG] Query Params:", req.query);
-  if (Object.keys(req.params).length) console.log("🆔 [DEBUG] Route Params:", req.params);
+
+  if (req.body && Object.keys(req.body).length)
+    console.log("📥 [DEBUG] Request Body:", req.body);
+
+  if (req.query && Object.keys(req.query).length)
+    console.log("🔍 [DEBUG] Query Params:", req.query);
+
+  if (req.params && Object.keys(req.params).length)
+    console.log("🆔 [DEBUG] Route Params:", req.params);
+
   next();
 });
+
 
 // --- Removed Local Multer Configuration ---
 // const storage = multer.diskStorage({...});
