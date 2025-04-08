@@ -1,7 +1,7 @@
 import { validationResult } from "express-validator";
 import { BasicProperty, PropertyLocation, PropertyMedia } from "../models/addproperty-model.js";
 import mongoose from "mongoose";
-import { uploadQueue } from "../utils/redisclient.js"; // BullMQ queue
+//import { uploadQueue } from "../utils/redisclient.js"; // BullMQ queue
 
 const allowedCategories = ["Residential", "Commercial", "Featured", "Trending"];
 const allowedSubCategories = [
