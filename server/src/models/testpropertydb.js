@@ -28,52 +28,129 @@ const basicPropertySchema = new mongoose.Schema({
     enum: allowedSubCategories,
     default: [],
   },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  city: { type: String, required: true },
-  price: { type: String, required: true },
-  Rental_Yield: { type: String },
-  current_Rental: { type: String },
-  Area: { type: String },
-  Tenure: { type: String },
-  Tenant: { type: String },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  city:{
+    type: String,
+    required: true
+  },
+  price: {
+    type: String,
+    required: true,
+  },
+  Rental_Yield: {
+    type: String,
+  },
+  current_Rental: {
+    type: String,
+  },
+  Area: {
+    type: String,
+  },
+  Tenure: {
+    type: String,
+  },
+  Tenant: {
+    type: String,
+  },
   property_Image: {
     type: String,
     default: DEFAULT_PROPERTY_IMAGE,
   },
+
 });
+
+// Add pre-remove hook here
+basicPropertySchema.pre('deleteOne', { document: true, query: false }, async function(next) {
+  try {
+    await PropertyLocation.deleteMany({ property: this._id });
+    await PropertyMedia.deleteMany({ property: this._id });
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+const BasicProperty = mongoose.model("BasicProperty", basicPropertySchema);
 
 // -----------------
 // Step 2: Location & Address Details
 // -----------------
 const propertyLocationSchema = new mongoose.Schema({
-  property: {
+  // In propertyLocationSchema and propertyMediaSchema
+  property: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: "BasicProperty",
     required: true,
-    index: true,
+    index: true // Add this for better query performance
   },
-  city: String,
-  location: String,
-  address: { type: String, default: "" },
-  pincode: { type: String, default: "" },
+  city: {
+    type: String,
+    required: false,
+  },
+  location: {
+    type: String,
+    required: false, 
+  },
+  address: {
+    type: String,
+    default: "",
+  },
+  pincode: {
+    type: String,
+    default: "",
+  },
+  // The property image that uses the same default as the original property_Image
 });
+
+const PropertyLocation = mongoose.model("PropertyLocation", propertyLocationSchema);
 
 // -----------------
 // Step 3: Media & Visuals
 // -----------------
+
+// Define a constant for the default property image URL
+
+
 const propertyMediaSchema = new mongoose.Schema({
   property: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "BasicProperty",
     required: true,
   },
-  show_logo: { type: Boolean, default: false },
-  logo_image: { type: String, default: "" },
-  header_images: { type: [String], default: [] },
-  about_image: { type: [String], default: [] },
-  highlight_image: { type: [String], default: [] },
-  gallery_image: { type: [String], default: [] },
+  // This boolean represents the radio button option to show the logo
+  show_logo: {
+    type: Boolean,
+    default: false,
+  },
+  logo_image: {
+    type: String,
+    default: "",
+  },
+  
+  header_images: {
+  type: [String],
+  default: [],
+  },
+  about_image: {
+    type: [String],
+    default: [],
+  },
+  highlight_image: {
+    type: [String],
+    default: [],
+  },
+  gallery_image: {
+    type: [String],
+    default: [],
+  },
   floor_plans: {
     type: [
       {
@@ -86,7 +163,8 @@ const propertyMediaSchema = new mongoose.Schema({
   },
 });
 
-// Auto-assign logo if `show_logo` is enabled but no image provided
+// Pre-save hook: if show_logo is enabled but no logo_image is provided,
+// assign the default property image URL to logo_image.
 propertyMediaSchema.pre("save", function (next) {
   if (this.show_logo && (!this.logo_image || this.logo_image.trim() === "")) {
     this.logo_image = DEFAULT_PROPERTY_IMAGE;
@@ -94,24 +172,6 @@ propertyMediaSchema.pre("save", function (next) {
   next();
 });
 
-// -----------------
-// Safe Model Creation (Prevents Redefinition in Hot-Reloading)
-// -----------------
-const BasicProperty = mongoose.models.BasicProperty || mongoose.model("BasicProperty", basicPropertySchema);
-const PropertyLocation = mongoose.models.PropertyLocation || mongoose.model("PropertyLocation", propertyLocationSchema);
-const PropertyMedia = mongoose.models.PropertyMedia || mongoose.model("PropertyMedia", propertyMediaSchema);
-
-// -----------------
-// Attach pre-deleteOne HOOK after dependent models are declared
-// -----------------
-basicPropertySchema.pre("deleteOne", { document: true, query: false }, async function (next) {
-  try {
-    await PropertyLocation.deleteMany({ property: this._id });
-    await PropertyMedia.deleteMany({ property: this._id });
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
+const PropertyMedia = mongoose.model("PropertyMedia", propertyMediaSchema);
 
 export { BasicProperty, PropertyLocation, PropertyMedia };

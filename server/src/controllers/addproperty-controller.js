@@ -13,38 +13,43 @@ const allowedSubCategories = [
   "SCO",
 ];
 
-export const createPropertyController = async (req, res) => {
-  // const errors = validationResult(req);
+const logTime = (label) => console.log(`[${new Date().toISOString()}] ${label}`);
 
-  // if (!errors.isEmpty()) {
-  //   return res.status(400).json({ success: false, errors: errors.array() });
-  // }
+export const createPropertyController = async (req, res) => {
+  console.time("⏱ Total request time");
 
   try {
-    let { category,subCategory,city,title,location,sector,address,pincode,description,price,Rental_Yeild,current_Rental,Area,Tenure,Tenant,property_Image,logo_image,header_image,about_image,highlight_image,gallery_image,floor_plans} = req.body;
+    logTime("📥 [START] Received create property request at:", new Date().toISOString());
+    logTime("➡️ Body:", JSON.stringify(req.body, null, 2));
+    logTime("📦 Files:", Object.keys(req.files || {}));
 
+    const {
+      category, subCategory, city, title, location, sector,
+      address, pincode, description, price, Rental_Yeild,
+      current_Rental, Area, Tenure, Tenant
+    } = req.body;
+
+    // Validate title
     if (!title || typeof title !== "string") {
+      logTime("❌ Invalid or missing title");
       return res.status(400).json({ success: false, message: "Title is required" });
     }
 
-    const normalizeTitle = (str) => {
-      return str
-        .toLowerCase()
-        .replace(/[^\w\s]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .replace(/\s/g, '');
-    };
+    const normalizeTitle = (str) =>
+      str.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim().replace(/\s/g, '');
 
     const normalizedTitle = normalizeTitle(title);
+    logTime("🔍 Normalized title:", normalizedTitle);
 
+    console.time("⏱ Check for duplicates");
     const existingProperties = await BasicProperty.find({});
-    const isDuplicate = existingProperties.some(property => {
-      const existingNormalized = normalizeTitle(property.title);
-      return existingNormalized === normalizedTitle;
-    });
+    console.timeEnd("⏱ Check for duplicates");
 
+    const isDuplicate = existingProperties.some(property => 
+      normalizeTitle(property.title) === normalizedTitle
+    );
     if (isDuplicate) {
+      logTime("⚠️ Duplicate title found");
       return res.status(409).json({ 
         success: false, 
         message: "A property with a similar title already exists",
@@ -52,50 +57,96 @@ export const createPropertyController = async (req, res) => {
       });
     }
 
-    if (!subCategory || subCategory === "") {
-      subCategory = "";
-    }
-
-    
-
     if (!allowedCategories.includes(category)) {
+      logTime("❌ Invalid category:", category);
       return res.status(400).json({ success: false, message: "Invalid category" });
     }
 
-    if (subCategory.length > 0 && !subCategory.every(sub => allowedSubCategories.includes(sub))) {
-      return res.status(400).json({ success: false, message: "Invalid subCategory" });
+    if (subCategory && subCategory.length > 0) {
+      const isValid = subCategory.every(sub => allowedSubCategories.includes(sub));
+      if (!isValid) {
+        logTime("❌ Invalid subcategory:", subCategory);
+        return res.status(400).json({ success: false, message: "Invalid subCategory" });
+      }
     }
 
-    // 1️⃣ Create Basic Property
-    const property = await BasicProperty.create({ 
-      category,subCategory,city,title:normalizedTitle,location,sector,address,pincode,description,price,Rental_Yeild,current_Rental,Area,Tenure,Tenant,property_Image,
-      
+    const files = req.files;
+
+    const getImagePath = (fieldName) => {
+      const path = files?.[fieldName]?.[0]?.path;
+      logTime(`📸 Image path for ${fieldName}: ${path}`);
+      return path;
+    };
+
+    const getMultipleImagePaths = (fieldName) => {
+      const paths = files?.[fieldName]?.map(file => file.path) || [];
+      logTime(`🖼️ Multiple image paths for ${fieldName}:`, paths.length);
+      return paths;
+    };
+
+    console.time("⏱ Create basic property");
+    const property = await BasicProperty.create({
+      category,
+      subCategory,
+      city,
+      title: normalizedTitle,
+      location,
+      sector,
+      address,
+      pincode,
+      description,
+      price,
+      Rental_Yeild,
+      current_Rental,
+      Area,
+      Tenure,
+      Tenant,
+      property_Image: getImagePath('property_Image'),
     });
-    
+    console.timeEnd("⏱ Create basic property");
+    logTime("✅ Property created:", property._id);
 
-    console.log("✅ Basic property created:", property);
-
-    // 2️⃣ Create Location Details (if provided)
     let createdLocation = null;
     if (location) {
-      createdLocation = await PropertyLocation.create({
-        location,
-        property: property._id
-      });
-      console.log("📍 Location created:", createdLocation);
+      console.time("⏱ Create location");
+      createdLocation = await PropertyLocation.create({ location, property: property._id });
+      console.timeEnd("⏱ Create location");
+      logTime("📍 Location created:", createdLocation._id);
     }
 
-    // 3️⃣ Create Media Details (if provided)
-    let createdMedia = null;
-    if (logo_image || header_image || about_image || highlight_image ||gallery_image||floor_plans) {
-      createdMedia = await PropertyMedia.create({
-        logo_image,header_image,about_image,highlight_image,gallery_image,floor_plans,
-        property: property._id
-      });
-      console.log("🖼️ Media created:", createdMedia);
-    }
+    const floorPlans = [];
+    const floorPlanImages = getMultipleImagePaths('floor_plan_images');
+    const descriptions = Array.isArray(req.body.floor_plan_descriptions)
+      ? req.body.floor_plan_descriptions
+      : [req.body.floor_plan_descriptions || ""];
+    const areas = Array.isArray(req.body.floor_plan_areas)
+      ? req.body.floor_plan_areas
+      : [req.body.floor_plan_areas || 0];
 
-    // ✅ Send full response back
+    floorPlanImages.forEach((img, i) => {
+      const plan = {
+        description: descriptions[i] || "",
+        area: areas[i] || 0,
+        image: img
+      };
+      logTime("🧱 Floor plan", i + 1, ":", plan);
+      floorPlans.push(plan);
+    });
+
+    console.time("⏱ Create media");
+    const createdMedia = await PropertyMedia.create({
+      logo_image: getImagePath('logo_image'),
+      header_image: getMultipleImagePaths('header_images'),
+      about_image: getMultipleImagePaths('about_image'),
+      highlight_image: getMultipleImagePaths('highlight_image'),
+      gallery_image: getMultipleImagePaths('gallery_image'),
+      floor_plans: floorPlans,
+      property: property._id,
+    });
+    console.timeEnd("⏱ Create media");
+    logTime("🎞️ Media created:", createdMedia._id);
+
+    console.timeEnd("⏱ Total request time");
     res.status(201).json({
       success: true,
       message: "Property created successfully",
@@ -108,14 +159,19 @@ export const createPropertyController = async (req, res) => {
     });
 
   } catch (error) {
+    console.timeEnd("⏱ Total request time");
     console.error("❌ Property creation error:", error);
     res.status(500).json({ 
       success: false, 
       message: "Internal server error",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined
+      error: error.message || JSON.stringify(error) || "Unknown error"
     });
   }
 };
+
+
+
+
 
 
 
