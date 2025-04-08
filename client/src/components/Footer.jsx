@@ -87,7 +87,7 @@ const Footer = () => {
                 Offices
               </li>
               <li
-                onClick={() => navigate("/commercial/prerented" )}
+                onClick={() => navigate("/commercial/prerented")}
                 className="hover:text-blue-600 cursor-pointer"
               >
                 Rentors
@@ -98,7 +98,7 @@ const Footer = () => {
               >
                 Projects
               </li>
-           
+
               <li
                 onClick={() => navigate("/admin-dashboard")}
                 className="hover:text-blue-600 cursor-pointer"
@@ -114,15 +114,18 @@ const Footer = () => {
               <li className="hover:text-blue-600 cursor-pointer">Feedback</li>
               <li className="hover:text-blue-600 cursor-pointer">FAQs</li>
             </ul>
-            <h4 className="font-semibold text-gray-800 mt-6 mb-2">Legal</h4>
+            <h4 className="font-semibold text-gray-800 mt-6 cursor-pointer mb-2">
+              Blog
+            </h4>
+
             <ul className="space-y-2">
               <li className="hover:text-blue-600 cursor-pointer">
-                Terms & Conditions
+                Case Studies
               </li>
+              <li className="hover:text-blue-600 cursor-pointer">Pricing</li>
               <li className="hover:text-blue-600 cursor-pointer">
-                Privacy Policy
+                Referral Program
               </li>
-              <li className="hover:text-blue-600 cursor-pointer">Disclaimer</li>
             </ul>
           </div>
         </div>
