@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser"; // bodyParser is built into express >= 4.16, express.json() is used
+ // bodyParser is built into express >= 4.16, express.json() is used
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
