@@ -1,5 +1,5 @@
 import { validationResult } from "express-validator";
-import { BasicProperty, PropertyLocation, PropertyMedia } from "../models/testpropertydb.js";
+import { BasicProperty, PropertyLocation, PropertyMedia } from "../models/addproperty-model.js";
 import mongoose from "mongoose";
 
 const allowedCategories = ["Residential", "Commercial", "Featured", "Trending"];

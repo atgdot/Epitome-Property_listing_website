@@ -11,7 +11,6 @@ import fs from "fs";
 
 // Import routers once
 import propertyRouter from "./routes/addproperty-router.js";
-import residentialPropertyRouter from "./routes/addpropertyResidentail-router.js";
 import addUserRouter from "./routes/addUser-router.js";
 import addAgentRouter from "./routes/addAgent-router.js";
 import reviewRouter from "./routes/review-router.js";
@@ -117,7 +116,6 @@ export const uploadMiddleware = {
 // Routes
 // Each router is mounted on a unique endpoint
 app.use("/api/v1/admin-dashboard/property", propertyRouter);
-app.use("/api/v1/admin-dashboard/residential-property", residentialPropertyRouter);
 app.use("/api/v1/admin-dashboard/user", addUserRouter);
 app.use("/api/v1/admin-dashboard/agent", addAgentRouter);
 app.use("/api/v1/admin-dashboard/review", reviewRouter);

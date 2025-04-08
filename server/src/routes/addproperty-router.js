@@ -22,7 +22,7 @@ const upload = multer({ dest: "uploads/" }); // saves locally
 
 
 //For multiple fields (e.g., property_Image, logo_image, etc.)
-router.post('/create', parser.fields([
+router.post('/create', upload.fields([
   { name: 'property_Image', maxCount: 1 },
   { name: 'logo_image', maxCount: 1 },
   { name: 'header_images', maxCount: 10 },
