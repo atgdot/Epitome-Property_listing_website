@@ -31,9 +31,11 @@ const AdminProperty = () => {
   // Form state with all media fields as arrays and subCategory stored as an array
   const initialFormData = {
     category: "Residential",
-    subCategory: "Luxury Projects",
+    subCategory: "Luxury Project",
+    city: "",
     title: "",
     location: "",
+    sector: "",
     address: "",
     pincode: "",
     description: "",
@@ -75,23 +77,12 @@ const AdminProperty = () => {
   // Handler for file inputs that now supports multiple files and stores data in an array
   const handleMediaChange = (field) => (e) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
-      const imagesArray = [];
-      let loaded = 0;
-      for (let i = 0; i < files.length; i++) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          imagesArray.push(reader.result);
-          loaded++;
-          if (loaded === files.length) {
-            setFormData((prev) => ({ ...prev, [field]: imagesArray }));
-          }
-        };
-        reader.readAsDataURL(files[i]);
-      }
-    } else {
-      setFormData((prev) => ({ ...prev, [field]: [] }));
-    }
+    if (!files || files.length === 0) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      [field]: files,
+    }));
   };
 
   // Category & Subcategory handling
