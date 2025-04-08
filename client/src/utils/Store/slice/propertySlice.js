@@ -17,14 +17,67 @@ export const createProperty = createAsyncThunk(
   'property/createProperty',
   async (propertyData, { rejectWithValue }) => {
     try {
-    //   // Add specific headers for FormData with files
-    //   const config = {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //   };
+      const formData = new FormData();
       
-      const response = await axios.post(`${BASE_URL}/create`, propertyData);
+      // Add all non-file fields to FormData
+      Object.keys(propertyData).forEach(key => {
+        if (key !== 'property_Image' && 
+            key !== 'logo_image' && 
+            key !== 'header_images' && 
+            key !== 'about_image' && 
+            key !== 'highlight_image' && 
+            key !== 'gallery_image' && 
+            key !== 'floor_plans') {
+          formData.append(key, propertyData[key]);
+        }
+      });
+
+      // Add single files
+      if (propertyData.property_Image) {
+        formData.append('property_Image', propertyData.property_Image);
+      }
+      if (propertyData.logo_image) {
+        formData.append('logo_image', propertyData.logo_image);
+      }
+
+      // Add multiple files
+      if (propertyData.header_images) {
+        Array.from(propertyData.header_images).forEach(file => {
+          formData.append('header_images', file);
+        });
+      }
+      if (propertyData.about_image) {
+        Array.from(propertyData.about_image).forEach(file => {
+          formData.append('about_image', file);
+        });
+      }
+      if (propertyData.highlight_image) {
+        Array.from(propertyData.highlight_image).forEach(file => {
+          formData.append('highlight_image', file);
+        });
+      }
+      if (propertyData.gallery_image) {
+        Array.from(propertyData.gallery_image).forEach(file => {
+          formData.append('gallery_image', file);
+        });
+      }
+
+      // Handle floor plans
+      if (propertyData.floor_plans && propertyData.floor_plans.length > 0) {
+        propertyData.floor_plans.forEach((plan, index) => {
+          if (plan.image) {
+            formData.append(`floor_plan_images`, plan.image);
+            formData.append(`floor_plan_descriptions`, plan.description || '');
+            formData.append(`floor_plan_areas`, plan.area || '');
+          }
+        });
+      }
+
+      const response = await axios.post(`${BASE_URL}/create`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(handleApiError(error));

@@ -26,7 +26,7 @@ const basicPropertySchema = new mongoose.Schema({
   subCategory: {
     type: String, 
     enum: allowedSubCategories,
-    default: [],
+    default: "",
   },
   title: {
     type: String,
@@ -63,7 +63,14 @@ const basicPropertySchema = new mongoose.Schema({
     type: String,
     default: DEFAULT_PROPERTY_IMAGE,
   },
-
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PropertyLocation'
+  },
+  media: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PropertyMedia'
+  }
 });
 
 // Add pre-remove hook here

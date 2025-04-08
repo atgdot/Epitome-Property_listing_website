@@ -20,6 +20,8 @@ const storage = new CloudinaryStorage({
     } else if (req.body.user && req.body.userId) {
       folder = `users/${req.body.userId}`;
     }
+    // Store folder on request so you can access it in controller
+    if (!req.uploadFolder) req.uploadFolder = folder;
     return {
       folder,
       format: 'webp',
