@@ -53,16 +53,18 @@ const Navbar = () => {
       </div>
 
       <div className="hidden md:flex items-center space-x-4">
-        <button
-          className={`px-4 py-2 rounded-lg transition-all duration-300
+        <Link to={"/contact"}>
+          <button
+            className={`px-4 py-2 rounded-lg transition-all duration-300
           ${
             isScrolled
               ? "bg-white text-blue-900 hover:bg-gray-100"
               : "bg-blue-900 text-white hover:bg-blue-700"
           }`}
-        >
-          Contact Us
-        </button>
+          >
+            Contact Us
+          </button>
+        </Link>
 
         {/* <Link to="/admin-dashboard">
           <button

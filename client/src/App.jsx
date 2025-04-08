@@ -59,6 +59,7 @@ import SprRoad from "./pages/SprRoad";
 
 // Styles
 import "./index.css";
+import Contact from "./components/Contact";
 
 // Define routes where the Navbar or Footer should be hidden
 const HIDE_NAVBAR_PATTERNS = [
@@ -81,11 +82,11 @@ const HIDE_FOOTER_PATTERNS = [
 // Protected route component
 const ProtectedRoute = ({ children }) => {
   const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
-  
+
   if (!isLoggedIn) {
     return <Navigate to="/admin-login" replace />;
   }
-  
+
   return children;
 };
 
@@ -118,23 +119,24 @@ function Layout() {
 
           {/* Auth Routes */}
           <Route path="/admin-login" element={<AdminLogin />} />
-          
+          <Route path="/contact" element={<Contact />} />
+
           {/* Protected Admin Routes */}
-          <Route 
-            path="/admin-dashboard/*" 
+          <Route
+            path="/admin-dashboard/*"
             element={
               <ProtectedRoute>
                 <AdminDashboard />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/user-management" 
+          <Route
+            path="/user-management"
             element={
               <ProtectedRoute>
                 <UserManagement />
               </ProtectedRoute>
-            } 
+            }
           />
 
           {/* Property Details Routes */}
