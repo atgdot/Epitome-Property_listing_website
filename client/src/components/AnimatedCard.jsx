@@ -13,7 +13,7 @@ const AnimatedCard = ({ property }) => {
   };
 
   return (
-    <div className="relative h-80 w-full overflow-hidden rounded-lg shadow-lg group">
+    <div className="relative h-80 w-full overflow-hidden rounded-lg shadow-lg group cursor-pointer">
       {/* Image with zoom effect */}
       <img
         onClick={handleViewDetails}
@@ -30,9 +30,16 @@ const AnimatedCard = ({ property }) => {
         <p className="text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
           {property.address?.join(", ")}
         </p>
-        <p className="text-white font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
-          ₹{property.price || "Price on request"}
-        </p>
+        <button
+          onClick={handleViewDetails}
+          className="mt-3 cursor-pointer px-3 py-1.5 bg-blue-800 text-white text-xs font-semibold rounded-sm 
+                    opacity-0 group-hover:opacity-100 transition-all duration-300
+                    hover:bg-blue-700 transform
+                    group-hover:translate-y-0 translate-y-2
+                    shadow-sm"
+        >
+          VIEW DETAILS
+        </button>
       </div>
     </div>
   );
