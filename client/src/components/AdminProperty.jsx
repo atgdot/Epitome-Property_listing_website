@@ -31,9 +31,11 @@ const AdminProperty = () => {
   // Form state with all media fields as arrays and subCategory stored as an array
   const initialFormData = {
     category: "Residential",
-    subCategory: "Luxury Projects",
+    subCategory: "Luxury Project",
+    city: "",
     title: "",
     location: "",
+    sector: "",
     address: "",
     pincode: "",
     description: "",
@@ -43,8 +45,8 @@ const AdminProperty = () => {
     Area: "",
     Tenure: "",
     Tenant: "",
-    property_Image: [],
-    logo_image: [],
+    property_Image: "",
+    logo_image: "",
     header_images: [],
     about_image: [],
     highlight_image: [],
@@ -75,22 +77,20 @@ const AdminProperty = () => {
   // Handler for file inputs that now supports multiple files and stores data in an array
   const handleMediaChange = (field) => (e) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
-      const imagesArray = [];
-      let loaded = 0;
-      for (let i = 0; i < files.length; i++) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          imagesArray.push(reader.result);
-          loaded++;
-          if (loaded === files.length) {
-            setFormData((prev) => ({ ...prev, [field]: imagesArray }));
-          }
-        };
-        reader.readAsDataURL(files[i]);
-      }
+    if (!files || files.length === 0) return;
+
+    // For property_Image and logo_image, only take the first file
+    if (field === 'property_Image' || field === 'logo_image') {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: files[0],
+      }));
     } else {
-      setFormData((prev) => ({ ...prev, [field]: [] }));
+      // For other fields, keep the multiple file handling
+      setFormData((prev) => ({
+        ...prev,
+        [field]: files,
+      }));
     }
   };
 
@@ -119,20 +119,34 @@ const AdminProperty = () => {
       ...prev,
       floor_plans: [
         ...prev.floor_plans,
-        { description: "", area: "", image: "" },
+        { description: "", area: "", image: null },
       ],
     }));
   };
+
   const removeFloorPlan = (index) => {
     setFormData((prev) => ({
       ...prev,
       floor_plans: prev.floor_plans.filter((_, i) => i !== index),
     }));
   };
+
   const handleFloorPlanChange = (index, field, value) => {
-    const updated = [...formData.floor_plans];
-    updated[index] = { ...updated[index], [field]: value };
-    setFormData((prev) => ({ ...prev, floor_plans: updated }));
+    setFormData((prev) => {
+      const updated = [...prev.floor_plans];
+      if (field === 'image' && value instanceof FileList) {
+        updated[index] = {
+          ...updated[index],
+          [field]: value[0]  // Take only the first file
+        };
+      } else {
+        updated[index] = {
+          ...updated[index],
+          [field]: value
+        };
+      }
+      return { ...prev, floor_plans: updated };
+    });
   };
 
   // Open modal for add/edit
@@ -157,8 +171,8 @@ const AdminProperty = () => {
         Area: property.Area || "",
         Tenure: property.Tenure || "",
         Tenant: property.Tenant || "",
-        property_Image: property.property_Image || [],
-        logo_image: property.logo_image || [],
+        property_Image: property.property_Image || "",
+        logo_image: property.logo_image || "",
         header_images: property.header_images || [],
         about_image: property.about_image || [],
         highlight_image: property.highlight_image || [],
@@ -650,7 +664,6 @@ const AdminProperty = () => {
                   <input
                     type="file"
                     accept="image/*"
-                    multiple
                     className="w-full text-xs"
                     onChange={handleMediaChange("property_Image")}
                   />
@@ -664,7 +677,6 @@ const AdminProperty = () => {
                   <input
                     type="file"
                     accept="image/*"
-                    multiple
                     className="w-full text-xs"
                     onChange={handleMediaChange("logo_image")}
                   />
@@ -736,9 +748,7 @@ const AdminProperty = () => {
                     className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-3 items-end"
                   >
                     <div className="md:col-span-2">
-                      <label className="block text-xs mb-1">
-                        Description
-                      </label>
+                      <label className="block text-xs mb-1">Description</label>
                       <input
                         type="text"
                         className="w-full p-2 border rounded text-xs"
@@ -749,9 +759,7 @@ const AdminProperty = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs mb-1">
-                        Area (sqft)
-                      </label>
+                      <label className="block text-xs mb-1">Area (sqft)</label>
                       <input
                         type="number"
                         className="w-full p-2 border rounded text-xs"
@@ -762,32 +770,12 @@ const AdminProperty = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs mb-1">
-                        Plan Image
-                      </label>
+                      <label className="block text-xs mb-1">Plan Image</label>
                       <input
                         type="file"
                         accept="image/*"
-                        multiple
                         className="w-full text-xs"
-                        onChange={(e) => {
-                          const files = e.target.files;
-                          if (files && files.length > 0) {
-                            const imagesArray = [];
-                            let loaded = 0;
-                            for (let i = 0; i < files.length; i++) {
-                              const reader = new FileReader();
-                              reader.onloadend = () => {
-                                imagesArray.push(reader.result);
-                                loaded++;
-                                if (loaded === files.length) {
-                                  handleFloorPlanChange(idx, "image", imagesArray);
-                                }
-                              };
-                              reader.readAsDataURL(files[i]);
-                            }
-                          }
-                        }}
+                        onChange={(e) => handleFloorPlanChange(idx, "image", e.target.files)}
                       />
                     </div>
                     <button
