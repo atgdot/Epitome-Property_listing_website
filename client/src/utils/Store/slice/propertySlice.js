@@ -17,6 +17,13 @@ export const createProperty = createAsyncThunk(
   'property/createProperty',
   async (propertyData, { rejectWithValue }) => {
     try {
+    //   // Add specific headers for FormData with files
+    //   const config = {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //     },
+    //   };
+      
       const response = await axios.post(`${BASE_URL}/create`, propertyData);
       return response.data;
     } catch (error) {

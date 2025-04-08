@@ -1,15 +1,16 @@
 import express from "express";
-import bodyParser from "body-parser";
+// import bodyParser from "body-parser"; // bodyParser is built into express >= 4.16, express.json() is used
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
-import multer from "multer";
-import path from "path";
+// import multer from "multer"; // Only import multer here if needed globally, usually imported in specific middleware/routes
+import path from "path"; // Keep if needed elsewhere
 import connectDB from "./db/connectDB.js";
-import fs from "fs";
+import fs from "fs"; // Keep if needed elsewhere, e.g., checking static paths
+import cookieParser from "cookie-parser";
 
-// Import routers once
+// Import routers
 import propertyRouter from "./routes/addproperty-router.js";
 import addUserRouter from "./routes/addUser-router.js";
 import addAgentRouter from "./routes/addAgent-router.js";
@@ -17,30 +18,29 @@ import reviewRouter from "./routes/review-router.js";
 import feedbackRouter from "./routes/feedback-router.js";
 import recommendationCardRouter from "./routes/recommendationCard-router.js";
 import EnquiryForm from "./routes/enquiry-router.js"
+import adminLoginRouter from "./routes/adminLogin-router.js";
 
-// Load environment variables and connect to the database once
+// Load environment variables and connect to the database
 dotenv.config();
-connectDB()
-  .then(() => console.log("✅ MongoDB Connected Successfully"))
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
-
-console.log("🚀 Starting server...");
+connectDB();
 
 const app = express();
-
+ 
 // Middleware
-app.use(express.json());
-app.use(morgan("tiny"));
+app.use(express.json()); // Handles JSON request bodies
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("tiny")); // Logging
 app.use(
   cors({
-    origin: "*",
+    origin: "*", // Consider restricting this in production
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+app.use(cookieParser())
 app.use(
   helmet({
-    crossOriginEmbedderPolicy: false,
+    crossOriginEmbedderPolicy: false, // Keep if needed, review Helmet docs for implications
   })
 );
 
@@ -53,68 +53,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Multer Configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // Create different destinations based on file type
-    let uploadPath = 'uploads/';
-    if (file.fieldname === 'license') {
-      uploadPath += 'licenses/';
-    } else if (file.fieldname === 'profileImage') {
-      uploadPath += 'profiles/';
-    }
-    // Create directories if they don't exist
-    fs.mkdirSync(uploadPath, { recursive: true });
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    // Create unique filename with timestamp
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// --- Removed Local Multer Configuration ---
+// const storage = multer.diskStorage({...});
+// const fileFilter = (req, file, cb) => {...};
+// const upload = multer({...});
+// export const uploadMiddleware = {...};
+// --- End of Removed Section ---
 
-// File filter function
-const fileFilter = (req, file, cb) => {
-  if (file.fieldname === 'license') {
-    // Allow only PDFs for license
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb(new Error('License must be a PDF file'), false);
-    }
-  } else if (file.fieldname === 'profileImage') {
-    // Allow common image formats for profile images
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Profile image must be an image file'), false);
-    }
-  } else {
-    cb(new Error('Unexpected field'), false);
-  }
-};
-
-// Create multer upload instance
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB file size limit
-  }
-});
-
-// Export multer middleware for use in routes
-export const uploadMiddleware = {
-  single: (fieldName) => upload.single(fieldName),
-  fields: () => upload.fields([
-    { name: 'license', maxCount: 1 },
-    { name: 'profileImage', maxCount: 1 }
-  ])
-};
-
-// Routes
+// Routes - Apply specific middleware (like your Cloudinary 'parser') within these routers
 // Each router is mounted on a unique endpoint
+app.use("/api/v1/admin", adminLoginRouter);
 app.use("/api/v1/admin-dashboard/property", propertyRouter);
 app.use("/api/v1/admin-dashboard/user", addUserRouter);
 app.use("/api/v1/admin-dashboard/agent", addAgentRouter);
@@ -123,33 +71,59 @@ app.use("/api/v1/admin-dashboard/recommendation", recommendationCardRouter);
 app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/enquiry_form", EnquiryForm)
 
-// Serve uploaded files statically
-app.use('/uploads', express.static('uploads'));
+// Serve uploaded files statically (Only keep if you still have a reason to serve local files)
+// If ALL uploads go to Cloudinary, you might not need this.
+// Consider if 'uploads' directory is still relevant.
+// app.use('/uploads', express.static('uploads'));
 
-// Error handling middleware for multer
+// Error handling middleware for multer (KEEP THIS - Cloudinary uploads can still have MulterErrors)
+// Make sure 'multer' is imported if you keep this, or handle errors differently.
+// You might need to import multer specifically for 'instanceof multer.MulterError' check.
+import multer from 'multer'; // <--- Added import for the error handler below
+
 app.use((error, req, res, next) => {
   if (error instanceof multer.MulterError) {
+    console.error("❌ Multer Error Caught:", error); // Log multer errors
     if (error.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
         success: false,
-        message: 'File size is too large. Max limit is 5MB'
+        message: 'File size is too large. Check limits.' // Generic message as limit might vary
       });
     }
+    // Handle other potential multer errors (LIMIT_FIELD_COUNT, etc.)
     return res.status(400).json({
       success: false,
-      message: error.message
+      message: `File upload error: ${error.message}` // Provide multer's message
     });
   }
+  // Handle errors possibly thrown by Cloudinary storage or other middleware/routes
+  console.error("❌ General Error Caught:", error); // Log non-multer errors
+  // Pass to default Express error handler or a more specific one
   next(error);
 });
 
+// Add a generic error handler (Optional but recommended)
+app.use((error, req, res, next) => {
+    // Ensure response headers haven't already been sent
+    if (res.headersSent) {
+        return next(error);
+    }
+    res.status(error.status || 500).json({
+        success: false,
+        message: error.message || 'Internal Server Error',
+        // Optionally include stack trace in development
+        ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+});
+
+
 // Test route
 app.get("/test", (req, res) => {
-  console.log("✅ Test route hit!");
+  console.log(" Test route hit!");
   res.json({ message: "Hello World" });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(` Server running on port ${PORT}`);
 });

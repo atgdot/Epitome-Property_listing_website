@@ -24,12 +24,12 @@ export const createPropertyController = async (req, res) => {
       address, pincode, description, price, Rental_Yeild,
       current_Rental, Area, Tenure, Tenant
     } = req.body;
-
+    console.log(req.body)
     // Validate title
-    if (!title || typeof title !== "string") {
-      logTime("❌ Invalid or missing title");
-      return res.status(400).json({ success: false, message: "Title is required" });
-    }
+    // if (!title || typeof title !== "string") {
+    //   logTime("❌ Invalid or missing title");
+    //   return res.status(400).json({ success: false, message: "Title is required" });
+    // }
 
     const normalizeTitle = (str) =>
       str.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim().replace(/\s/g, '');
@@ -79,7 +79,7 @@ export const createPropertyController = async (req, res) => {
       category,
       subCategory,
       city,
-      title: normalizedTitle,
+      title,
       location,
       sector,
       address,
@@ -141,14 +141,14 @@ export const createPropertyController = async (req, res) => {
     logTime("📁 Dynamic Cloudinary folder:", dynamicFolder);
 
     // Enqueue a job for heavy image processing (example for logo_image)
-    if (files.logo_image && files.logo_image.length > 0) {
-      await uploadQueue.add('upload-image', {
-        fieldName: 'logo_image',
-        filePath: files.logo_image[0].path,
-        folder: dynamicFolder,
-      });
-      logTime("🚀 Enqueued logo image upload job");
-    }
+    // if (files.logo_image && files.logo_image.length > 0) {
+    //   await uploadQueue.add('upload-image', {
+    //     fieldName: 'logo_image',
+    //     filePath: files.logo_image[0].path,
+    //     folder: dynamicFolder,
+    //   });
+    //   logTime("🚀 Enqueued logo image upload job");
+    // }
 
     // Create media document with the available file paths
     console.time("⏱ Create media");

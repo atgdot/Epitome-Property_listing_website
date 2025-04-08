@@ -20,8 +20,18 @@ router.post('/create', parser.fields([
   { name: 'about_image', maxCount: 10 },
   { name: 'highlight_image', maxCount: 10 },
   { name: 'gallery_image', maxCount: 10 },
-  { name: 'floor_plan_images', maxCount: 10 },
-]), createPropertyController);
+  { name: 'floor_plan_images', maxCount: 10 }, // Used below
+]),createPropertyController);
+
+router.patch("/:id",  updatePropertyController);
+router.get("/detail/:id", getPropertyDetailsController); 
+router.get("/all", getAllPropertyController); 
+router.get("/search/:searchTerm", searchPropertiesController);
+router.delete("/delete/:id", deletePropertyController);
+router.post("/location", getPropertiesByLocation);
+
+export default router;
+
 
 
 
@@ -74,23 +84,3 @@ router.post('/create', parser.fields([
 // const idValidationRule = [
 //   param("id").isMongoId().withMessage("Invalid property ID"),
 // ];
-
-
-
-// Routes
-//router.post("/create", createPropertyController);
-router.patch(
-  "/:id",
-
-  
-  updatePropertyController
-);
-router.get("/detail/:id", getPropertyDetailsController);
-
-// router.get("/all", getAllPropertiesController); 
-router.get("/all", getAllPropertyController); 
-router.get("/search/:searchTerm", searchPropertiesController);
-router.delete("/delete/:id", deletePropertyController);
-router.post("/location", getPropertiesByLocation);
-
-export default router;

@@ -24,7 +24,7 @@ const basicPropertySchema = new mongoose.Schema({
     required: true,
   },
   subCategory: {
-    type: [String], 
+    type: String, 
     enum: allowedSubCategories,
     default: [],
   },
