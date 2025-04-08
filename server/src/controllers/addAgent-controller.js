@@ -1,6 +1,8 @@
 import addAgent from "../models/addAgent-model.js";
 import { validationResult } from "express-validator";
 
+
+// Create a new agent
 export const createAgent = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -18,7 +20,7 @@ export const createAgent = async (req, res) => {
       phone,
       propertyNumber,
       license: licenseFile,
-      Profile_Image
+      Profile_Image: Profile_Image,
     });
 
     const savedAgent = await newAgent.save();
@@ -33,6 +35,7 @@ export const createAgent = async (req, res) => {
   }
 };
 
+// Get agent by id
 export const getAgentById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -47,7 +50,9 @@ export const getAgentById = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+  
 
+/// Update agent details
 export const updateAgent = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -97,6 +102,8 @@ export const searchAgentByName = async (req, res) => {
   }
 };
 
+
+// Delete agent by id
 export const deleteAgentById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -112,6 +119,8 @@ export const deleteAgentById = async (req, res) => {
   }
 };
 
+
+// Get all agents
 export const getAllAgents = async (req, res) => {
   try {
     const agents = await addAgent.find();

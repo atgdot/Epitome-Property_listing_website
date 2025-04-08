@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import path from "path"; // Keep if needed elsewhere
 import connectDB from "./db/connectDB.js";
 import fs from "fs"; // Keep if needed elsewhere, e.g., checking static paths
+import cookieParser from "cookie-parser";
 
 // Import routers
 import propertyRouter from "./routes/addproperty-router.js";
@@ -17,19 +18,17 @@ import reviewRouter from "./routes/review-router.js";
 import feedbackRouter from "./routes/feedback-router.js";
 import recommendationCardRouter from "./routes/recommendationCard-router.js";
 import EnquiryForm from "./routes/enquiry-router.js"
+import adminLoginRouter from "./routes/adminLogin-router.js";
 
 // Load environment variables and connect to the database
 dotenv.config();
-connectDB()
-  .then(() => console.log("✅ MongoDB Connected Successfully"))
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
-
-console.log("🚀 Starting server...");
+connectDB();
 
 const app = express();
-
+ 
 // Middleware
 app.use(express.json()); // Handles JSON request bodies
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan("tiny")); // Logging
 app.use(
   cors({
@@ -38,6 +37,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser())
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false, // Keep if needed, review Helmet docs for implications
@@ -47,8 +47,7 @@ app.use(
 // Debug middleware to log every request
 app.use((req, res, next) => {
   console.log(`📡 [DEBUG] Incoming ${req.method} Request to ${req.originalUrl}`);
-  // Note: req.body might not be populated here for multipart/form-data until multer runs in the specific route
-  // if (Object.keys(req.body).length) console.log("📥 [DEBUG] Request Body:", req.body);
+  if (Object.keys(req.body).length) console.log("📥 [DEBUG] Request Body:", req.body);
   if (Object.keys(req.query).length) console.log("🔍 [DEBUG] Query Params:", req.query);
   if (Object.keys(req.params).length) console.log("🆔 [DEBUG] Route Params:", req.params);
   next();
@@ -63,6 +62,7 @@ app.use((req, res, next) => {
 
 // Routes - Apply specific middleware (like your Cloudinary 'parser') within these routers
 // Each router is mounted on a unique endpoint
+app.use("/api/v1/admin", adminLoginRouter);
 app.use("/api/v1/admin-dashboard/property", propertyRouter);
 app.use("/api/v1/admin-dashboard/user", addUserRouter);
 app.use("/api/v1/admin-dashboard/agent", addAgentRouter);
@@ -119,11 +119,11 @@ app.use((error, req, res, next) => {
 
 // Test route
 app.get("/test", (req, res) => {
-  console.log("✅ Test route hit!");
+  console.log(" Test route hit!");
   res.json({ message: "Hello World" });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(` Server running on port ${PORT}`);
 });
