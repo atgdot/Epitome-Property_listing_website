@@ -71,7 +71,6 @@ export const deleteProperty = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       console.log('Deleting property with ID:', id); // Add this line
-      console.log("Deleting property with ID:", id); // Add this line
       await axios.delete(`${BASE_URL}/delete/${id}`);
       return id;
     } catch (error) {

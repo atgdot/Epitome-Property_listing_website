@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BarChart,
@@ -16,13 +16,24 @@ import UserManagement from "../components/UserManagement";
 import AdminProperty from "../components/AdminProperty";
 import AdminReviews from "../components/AdminReviews";
 import AdminRecommendation from "../components/AdminRecommendation";
-import AdminPhoto from "../components/AdminPhoto"; // Import AdminPhoto
-import BannerContext from "../Context/BannerContext";
+import AdminPhoto from "../components/AdminPhoto";
+import BannerManagement from "../components/BannerManagement";
+import LogoutButton from "./LogoutButton";
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("Dashboard");
-  const { updateBanner } = useContext(BannerContext);
-  const [newBanner, setNewBanner] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
+    if (!isLoggedIn) {
+      navigate("/admin-login");
+    } else {
+      setIsLoading(false);
+    }
+  }, [navigate]);
 
   const barChartData = [
     { name: "17 Sun", visitors: 250000 },
@@ -42,13 +53,6 @@ const AdminDashboard = () => {
   ];
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-
-  const handleUpdate = async () => {
-    if (newBanner) {
-      await updateBanner(newBanner);
-      setNewBanner("");
-    }
-  };
 
   const renderContent = () => {
     switch (selectedTab) {
@@ -71,23 +75,6 @@ const AdminDashboard = () => {
                 <h2 className="text-lg font-semibold">Pending Properties</h2>
                 <p className="text-2xl font-bold">50</p>
                 <p className="text-green-500">Increase</p>
-              </div>
-              {/* Banner section */}
-              <div className="p-6 bg-white shadow-md rounded-lg">
-                <h2 className="text-xl font-bold mb-4">Update Banner</h2>
-                <input
-                  type="text"
-                  placeholder="Enter new banner URL"
-                  value={newBanner}
-                  onChange={(e) => setNewBanner(e.target.value)}
-                  className="border p-2 w-full rounded mb-3"
-                />
-                <button
-                  onClick={handleUpdate}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Update Banner
-                </button>
               </div>
             </div>
 
@@ -154,6 +141,8 @@ const AdminDashboard = () => {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
+              {/* Banner section */}
+              <BannerManagement />
             </div>
           </div>
         );
@@ -168,21 +157,32 @@ const AdminDashboard = () => {
         return <AdminRecommendation />;
       case "Photo":
         return <AdminPhoto />;
+
       default:
         return null;
     }
   };
 
-  // Updated navigation to include "PropertyDetail"
+  // Updated navigation items to include "PropertydetailPhotos"
   const navItems = [
     "Dashboard",
     "Property",
-    "PropertyDetail", // New nav item for property editing
     "User",
     "Reviews",
     "Recommendations",
     "Photo",
   ];
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900 mx-auto"></div>
+          <p className="mt-4 text-gray-700">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -195,7 +195,7 @@ const AdminDashboard = () => {
             className="h-10 w-32 cursor-pointer"
           />
         </div>
-        <nav className="space-y-4">
+        <nav className="space-y-4 mt-6">
           {navItems.map((item) => (
             <button
               key={item}
@@ -208,6 +208,9 @@ const AdminDashboard = () => {
             </button>
           ))}
         </nav>
+        <div className="absolute bottom-8 left-0 right-0 px-6">
+          <LogoutButton />
+        </div>
       </aside>
       <main className="flex-1 p-8 ml-64">{renderContent()}</main>
     </div>

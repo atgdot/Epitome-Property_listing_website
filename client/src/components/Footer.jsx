@@ -81,25 +81,29 @@ const Footer = () => {
                 Home
               </li>
               <li
-                onClick={() => navigate("/PropertyListing")}
+                onClick={() => navigate("/commercial/offices")}
                 className="hover:text-blue-600 cursor-pointer"
               >
-                Resale
+                Offices
               </li>
               <li
-                onClick={() => navigate("/PropertyListing")}
+                onClick={() => navigate("/commercial/prerented")}
                 className="hover:text-blue-600 cursor-pointer"
               >
                 Rentors
               </li>
               <li
-                onClick={() => navigate("/projects")}
+                onClick={() => navigate("/residential/upcoming")}
                 className="hover:text-blue-600 cursor-pointer"
               >
                 Projects
               </li>
-              <li className="hover:text-blue-600 cursor-pointer">
-                Enquire Now
+
+              <li
+                onClick={() => navigate("/admin-dashboard")}
+                className="hover:text-blue-600 cursor-pointer"
+              >
+                Admin
               </li>
             </ul>
           </div>
@@ -110,15 +114,18 @@ const Footer = () => {
               <li className="hover:text-blue-600 cursor-pointer">Feedback</li>
               <li className="hover:text-blue-600 cursor-pointer">FAQs</li>
             </ul>
-            <h4 className="font-semibold text-gray-800 mt-6 mb-2">Legal</h4>
+            <h4 className="font-semibold text-gray-800 mt-6 cursor-pointer mb-2">
+              Blog
+            </h4>
+
             <ul className="space-y-2">
               <li className="hover:text-blue-600 cursor-pointer">
-                Terms & Conditions
+                Case Studies
               </li>
+              <li className="hover:text-blue-600 cursor-pointer">Pricing</li>
               <li className="hover:text-blue-600 cursor-pointer">
-                Privacy Policy
+                Referral Program
               </li>
-              <li className="hover:text-blue-600 cursor-pointer">Disclaimer</li>
             </ul>
           </div>
         </div>

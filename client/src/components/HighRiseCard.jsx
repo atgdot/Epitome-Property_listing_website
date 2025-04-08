@@ -4,13 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setPropertyDetail } from "../utils/Store/slice/propertyDetailSlice";
 
-const HighRiseCard = ({
-  property,
-  editable = false,
-  onEdit,
-  onDelete,
-  onViewDetails,
-}) => {
+const HighRiseCard = ({ property, editable = false, onEdit, onDelete }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -26,24 +20,26 @@ const HighRiseCard = ({
         <div className="flex-1">
           <h3 className="text-xl font-bold text-[#043268]">{property.title}</h3>
           <p className="text-gray-600 text-sm mt-1">
-            <span className="font-medium">Sector:</span> {property.sector}
+            <span className="font-medium">Category:</span> {property.category}
           </p>
         </div>
         <span className="bg-[#043268]/10 text-[#043268] text-sm px-2 py-1 rounded-full whitespace-nowrap">
-          {property.city}
+          {property.city || "City"}
         </span>
       </div>
 
       {/* Image Section */}
-      {property.image && (
-        <div className="mb-4 overflow-hidden rounded-lg">
-          <img
-            src={property.image}
-            alt={property.title}
-            className="w-full h-48 sm:h-56 object-cover hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-      )}
+      <div className="mb-4 overflow-hidden rounded-lg">
+        <img
+          src={
+            property.property_Image ||
+            property.propertyMedia?.logo_image ||
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSTWFa-5clKaN3zrnAriHY10BICdAFuXvTg&s"
+          }
+          alt={property.title}
+          className="w-full h-48 sm:h-56 object-cover hover:scale-105 transition-transform duration-300"
+        />
+      </div>
 
       {/* Price and Button Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
@@ -59,6 +55,22 @@ const HighRiseCard = ({
         >
           View Details
         </button>
+      </div>
+
+      {/* Additional Info */}
+      <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
+        {property.Area && (
+          <div>
+            <p className="text-gray-500">Area</p>
+            <p className="font-medium">{property.Area}</p>
+          </div>
+        )}
+        {property.Tenant && (
+          <div>
+            <p className="text-gray-500">Tenant</p>
+            <p className="font-medium">{property.Tenant}</p>
+          </div>  
+        )}
       </div>
 
       {/* Edit/Delete Buttons */}

@@ -22,7 +22,7 @@ const Navbar = () => {
       className={`fixed w-full flex justify-between items-center md:px-10 px-6  py-4 shadow-md transition-all duration-500
         ${
           isScrolled
-            ? "bg-blue-900 rounded-b-4xl top-0 z-50"
+            ? " bg-[#043268] rounded-b-4xl top-0 z-50"
             : "bg-transparent relative"
         }`}
     >
@@ -53,17 +53,20 @@ const Navbar = () => {
       </div>
 
       <div className="hidden md:flex items-center space-x-4">
-        <button
-          className={`px-4 py-2 rounded-lg transition-all duration-300
+        <Link to={"/contact"}>
+          <button
+            className={`px-4 py-2 rounded-lg transition-all duration-300
           ${
             isScrolled
               ? "bg-white text-blue-900 hover:bg-gray-100"
-              : "bg-blue-900 text-white hover:bg-blue-800"
+              : "bg-blue-900 text-white hover:bg-blue-700"
           }`}
-        >
-          Contact Us
-        </button>
-        <Link to="/admin-dashboard">
+          >
+            Contact Us
+          </button>
+        </Link>
+
+        {/* <Link to="/admin-dashboard">
           <button
             className={`px-4 py-2 rounded-lg transition-all duration-300
           ${
@@ -74,7 +77,7 @@ const Navbar = () => {
           >
             Admin
           </button>
-        </Link>
+        </Link> */}
       </div>
 
       {/* Mobile Menu Toggle Button */}

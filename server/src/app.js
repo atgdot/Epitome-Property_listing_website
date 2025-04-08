@@ -8,29 +8,27 @@ import multer from "multer";
 import path from "path";
 import connectDB from "./db/connectDB.js";
 import fs from "fs";
+import cookieParser from "cookie-parser";
 
 // Import routers once
 import propertyRouter from "./routes/addproperty-router.js";
-import residentialPropertyRouter from "./routes/addpropertyResidentail-router.js";
 import addUserRouter from "./routes/addUser-router.js";
 import addAgentRouter from "./routes/addAgent-router.js";
 import reviewRouter from "./routes/review-router.js";
 import feedbackRouter from "./routes/feedback-router.js";
 import recommendationCardRouter from "./routes/recommendationCard-router.js";
 import EnquiryForm from "./routes/enquiry-router.js"
+import adminLoginRouter from "./routes/adminLogin-router.js";
 
 // Load environment variables and connect to the database once
 dotenv.config();
-connectDB()
-  .then(() => console.log("✅ MongoDB Connected Successfully"))
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
-
-console.log("🚀 Starting server...");
+connectDB();
 
 const app = express();
-
+ 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan("tiny"));
 app.use(
   cors({
@@ -39,6 +37,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser())
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
@@ -46,13 +45,13 @@ app.use(
 );
 
 // Debug middleware to log every request
-app.use((req, res, next) => {
-  console.log(`📡 [DEBUG] Incoming ${req.method} Request to ${req.originalUrl}`);
-  if (Object.keys(req.body).length) console.log("📥 [DEBUG] Request Body:", req.body);
-  if (Object.keys(req.query).length) console.log("🔍 [DEBUG] Query Params:", req.query);
-  if (Object.keys(req.params).length) console.log("🆔 [DEBUG] Route Params:", req.params);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(`📡 [DEBUG] Incoming ${req.method} Request to ${req.originalUrl}`);
+//   if (Object.keys(req.body).length) console.log("📥 [DEBUG] Request Body:", req.body);
+//   if (Object.keys(req.query).length) console.log("🔍 [DEBUG] Query Params:", req.query);
+//   if (Object.keys(req.params).length) console.log("🆔 [DEBUG] Route Params:", req.params);
+//   next();
+// });
 
 // Multer Configuration
 const storage = multer.diskStorage({
@@ -116,8 +115,8 @@ export const uploadMiddleware = {
 
 // Routes
 // Each router is mounted on a unique endpoint
+app.use("/api/v1/admin", adminLoginRouter);
 app.use("/api/v1/admin-dashboard/property", propertyRouter);
-app.use("/api/v1/admin-dashboard/residential-property", residentialPropertyRouter);
 app.use("/api/v1/admin-dashboard/user", addUserRouter);
 app.use("/api/v1/admin-dashboard/agent", addAgentRouter);
 app.use("/api/v1/admin-dashboard/review", reviewRouter);
@@ -147,11 +146,11 @@ app.use((error, req, res, next) => {
 
 // Test route
 app.get("/test", (req, res) => {
-  console.log("✅ Test route hit!");
+  console.log(" Test route hit!");
   res.json({ message: "Hello World" });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(` Server running on port ${PORT}`);
 });

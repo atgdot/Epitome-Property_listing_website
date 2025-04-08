@@ -77,15 +77,32 @@ const RealEstateMap = () => {
 
       {/* Banner Section */}
       <div className="flex justify-center items-center my-2">
-        {bannerImages.length > 0 && (
-          <img
-            src={bannerImages[currentBanner]} // ✅ Dynamic Banner
-            alt="Banner"
-            className="w-2/3 h-30 object-cover rounded-md shadow-md"
-          />
+        {bannerImages.length > 0 ? (
+          <div className="relative w-full max-w-4xl">
+            <img
+              src={bannerImages[currentBanner]}
+              alt="Banner"
+              className="w-full h-30 md:h-40 object-cover rounded-xl shadow-lg"
+            />
+            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-2">
+              {bannerImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentBanner(index)}
+                  className={`w-2 h-2 rounded-full ${
+                    currentBanner === index ? "bg-white" : "bg-white/50"
+                  }`}
+                  aria-label={`Go to banner ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="w-full max-w-4xl h-32 md:h-40 bg-gray-100 rounded-xl flex items-center justify-center">
+            <p className="text-gray-500 text-sm">No banners available</p>
+          </div>
         )}
       </div>
-
       {/* Featured Builders Section */}
       <div className="bg-white p-4 w-full">
         <h2 className="text-3xl font-bold text-center mb-2">
