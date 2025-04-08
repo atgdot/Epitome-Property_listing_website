@@ -3,7 +3,7 @@ import { validationResult } from "express-validator";
 
 
 
-
+// Get all recommendations
 export const createRecommendationCard = async (req, res) => {
   try {
     // Check for validation errors
