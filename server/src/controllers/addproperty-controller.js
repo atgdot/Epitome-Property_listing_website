@@ -28,39 +28,39 @@ export const createPropertyController = async (req, res) => {
       address, pincode, description, price, Rental_Yeild,
       current_Rental, Area, Tenure, Tenant
     } = req.body;
-
+    console.log(req.body)
     // Validate title
-    if (!title || typeof title !== "string") {
-      logTime("❌ Invalid or missing title");
-      return res.status(400).json({ success: false, message: "Title is required" });
-    }
+    // if (!title || typeof title !== "string") {
+    //   logTime("❌ Invalid or missing title");
+    //   return res.status(400).json({ success: false, message: "Title is required" });
+    // }
 
-    const normalizeTitle = (str) =>
-      str.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim().replace(/\s/g, '');
+    // const normalizeTitle = (str) =>
+    //   str.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim().replace(/\s/g, '');
 
-    const normalizedTitle = normalizeTitle(title);
-    logTime("🔍 Normalized title:", normalizedTitle);
+    // const normalizedTitle = normalizeTitle(title);
+    // logTime("🔍 Normalized title:", normalizedTitle);
 
-    console.time("⏱ Check for duplicates");
-    const existingProperties = await BasicProperty.find({});
-    console.timeEnd("⏱ Check for duplicates");
+    // console.time("⏱ Check for duplicates");
+    // const existingProperties = await BasicProperty.find({});
+    // console.timeEnd("⏱ Check for duplicates");
 
-    const isDuplicate = existingProperties.some(property => 
-      normalizeTitle(property.title) === normalizedTitle
-    );
-    if (isDuplicate) {
-      logTime("⚠️ Duplicate title found");
-      return res.status(409).json({ 
-        success: false, 
-        message: "A property with a similar title already exists",
-        suggestion: "Please use a more distinct title"
-      });
-    }
+    // const isDuplicate = existingProperties.some(property => 
+    //   normalizeTitle(property.title) === normalizedTitle
+    // );
+    // if (isDuplicate) {
+    //   logTime("⚠️ Duplicate title found");
+    //   return res.status(409).json({ 
+    //     success: false, 
+    //     message: "A property with a similar title already exists",
+    //     suggestion: "Please use a more distinct title"
+    //   });
+    // }
 
-    if (!allowedCategories.includes(category)) {
-      logTime("❌ Invalid category:", category);
-      return res.status(400).json({ success: false, message: "Invalid category" });
-    }
+    // if (!allowedCategories.includes(category)) {
+    //   logTime("❌ Invalid category:", category);
+    //   return res.status(400).json({ success: false, message: "Invalid category" });
+    // }
 
     if (subCategory && subCategory.length > 0) {
       const isValid = subCategory.every(sub => allowedSubCategories.includes(sub));
@@ -89,7 +89,7 @@ export const createPropertyController = async (req, res) => {
       category,
       subCategory,
       city,
-      title: normalizedTitle,
+      title,
       location,
       sector,
       address,

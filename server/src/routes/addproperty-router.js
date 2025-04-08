@@ -12,17 +12,19 @@ import {
 } from "../controllers/addproperty-controller.js";
 
 const router = express.Router();
+
+
 import parser from "../middleware/multer.js";
 
-import multer from 'multer';
-const upload = multer({ dest: "uploads/" }); // saves locally
+
 
 // Route
 //router.post("/your-route", upload.any(), createPropertyController);
 
 
 //For multiple fields (e.g., property_Image, logo_image, etc.)
-router.post('/create', upload.fields([
+// Routes
+router.post('/create', parser.fields([
   { name: 'property_Image', maxCount: 1 },
   { name: 'logo_image', maxCount: 1 },
   { name: 'header_images', maxCount: 10 },
@@ -30,7 +32,18 @@ router.post('/create', upload.fields([
   { name: 'highlight_image', maxCount: 10 },
   { name: 'gallery_image', maxCount: 10 },
   { name: 'floor_plan_images', maxCount: 10 }, // Used below
-]), upload.any(),createPropertyController);
+]),createPropertyController);
+
+router.patch("/:id",  updatePropertyController);
+router.get("/detail/:id", getPropertyDetailsController); 
+router.get("/all", getAllPropertyController); 
+router.get("/search/:searchTerm", searchPropertiesController);
+router.delete("/delete/:id", deletePropertyController);
+router.post("/location", getPropertiesByLocation);
+
+export default router;
+
+
 
 
 // Validation rules
@@ -82,23 +95,3 @@ router.post('/create', upload.fields([
 // const idValidationRule = [
 //   param("id").isMongoId().withMessage("Invalid property ID"),
 // ];
-
-
-
-// Routes
-//router.post("/create", createPropertyController);
-router.patch(
-  "/:id",
-
-  
-  updatePropertyController
-);
-router.get("/detail/:id", getPropertyDetailsController);
-
-// router.get("/all", getAllPropertiesController); 
-router.get("/all", getAllPropertyController); 
-router.get("/search/:searchTerm", searchPropertiesController);
-router.delete("/delete/:id", deletePropertyController);
-router.post("/location", getPropertiesByLocation);
-
-export default router;
