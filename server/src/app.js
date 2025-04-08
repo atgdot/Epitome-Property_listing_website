@@ -1,5 +1,5 @@
 import express from "express";
-// import bodyParser from "body-parser"; // bodyParser is built into express >= 4.16, express.json() is used
+import bodyParser from "body-parser"; // bodyParser is built into express >= 4.16, express.json() is used
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
@@ -27,8 +27,8 @@ connectDB();
 const app = express();
  
 // Middleware
-app.use(express.json()); // Handles JSON request bodies
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(morgan("tiny")); // Logging
 app.use(
   cors({

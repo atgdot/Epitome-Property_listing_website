@@ -57,13 +57,13 @@ export const createPropertyController = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid category" });
     }
 
-    if (subCategory && subCategory.length > 0) {
-      const isValid = subCategory.every(sub => allowedSubCategories.includes(sub));
-      if (!isValid) {
-        logTime("❌ Invalid subCategory:", subCategory);
-        return res.status(400).json({ success: false, message: "Invalid subCategory" });
-      }
-    }
+    // if (subCategory && subCategory.length > 0) {
+    //   const isValid = subCategory.every(sub => allowedSubCategories.includes(sub));
+    //   if (!isValid) {
+    //     logTime("❌ Invalid subCategory:", subCategory);
+    //     return res.status(400).json({ success: false, message: "Invalid subCategory" });
+    //   }
+    // }
 
     const files = req.files || {};
 
