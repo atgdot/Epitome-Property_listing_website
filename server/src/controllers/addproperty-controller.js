@@ -183,7 +183,7 @@ export const createPropertyController = async (req, res) => {
     console.time("⏱ Create media");
     const createdMedia = await PropertyMedia.create({
       logo_image: getImagePath("logo_image"),
-      header_image: getMultipleImagePaths("header_images"),
+      header_images: getMultipleImagePaths("header_images"),
       about_image: getMultipleImagePaths("about_image"),
       highlight_image: getMultipleImagePaths("highlight_image"),
       gallery_image: getMultipleImagePaths("gallery_image"),
@@ -314,7 +314,7 @@ export const getAllPropertyController = async (req, res) => {
       .populate('location', 'location address pincode')
       .populate('media', 'logo_image header_images about_image highlight_image gallery_image floor_plans')
       .sort({ createdAt: -1 });
-
+    console.log(properties);
     return res.status(200).json({
       success: true,
       count: properties.length,
