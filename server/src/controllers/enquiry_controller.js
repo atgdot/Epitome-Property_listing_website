@@ -8,8 +8,8 @@ dotenv.config(); // Load environment variables
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.ADMIN_EMAIL,
-        pass: process.env.ADMIN_PASSWORD
+        user: process.env.GMAIL_USER_EMAIL,
+        pass: process.env.GMAIL_USER_PASSWORD
     }
 });
 
@@ -29,7 +29,7 @@ export const submitEnquiry = async (req, res) => {
 
         // Email to Admin
         const adminMailOptions = {
-            from: `"${process.env.ADMIN_NAME}" <${process.env.ADMIN_EMAIL}>`,
+            from: `"${process.env.ADMIN_NAME}" <${process.env.GMAIL_USER_EMAIL}>`,
             to: process.env.ADMIN_RECEIVER,
             subject: '📩 New Enquiry Received',
             text: `You have a new enquiry:\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nDescription: ${description || 'N/A'}\n\nSubmitted on: ${new Date().toLocaleString()}`
@@ -38,7 +38,7 @@ export const submitEnquiry = async (req, res) => {
 
         // Welcome email to customer
         const userMailOptions = {
-            from: `"${process.env.ADMIN_NAME}" <${process.env.ADMIN_EMAIL}>`,
+            from: `"${process.env.ADMIN_NAME}" <${process.env.GMAIL_USER_EMAIL}>`,
             to: email,
             subject: '🎉 Welcome to Epitome!',
             text: `Hi ${name},\n\nThank you for reaching out to Epitome! We've received your enquiry and will get back to you shortly.\n\nBest regards,\n${process.env.ADMIN_NAME}`
