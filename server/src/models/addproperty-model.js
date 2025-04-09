@@ -24,9 +24,9 @@ const basicPropertySchema = new mongoose.Schema({
     required: true,
   },
   subCategory: {
-    type: String, 
+    type: [String], 
     enum: allowedSubCategories,
-    default: "",
+    default: [],
   },
   title: {
     type: String,
@@ -91,31 +91,34 @@ const BasicProperty = mongoose.model("BasicProperty", basicPropertySchema);
 // Step 2: Location & Address Details
 // -----------------
 const propertyLocationSchema = new mongoose.Schema({
-  // In propertyLocationSchema and propertyMediaSchema
   property: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: "BasicProperty",
     required: true,
-    index: true // Add this for better query performance
+    index: true, // Good for faster lookup by property
   },
   city: {
     type: String,
-    required: false,
+    required: false, // Optional
+    default: "",     // Optional with default
   },
   location: {
     type: String,
-    required: false, 
+    required: false,
+    default: "",     // Optional with default
   },
   address: {
     type: String,
+    required: false,
     default: "",
   },
   pincode: {
     type: String,
+    required: false,
     default: "",
-  },
-  // The property image that uses the same default as the original property_Image
+  }
 });
+
 
 const PropertyLocation = mongoose.model("PropertyLocation", propertyLocationSchema);
 

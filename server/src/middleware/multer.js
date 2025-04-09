@@ -19,14 +19,14 @@ const storage = new CloudinaryStorage({
       folder = `agents/${req.body.agentId}`;
     } else if (req.body.user && req.body.userId) {
       folder = `users/${req.body.userId}`;
+    } else if (file.fieldname === "license" || file.fieldname === "profileImage") {
+      if (req.body.email) {
+        const safeEmail = req.body.email.replace(/[^\w\-]/g, '');
+        folder = `users/${safeEmail}-${Date.now()}`;
+      } else {
+        folder = `users/unknown-${Date.now()}`;
+      }
     }
-    // Store folder on request so you can access it in controller
-    if (!req.uploadFolder) req.uploadFolder = folder;
-    return {
-      folder,
-      format: 'webp',
-      transformation: [{ quality: 'auto' }, { fetch_format: 'auto' }],
-    };
   },
 });
 
