@@ -6,7 +6,6 @@ const DEFAULT_LOGO =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbWZ_IVJqoEqdL1luLXoO0d2VZQN2M-eVSZw&s";
 
 const PropertyHeader = ({ property }) => {
-
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -18,27 +17,26 @@ const PropertyHeader = ({ property }) => {
   }, []);
 
   // Get logo from property data or use default
-  const logo =
-     property?.media?.logo_image || DEFAULT_LOGO;
+  const logo = property?.media?.logo_image || DEFAULT_LOGO;
 
   return (
     <>
       <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="container mx-auto px-4 py-2 flex justify-between items-center">
           <div className="flex items-center">
             {/* Always show logo */}
             <img
               src={logo}
               alt="Property Logo"
-              className="h-14 w-15 object-contain mr-4"
+              className="h-14 w-15 object-contain ml-4 mr-4"
             />
 
             {/* Show title next to logo */}
-            {/* <div>
+            <div>
               <h1 className="text-2xl font-bold text-blue-800">
-                {property?.title || "Property"}
+                {property?.city || "Property"}
               </h1>
-            </div> */}
+            </div>
           </div>
 
           <div className="flex space-x-4">
