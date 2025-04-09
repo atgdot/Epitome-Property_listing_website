@@ -9,7 +9,7 @@ const storage = new CloudinaryStorage({
     let folder = "general/default";
     // Determine folder based on form fields
     if (req.body.title) {
-      // For property form, use title. It’s a dynamic folder, unique per submission.
+      // For property form, use title. It's a dynamic folder, unique per submission.
       const safeTitle = req.body.title
         .toLowerCase()
         .replace(/\s+/g, '-')
@@ -19,13 +19,26 @@ const storage = new CloudinaryStorage({
       folder = `agents/${req.body.agentId}`;
     } else if (req.body.user && req.body.userId) {
       folder = `users/${req.body.userId}`;
+    } else if (req.body.name && req.body.Designation) {
+      // For reviews/testimonials
+      const safeName = req.body.name
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-]/g, '');
+      folder = `reviews/${safeName}-${Date.now()}`;
     }
+    
     // Store folder on request so you can access it in controller
     if (!req.uploadFolder) req.uploadFolder = folder;
+    
     return {
       folder,
       format: 'webp',
-      transformation: [{ quality: 'auto' }, { fetch_format: 'auto' }],
+      transformation: [
+        { width: 200, height: 200, crop: 'fill' }, // Add specific transformation for profile photos
+        { quality: 'auto' }, 
+        { fetch_format: 'auto' }
+      ],
     };
   },
 });

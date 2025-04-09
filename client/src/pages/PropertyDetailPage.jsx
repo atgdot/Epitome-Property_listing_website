@@ -28,18 +28,18 @@ const PropertyDetailPage = () => {
 
   // Get images from propertyMedia or use defaults
   const headerImages =
-    property?.propertyMedia?.header_images?.length > 0
-      ? property.propertyMedia.header_images
+    property?.media?.header_images?.length > 0
+      ? property.media.header_images
       : DEFAULT_IMAGES;
 
   const galleryImages =
-    property?.propertyMedia?.gallery_image?.length > 0
-      ? property.propertyMedia.gallery_image
+    property?.media?.gallery_image?.length > 0
+      ? property.media.gallery_image
       : DEFAULT_IMAGES;
 
   const floorPlans =
-    property?.propertyMedia?.floor_plans?.length > 0
-      ? property.propertyMedia.floor_plans
+    property?.media?.floor_plans?.length > 0
+      ? property.media.floor_plans
       : [
           {
             description: "Sample Floor Plan",
@@ -132,11 +132,11 @@ const PropertyDetailPage = () => {
   // Location features - use real data if available, otherwise defaults
   const locationFeatures = property?.propertyLocation?.address
     ? [
-        property.propertyLocation.address,
-        property.propertyLocation.city &&
-          `${property.propertyLocation.city} Metro Station (3 mins)`,
-        property.propertyLocation.location &&
-          `${property.propertyLocation.location} (15 mins)`,
+        property.location.address,
+        property.location.city &&
+          `${property.location.city} Metro Station (3 mins)`,
+        property.location.location &&
+          `${property.location.location} (15 mins)`,
       ].filter(Boolean)
     : [
         "Sector 56 Gurgaon Metro Station (3 mins)",
@@ -167,7 +167,7 @@ const PropertyDetailPage = () => {
       <PropertyHeader
         property={{
           ...property,
-          logo: property?.propertyMedia?.logo_image || DEFAULT_LOGO,
+          logo: property?.media?.logo_image || DEFAULT_LOGO,
         }}
       />
 
@@ -189,8 +189,8 @@ const PropertyDetailPage = () => {
             {property.title || "Property Title"}
           </h1>
           <p className="text-xl text-white mt-2">
-            {property.propertyLocation?.city || "City"},{" "}
-            {property.propertyLocation?.location || "Location"}
+            {property.location?.city || "City"},{" "}
+            {property.location?.location || "Location"}
           </p>
         </div>
       </div>

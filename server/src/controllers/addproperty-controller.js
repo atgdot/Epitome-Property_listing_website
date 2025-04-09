@@ -246,7 +246,7 @@ export const getAllPropertyController = async (req, res) => {
   try {
     const properties = await BasicProperty.find()
       .populate('location', 'location address pincode')
-      .populate('media', 'logo_image header_image about_image highlight_image gallery_image floor_plans')
+      .populate('media', 'logo_image header_images about_image highlight_image gallery_image floor_plans')
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
