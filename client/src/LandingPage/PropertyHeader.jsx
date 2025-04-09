@@ -19,7 +19,7 @@ const PropertyHeader = ({ property }) => {
 
   // Get logo from property data or use default
   const logo =
-     property?.mediaDetails?.logo_image || DEFAULT_LOGO;
+     property?.media?.logo_image || DEFAULT_LOGO;
 
   return (
     <>
@@ -34,11 +34,11 @@ const PropertyHeader = ({ property }) => {
             />
 
             {/* Show title next to logo */}
-            <div>
+            {/* <div>
               <h1 className="text-2xl font-bold text-blue-800">
                 {property?.title || "Property"}
               </h1>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex space-x-4">
