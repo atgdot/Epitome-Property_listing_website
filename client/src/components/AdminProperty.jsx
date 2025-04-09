@@ -97,7 +97,7 @@ const AdminProperty = () => {
   // Category & Subcategory handling
   const handleCategoryChange = (value) => {
     // For 'residential' we use a default subCategory; for 'featured' and 'trending', we store an empty array.
-    const defaultSub = value === "Residential" ? "Luxury Projects" : "Offices";
+    const defaultSub = value === "Residential" ? "Luxury Project" : "Offices";
     setFormData((prev) => ({
       ...prev,
       category: value,

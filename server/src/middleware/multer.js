@@ -40,6 +40,14 @@ const storage = new CloudinaryStorage({
         { fetch_format: 'auto' }
       ],
     };
+    } else if (file.fieldname === "license" || file.fieldname === "profileImage") {
+      if (req.body.email) {
+        const safeEmail = req.body.email.replace(/[^\w\-]/g, '');
+        folder = `users/${safeEmail}-${Date.now()}`;
+      } else {
+        folder = `users/unknown-${Date.now()}`;
+      }
+    }
   },
 });
 

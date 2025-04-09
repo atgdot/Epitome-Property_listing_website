@@ -1,5 +1,4 @@
 import express from "express";
-import multer from "multer";
 import { body } from "express-validator";
 import {
   createAgent,
@@ -8,6 +7,7 @@ import {
   deleteAgentById,
   getAllAgents
 } from "../controllers/addAgent-controller.js";
+import parser from "../middleware/multer.js";
 
 const router = express.Router();
 
@@ -20,17 +20,6 @@ router.use((req, res, next) => {
   next();
 });
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
-
-const upload = multer({ storage });
-
 const agentValidationRules = [
   body("name").notEmpty().withMessage("Name is required"),
   body("email").isEmail().withMessage("Invalid email format"),
@@ -42,19 +31,25 @@ router.get("/all", getAllAgents);
 
 router.post(
   "/create",
-  upload.fields([{ name: "license", maxCount: 1 }, { name: "profileImage", maxCount: 1 }]),
+  parser.fields([
+    { name: "license", maxCount: 1 },
+    { name: "profileImage", maxCount: 1 },
+  ]),
   agentValidationRules,
   createAgent
 );
 
-router.put(
+router.patch(
   "/update/:id",
-  upload.fields([{ name: "license", maxCount: 1 }, { name: "profileImage", maxCount: 1 }]),
+  parser.fields([
+    { name: "license", maxCount: 1 },
+    { name: "profileImage", maxCount: 1 },
+  ]),
   agentValidationRules,
   updateAgent
 );
 
-router.get("/search", searchAgentByName);
+router.get("/search/:searchTerm", searchAgentByName);
 
 router.delete("/delete/:id", deleteAgentById);
 

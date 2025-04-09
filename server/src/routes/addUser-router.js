@@ -1,13 +1,13 @@
 import express from "express";
-import multer from "multer";
 import { body } from "express-validator";
 import {
   createUser,
   updateUser,
   searchUserByName,
   deleteUserById,
-  getAllUsers
+  getAllUsers,
 } from "../controllers/addUser-controllers.js";
+import parser from "../middleware/multer.js"; // ✅ Cloudinary-based multer parser
 
 const router = express.Router();
 
@@ -21,19 +21,7 @@ router.use((req, res, next) => {
   next();
 });
 
-// Multer Configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Save files in "uploads" directory
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
-
-const upload = multer({ storage });
-
-// Validation Rules (Fixed)
+// ✅ Validation Rules
 const userValidationRules = [
   body("name").notEmpty().withMessage("Name is required"),
   body("email").isEmail().withMessage("Invalid email format"),
@@ -41,29 +29,35 @@ const userValidationRules = [
   body("propertyNumber").notEmpty().withMessage("Property Number is required"),
 ];
 
-// GET all users
+// ✅ GET all users
 router.get("/all", getAllUsers);
 
-// ✅ Create User Route (with file upload)
+// ✅ Create User Route (Cloudinary upload)
 router.post(
   "/create",
-  upload.fields([{ name: "license", maxCount: 1 }, { name: "profileImage", maxCount: 1 }]),
+  parser.fields([
+    { name: "license", maxCount: 1 },
+    { name: "profileImage", maxCount: 1 },
+  ]),
   userValidationRules,
   createUser
 );
 
-// ✅ Update User Route (with file upload)
+// ✅ Update User Route (Cloudinary upload)
 router.put(
   "/update/:id",
-  upload.fields([{ name: "license", maxCount: 1 }, { name: "profileImage", maxCount: 1 }]),
+  parser.fields([
+    { name: "license", maxCount: 1 },
+    { name: "profileImage", maxCount: 1 },
+  ]),
   userValidationRules,
   updateUser
 );
 
-// Search User Route
+// ✅ Search User Route
 router.get("/search", searchUserByName);
 
-// Delete User Route
+// ✅ Delete User Route
 router.delete("/delete/:id", deleteUserById);
 
 export default router;

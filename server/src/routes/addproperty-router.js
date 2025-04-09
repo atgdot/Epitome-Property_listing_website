@@ -1,8 +1,6 @@
 import express from "express";
-import { body, param } from "express-validator";
 import {
   createPropertyController,
-  // getAllPropertiesController,
   searchPropertiesController,
   updatePropertyController,
   deletePropertyController,
@@ -12,18 +10,9 @@ import {
 } from "../controllers/addproperty-controller.js";
 
 const router = express.Router();
+import parser from "../middleware/multer.js"; // your custom multer config
 
-
-import parser from "../middleware/multer.js";
-
-
-
-// Route
-//router.post("/your-route", upload.any(), createPropertyController);
-
-
-//For multiple fields (e.g., property_Image, logo_image, etc.)
-// Routes
+// Correct Route: Use ONLY this
 router.post('/create', parser.fields([
   { name: 'property_Image', maxCount: 1 },
   { name: 'logo_image', maxCount: 1 },
@@ -39,7 +28,7 @@ router.get("/detail/:id", getPropertyDetailsController);
 router.get("/all", getAllPropertyController); 
 router.get("/search/:searchTerm", searchPropertiesController);
 router.delete("/delete/:id", deletePropertyController);
-router.post("/location", getPropertiesByLocation);
+router.get("/location", getPropertiesByLocation);
 
 export default router;
 
