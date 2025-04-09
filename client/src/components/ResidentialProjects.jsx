@@ -34,8 +34,7 @@ const ResidentialProjects = () => {
     (properties || [])
       .filter(
         (property) =>
-          property.category &&
-          property.category.toLowerCase() === "residential"
+          property.category && property.category.toLowerCase() === "residential"
       )
       .forEach((property) => {
         // Handle subCategory if it's an array
@@ -78,13 +77,12 @@ const ResidentialProjects = () => {
       title: "GOLF COURSE EXT ROAD",
       imageUrl:
         "https://i.ibb.co/XxwFmG6z/2a37a116a205074c935e4eae2e30b575.jpg",
-      route: "/golf-course-ext-road" ,
+      route: "/golf-course-ext-road",
     },
     {
       id: 3,
       title: "MG ROAD",
-      imageUrl:
-        "https://i.ibb.co/sY1PvLF/31a1a4c136196eae034b164809cc2349.jpg",
+      imageUrl: "https://i.ibb.co/sY1PvLF/31a1a4c136196eae034b164809cc2349.jpg",
       route: "/mg-road",
     },
     {
@@ -113,7 +111,7 @@ const ResidentialProjects = () => {
       title: "SPR ROAD",
       imageUrl:
         "https://i.ibb.co/G41H2CLt/dd19b3798a1b605440d5daea20d96fe6.jpg",
-      route:"/spr-road",
+      route: "/spr-road",
     },
   ];
 
@@ -160,7 +158,7 @@ const ResidentialProjects = () => {
     highRiseApartments.length === 0;
 
   return (
-    <div className="my-8 px-4">
+    <div className="container mx-auto my-4 px-8">
       <h2 className="text-3xl font-semibold text-center mb-8">
         Residential Projects
       </h2>
@@ -174,9 +172,21 @@ const ResidentialProjects = () => {
 
       {/* Project Sections using react-slick Slider and including View All button */}
       {[
-        { title: "Luxury Projects", projects: luxuryProjects, route: "/residential/luxury"},
-        { title: "Upcoming Projects", projects: upcomingProjects, route: "/residential/upcoming" },
-        { title: "High Rise Apartments", projects: highRiseApartments, route: "/residential/highrise" },
+        {
+          title: "Luxury Projects",
+          projects: luxuryProjects,
+          route: "/residential/luxury",
+        },
+        {
+          title: "Upcoming Projects",
+          projects: upcomingProjects,
+          route: "/residential/upcoming",
+        },
+        {
+          title: "High Rise Apartments",
+          projects: highRiseApartments,
+          route: "/residential/highrise",
+        },
       ].map(
         (section, idx) =>
           section.projects.length > 0 && (
@@ -186,8 +196,10 @@ const ResidentialProjects = () => {
               </h3>
               <Slider {...sliderSettings}>
                 {section.projects.map((property, index) => (
-                  <div key={index} className="px-2 h-64">
-                    <HighRiseCard property={property} />
+                  <div key={index} className="px-2">
+                    <div className="h-full">
+                      <HighRiseCard property={property} />
+                    </div>
                   </div>
                 ))}
               </Slider>

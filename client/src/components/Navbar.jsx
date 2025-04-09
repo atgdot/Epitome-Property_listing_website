@@ -65,19 +65,6 @@ const Navbar = () => {
             Contact Us
           </button>
         </Link>
-
-        {/* <Link to="/admin-dashboard">
-          <button
-            className={`px-4 py-2 rounded-lg transition-all duration-300
-          ${
-            isScrolled
-              ? "bg-white text-blue-900 hover:bg-gray-100"
-              : "bg-blue-900 text-white hover:bg-blue-800"
-          }`}
-          >
-            Admin
-          </button>
-        </Link> */}
       </div>
 
       {/* Mobile Menu Toggle Button */}
@@ -102,17 +89,21 @@ const Navbar = () => {
         >
           <FontAwesomeIcon icon={faTimes} />
         </button>
-        <Link to="/property" className="text-base text-gray-800">
+
+        <Link to="/admin-dashboard" className="text-base text-gray-800">
+          Admin
+        </Link>
+        <Link to="/residential/luxury" className="text-base text-gray-800">
+          Projects
+        </Link>
+        <Link to="/PropertyDetails" className="text-base text-gray-800">
           Property
         </Link>
-        <Link to="/admin-dashboard" className="text-base text-gray-800">
-          Commercial Projects
-        </Link>
-        <Link to="/team" className="text-base text-gray-800">
-          Team
-        </Link>
 
-        <button className="px-3 py-2 rounded-lg bg-blue-900 text-white hover:bg-blue-800 transition-all text-sm">
+        <button
+          onClick={() => navigate("/contact")}
+          className="px-3 py-2 rounded-lg bg-blue-900 text-white hover:bg-blue-800 transition-all text-sm"
+        >
           Contact Us
         </button>
       </div>

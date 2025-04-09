@@ -19,11 +19,14 @@ import AdminRecommendation from "../components/AdminRecommendation";
 import AdminPhoto from "../components/AdminPhoto";
 import BannerManagement from "../components/BannerManagement";
 import LogoutButton from "./LogoutButton";
+import { FiMenu } from "react-icons/fi";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("Dashboard");
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Check if user is logged in
   useEffect(() => {
@@ -34,6 +37,21 @@ const AdminDashboard = () => {
       setIsLoading(false);
     }
   }, [navigate]);
+
+  // Handle window resize for mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsSidebarCollapsed(true);
+      } else {
+        setIsSidebarCollapsed(false);
+      }
+    };
+
+    handleResize(); // Call initially
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const barChartData = [
     { name: "17 Sun", visitors: 250000 },
@@ -105,44 +123,48 @@ const AdminDashboard = () => {
                 <h2 className="text-lg font-semibold mb-4">
                   Traffic by Location
                 </h2>
-                <ResponsiveContainer width="100%" height={320}>
-                  <PieChart>
-                    <Pie
-                      data={pieChartData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={90}
-                      innerRadius={40}
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(1)}%`
-                      }
-                      dataKey="value"
-                    >
-                      {pieChartData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        color: "#333",
-                        backgroundColor: "#fff",
-                        borderRadius: "5px",
-                      }}
-                    />
-                    <Legend
-                      verticalAlign="bottom"
-                      align="center"
-                      iconType="circle"
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
+                <div className="h-[250px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={pieChartData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={90}
+                        innerRadius={40}
+                        labelLine={false}
+                        label={({ name, percent }) =>
+                          `${name} ${(percent * 100).toFixed(1)}%`
+                        }
+                        dataKey="value"
+                      >
+                        {pieChartData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          color: "#333",
+                          backgroundColor: "#fff",
+                          borderRadius: "5px",
+                        }}
+                      />
+                      <Legend
+                        verticalAlign="bottom"
+                        align="center"
+                        iconType="circle"
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
               {/* Banner section */}
-              <BannerManagement />
+              <div className="lg:col-span-2">
+                <BannerManagement />
+              </div>
             </div>
           </div>
         );
@@ -186,7 +208,21 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <aside className="w-64 bg-blue-900 text-white p-6 fixed h-full">
+      {/* Mobile menu button */}
+      <button
+        className="md:hidden fixed top-3 right-4 z-50 bg-blue-900 text-white p-2 rounded-lg"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        <FiMenu size={24} />
+      </button>
+      {/* Sidebar */}
+      <aside
+        className={`${
+          isSidebarCollapsed ? "w-[200px] md:w-64" : "w-[200px] md:w-64"
+        } 
+    bg-blue-900 text-white p-4 md:p-6 fixed h-[650px] md:h-full transition-all duration-300
+    ${isMobileMenuOpen ? "left-0" : "-left-full md:left-0"} z-40`}
+      >
         <div className="flex items-center space-x-2 mt-[-10px]">
           <img
             onClick={() => navigate("/")}
@@ -199,7 +235,10 @@ const AdminDashboard = () => {
           {navItems.map((item) => (
             <button
               key={item}
-              onClick={() => setSelectedTab(item)}
+              onClick={() => {
+                setSelectedTab(item);
+                setIsMobileMenuOpen(false);
+              }}
               className={`w-full text-left p-3 flex items-center gap-2 hover:bg-blue-700 rounded-lg transition ${
                 selectedTab === item ? "bg-blue-700" : ""
               }`}
@@ -212,7 +251,15 @@ const AdminDashboard = () => {
           <LogoutButton />
         </div>
       </aside>
-      <main className="flex-1 p-8 ml-64">{renderContent()}</main>
+
+      {/* Main content */}
+      <main
+        className={`flex-1 p-4 md:p-8 transition-all duration-300 ${
+          isSidebarCollapsed ? "ml-0 md:ml-64" : "ml-64"
+        }`}
+      >
+        {renderContent()}
+      </main>
     </div>
   );
 };
