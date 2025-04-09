@@ -33,6 +33,16 @@ const PropertyDetailPage = () => {
       ? property.media.header_images
       : DEFAULT_IMAGES;
 
+  const aboutImage =
+    property?.media?.about_image?.length > 0
+      ? property.media.about_image
+      : DEFAULT_IMAGES;
+
+  const highlightsImage =
+    property?.media?.highlight_image?.length > 0
+      ? property.media.highlight_image
+      : DEFAULT_IMAGES;
+
   const galleryImages =
     property?.media?.gallery_image?.length > 0
       ? property.media.gallery_image
@@ -42,17 +52,17 @@ const PropertyDetailPage = () => {
     property?.media?.floor_plans?.length > 0
       ? property.media.floor_plans
       : [
-        {
-          description: "Sample Floor Plan",
-          area: 1200,
-          image: DEFAULT_IMAGES[0],
-        },
-        {
-          description: "Sample Floor Plan",
-          area: 1500,
-          image: DEFAULT_IMAGES[1],
-        },
-      ];
+          {
+            description: "Sample Floor Plan",
+            area: 1200,
+            image: DEFAULT_IMAGES[0],
+          },
+          {
+            description: "Sample Floor Plan",
+            area: 1500,
+            image: DEFAULT_IMAGES[1],
+          },
+        ];
 
   const sliderImages = headerImages.length > 0 ? headerImages : DEFAULT_IMAGES;
 
@@ -117,32 +127,32 @@ const PropertyDetailPage = () => {
       property.Tenant && `Tenant: ${property.Tenant}`,
     ].filter(Boolean).length > 0
       ? [
-        property.Rental_Yield && `Rental Yield: ${property.Rental_Yield}`,
-        property.current_Rental && `Current Rental: ${property.current_Rental}`,
-        property.Tenure && `Tenure: ${property.Tenure}`,
-        property.Tenant && `Tenant: ${property.Tenant}`,
-      ].filter(Boolean)
+          property.Rental_Yield && `Rental Yield: ${property.Rental_Yield}`,
+          property.current_Rental &&
+            `Current Rental: ${property.current_Rental}`,
+          property.Tenure && `Tenure: ${property.Tenure}`,
+          property.Tenant && `Tenant: ${property.Tenant}`,
+        ].filter(Boolean)
       : [
-        "36000 SQ.FT CLUBHOUSE",
-        "HIGH SPEED 6 LIFTS IN EACH TOWERS",
-        "SKY DECK ON TOP & SKY WALK",
-        "GLASS FACADE TEXTURE CONSTRUCTION",
-      ];
+          "36000 SQ.FT CLUBHOUSE",
+          "HIGH SPEED 6 LIFTS IN EACH TOWERS",
+          "SKY DECK ON TOP & SKY WALK",
+          "GLASS FACADE TEXTURE CONSTRUCTION",
+        ];
 
   // Location features - use real data if available, otherwise defaults
   const locationFeatures = property?.location?.address
     ? [
-      property.location.address,
-      property.location.city &&
-      `${property.location.city} Metro Station (3 mins)`,
-      property.location.location &&
-      `${property.location.location} (15 mins)`,
-    ].filter(Boolean)
+        property.location.address,
+        property.location.city &&
+          `${property.location.city} Metro Station (3 mins)`,
+        property.location.location && `${property.location.location} (15 mins)`,
+      ].filter(Boolean)
     : [
-      "Sector 56 Gurgaon Metro Station (3 mins)",
-      "CK Birla Hospital, Gurgaon (15 mins)",
-      "Heritage School Sector 58 Campus (10 mins)",
-    ];
+        "Sector 56 Gurgaon Metro Station (3 mins)",
+        "CK Birla Hospital, Gurgaon (15 mins)",
+        "Heritage School Sector 58 Campus (10 mins)",
+      ];
 
   return (
     <div className="bg-white relative">
@@ -222,37 +232,63 @@ const PropertyDetailPage = () => {
           </div>
         </div>
 
-        {/* About Project */}
+        {/* About Project with Image */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             About Project
           </h2>
-          <div className="space-y-6">
-            <h3 className="text-2xl font-semibold text-gray-800">
-              {property.title || "Property Title"}
-            </h3>
-            <p className="text-gray-700 leading-relaxed">
-              {property.description ||
-                "The design journey begins with a subtle integration of elements that infuse warmth and comfort into every space. This vision comes to life through exceptional talents whose collaborative genius creates a truly rare and exclusive masterpiece."}
-            </p>
+          <div className="flex flex-col lg:flex-row gap-8 items-center">
+            <div className="w-full lg:w-1/2">
+              <img
+                src={
+                  aboutImage ||
+                  "https://via.placeholder.com/600x400?text=About+Project"
+                }
+                alt="About the project"
+                className="w-full h-auto rounded-lg shadow-md object-cover"
+              />
+            </div>
+            <div className="w-full lg:w-1/2 space-y-6">
+              <h3 className="text-2xl font-semibold text-gray-800">
+                {property.title || "Property Title"}
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                {property.description ||
+                  "The design journey begins with a subtle integration of elements that infuse warmth and comfort into every space. This vision comes to life through exceptional talents whose collaborative genius creates a truly rare and exclusive masterpiece."}
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* Highlights */}
+        {/* Highlights with Image */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             Highlights
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {highlights.map((highlight, index) => (
-              <div
-                key={index}
-                className="flex items-start bg-blue-50 p-4 rounded-lg"
-              >
-                <span className="text-blue-600 mr-3 mt-1">•</span>
-                <p className="text-gray-800 font-medium">{highlight}</p>
+          <div className="flex flex-col lg:flex-row gap-8 items-center">
+            <div className="w-full lg:w-1/2 order-1 lg:order-2">
+              <img
+                src={
+                  highlightsImage ||
+                  "https://via.placeholder.com/600x400?text=Project+Highlights"
+                }
+                alt="Project highlights"
+                className="w-full h-auto rounded-lg shadow-md object-cover"
+              />
+            </div>
+            <div className="w-full lg:w-1/2 space-y-6 order-2 lg:order-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {highlights.map((highlight, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start bg-blue-50 p-4 rounded-lg"
+                  >
+                    <span className="text-blue-600 mr-3 mt-1">•</span>
+                    <p className="text-gray-800 font-medium">{highlight}</p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </section>
 
@@ -320,9 +356,7 @@ const PropertyDetailPage = () => {
                 {property?.location?.address && (
                   <div className="flex items-start">
                     <span className="text-blue-600 mr-3 mt-1">•</span>
-                    <p className="text-gray-700">
-                      {property.location.address}
-                    </p>
+                    <p className="text-gray-700">{property.location.address}</p>
                   </div>
                 )}
                 {locationFeatures.map((feature, index) => (
