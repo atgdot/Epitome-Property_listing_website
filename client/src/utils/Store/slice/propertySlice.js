@@ -17,67 +17,13 @@ export const createProperty = createAsyncThunk(
   'property/createProperty',
   async (propertyData, { rejectWithValue }) => {
     try {
-      const formData = new FormData();
-      
-      // Add all non-file fields to FormData
-      Object.keys(propertyData).forEach(key => {
-        if (key !== 'property_Image' && 
-            key !== 'logo_image' && 
-            key !== 'header_images' && 
-            key !== 'about_image' && 
-            key !== 'highlight_image' && 
-            key !== 'gallery_image' && 
-            key !== 'floor_plans') {
-          formData.append(key, propertyData[key]);
-        }
-      });
-
-      // Add single files
-      if (propertyData.property_Image) {
-        formData.append('property_Image', propertyData.property_Image);
-      }
-      if (propertyData.logo_image) {
-        formData.append('logo_image', propertyData.logo_image);
-      }
-
-      // Add multiple files
-      if (propertyData.header_images) {
-        Array.from(propertyData.header_images).forEach(file => {
-          formData.append('header_images', file);
-        });
-      }
-      if (propertyData.about_image) {
-        Array.from(propertyData.about_image).forEach(file => {
-          formData.append('about_image', file);
-        });
-      }
-      if (propertyData.highlight_image) {
-        Array.from(propertyData.highlight_image).forEach(file => {
-          formData.append('highlight_image', file);
-        });
-      }
-      if (propertyData.gallery_image) {
-        Array.from(propertyData.gallery_image).forEach(file => {
-          formData.append('gallery_image', file);
-        });
-      }
-
-      // Handle floor plans
-      if (propertyData.floor_plans && propertyData.floor_plans.length > 0) {
-        propertyData.floor_plans.forEach((plan, index) => {
-          if (plan.image) {
-            formData.append(`floor_plan_images`, plan.image);
-            formData.append(`floor_plan_descriptions`, plan.description || '');
-            formData.append(`floor_plan_areas`, plan.area || '');
-          }
-        });
-      }
-
-      const response = await axios.post(`${BASE_URL}/create`, formData, {
+      // propertyData is already FormData, no need to transform it
+      const response = await axios.post(`${BASE_URL}/create`, propertyData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
+      console.log('Property creation response:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(handleApiError(error));
@@ -144,9 +90,12 @@ export const getAllProperties = createAsyncThunk(
   'property/getAllProperties',
   async (_, { rejectWithValue }) => {
     try {
+      console.log("Making API request to:", `${BASE_URL}/all`);
       const response = await axios.get(`${BASE_URL}/all`);
+      console.log("API Response:", response.data);
       return response.data;
     } catch (error) {
+      console.error("getAllProperties API Error:", error);
       return rejectWithValue(handleApiError(error));
     }
   }
@@ -257,10 +206,12 @@ const propertySlice = createSlice({
       })
       .addCase(getAllProperties.fulfilled, (state, action) => {
         state.loading = false;
+        console.log("getAllProperties.fulfilled - Received data:", action.payload);
         if (Array.isArray(action.payload.data)) {
           state.properties = action.payload.data;
+          console.log("Properties set in state:", state.properties);
         } else {
-          console.error('getAllProperties fulfilled received non-array payload:', action.payload);
+          console.error("getAllProperties.fulfilled - Received non-array payload:", action.payload);
           state.properties = [];
           state.error = { message: 'Received invalid property data from server.' };
         }
@@ -269,6 +220,7 @@ const propertySlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.properties = [];
+        console.error("getAllProperties.rejected - Error:", action.payload);
       });
   },
 });

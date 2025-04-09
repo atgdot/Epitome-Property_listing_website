@@ -16,6 +16,7 @@ const PropertyDetailPage = () => {
   const property = useSelector(
     (state) => state.propertyDetail.selectedProperty
   );
+
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
@@ -26,32 +27,32 @@ const PropertyDetailPage = () => {
     "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
   ];
 
-  // Get images from propertyMedia or use defaults
+  // Get images from media or use defaults
   const headerImages =
-    property?.propertyMedia?.header_images?.length > 0
-      ? property.propertyMedia.header_images
+    property?.media?.header_images?.length > 0
+      ? property.media.header_images
       : DEFAULT_IMAGES;
 
   const galleryImages =
-    property?.propertyMedia?.gallery_image?.length > 0
-      ? property.propertyMedia.gallery_image
+    property?.media?.gallery_image?.length > 0
+      ? property.media.gallery_image
       : DEFAULT_IMAGES;
 
   const floorPlans =
-    property?.propertyMedia?.floor_plans?.length > 0
-      ? property.propertyMedia.floor_plans
+    property?.media?.floor_plans?.length > 0
+      ? property.media.floor_plans
       : [
-          {
-            description: "Sample Floor Plan",
-            area: 1200,
-            image: DEFAULT_IMAGES[0],
-          },
-          {
-            description: "Sample Floor Plan",
-            area: 1500,
-            image: DEFAULT_IMAGES[1],
-          },
-        ];
+        {
+          description: "Sample Floor Plan",
+          area: 1200,
+          image: DEFAULT_IMAGES[0],
+        },
+        {
+          description: "Sample Floor Plan",
+          area: 1500,
+          image: DEFAULT_IMAGES[1],
+        },
+      ];
 
   const sliderImages = headerImages.length > 0 ? headerImages : DEFAULT_IMAGES;
 
@@ -111,38 +112,37 @@ const PropertyDetailPage = () => {
   const highlights =
     [
       property.Rental_Yield && `Rental Yield: ${property.Rental_Yield}`,
-      property.current_Renatal && `Current Rental: ${property.current_Renatal}`,
+      property.current_Rental && `Current Rental: ${property.current_Rental}`,
       property.Tenure && `Tenure: ${property.Tenure}`,
       property.Tenant && `Tenant: ${property.Tenant}`,
     ].filter(Boolean).length > 0
       ? [
-          property.Rental_Yield && `Rental Yield: ${property.Rental_Yield}`,
-          property.current_Renatal &&
-            `Current Rental: ${property.current_Renatal}`,
-          property.Tenure && `Tenure: ${property.Tenure}`,
-          property.Tenant && `Tenant: ${property.Tenant}`,
-        ].filter(Boolean)
+        property.Rental_Yield && `Rental Yield: ${property.Rental_Yield}`,
+        property.current_Rental && `Current Rental: ${property.current_Rental}`,
+        property.Tenure && `Tenure: ${property.Tenure}`,
+        property.Tenant && `Tenant: ${property.Tenant}`,
+      ].filter(Boolean)
       : [
-          "36000 SQ.FT CLUBHOUSE",
-          "HIGH SPEED 6 LIFTS IN EACH TOWERS",
-          "SKY DECK ON TOP & SKY WALK",
-          "GLASS FACADE TEXTURE CONSTRUCTION",
-        ];
+        "36000 SQ.FT CLUBHOUSE",
+        "HIGH SPEED 6 LIFTS IN EACH TOWERS",
+        "SKY DECK ON TOP & SKY WALK",
+        "GLASS FACADE TEXTURE CONSTRUCTION",
+      ];
 
   // Location features - use real data if available, otherwise defaults
-  const locationFeatures = property?.propertyLocation?.address
+  const locationFeatures = property?.location?.address
     ? [
-        property.propertyLocation.address,
-        property.propertyLocation.city &&
-          `${property.propertyLocation.city} Metro Station (3 mins)`,
-        property.propertyLocation.location &&
-          `${property.propertyLocation.location} (15 mins)`,
-      ].filter(Boolean)
+      property.location.address,
+      property.location.city &&
+      `${property.location.city} Metro Station (3 mins)`,
+      property.location.location &&
+      `${property.location.location} (15 mins)`,
+    ].filter(Boolean)
     : [
-        "Sector 56 Gurgaon Metro Station (3 mins)",
-        "CK Birla Hospital, Gurgaon (15 mins)",
-        "Heritage School Sector 58 Campus (10 mins)",
-      ];
+      "Sector 56 Gurgaon Metro Station (3 mins)",
+      "CK Birla Hospital, Gurgaon (15 mins)",
+      "Heritage School Sector 58 Campus (10 mins)",
+    ];
 
   return (
     <div className="bg-white relative">
@@ -167,11 +167,11 @@ const PropertyDetailPage = () => {
       <PropertyHeader
         property={{
           ...property,
-          logo: property?.propertyMedia?.logo_image || DEFAULT_LOGO,
+          logo: property?.media?.logo_image || DEFAULT_LOGO,
         }}
       />
 
-      {/* Hero Section with Slider - Always visible */}
+      {/* Hero Section with Slider */}
       <div className="relative">
         <Slider {...gallerySettings}>
           {sliderImages.map((img, index) => (
@@ -189,14 +189,14 @@ const PropertyDetailPage = () => {
             {property.title || "Property Title"}
           </h1>
           <p className="text-xl text-white mt-2">
-            {property.propertyLocation?.city || "City"},{" "}
-            {property.propertyLocation?.location || "Location"}
+            {property.city || "City"},{" "}
+            {property.location?.location || "Location"}
           </p>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Quick Facts - Always visible */}
+        {/* Quick Facts */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 bg-gray-100 p-6 rounded-lg">
           <div className="text-center p-4">
             <p className="text-3xl font-bold text-blue-800">
@@ -216,13 +216,13 @@ const PropertyDetailPage = () => {
           </div>
           <div className="text-center p-4">
             <p className="text-3xl font-bold text-blue-800">
-              {property.price || "₹1.5 Cr"}
+              ₹{property.price || "1.5 Cr"}
             </p>
             <p className="text-gray-600 uppercase text-sm font-medium">Price</p>
           </div>
         </div>
 
-        {/* About Project - Always visible */}
+        {/* About Project */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             About Project
@@ -238,7 +238,7 @@ const PropertyDetailPage = () => {
           </div>
         </section>
 
-        {/* Highlights - Always visible */}
+        {/* Highlights */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             Highlights
@@ -256,7 +256,7 @@ const PropertyDetailPage = () => {
           </div>
         </section>
 
-        {/* Floor Plans - Always visible */}
+        {/* Floor Plans */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             Floor Plan
@@ -285,7 +285,7 @@ const PropertyDetailPage = () => {
           </div>
         </section>
 
-        {/* Gallery - Always visible */}
+        {/* Gallery */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             Gallery
@@ -309,7 +309,7 @@ const PropertyDetailPage = () => {
           </div>
         </section>
 
-        {/* Location Map - Always visible */}
+        {/* Location Map */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             Location Map
@@ -317,11 +317,11 @@ const PropertyDetailPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <div className="space-y-4">
-                {property.propertyLocation?.address && (
+                {property?.location?.address && (
                   <div className="flex items-start">
                     <span className="text-blue-600 mr-3 mt-1">•</span>
                     <p className="text-gray-700">
-                      {property.propertyLocation.address}
+                      {property.location.address}
                     </p>
                   </div>
                 )}
@@ -338,8 +338,7 @@ const PropertyDetailPage = () => {
                 location={{
                   lat: 28.4595,
                   lng: 77.0266,
-                  address:
-                    property.propertyLocation?.address || "Sector 56, Gurgaon",
+                  address: property?.location?.address || "Sector 56, Gurgaon",
                   title: property.title || "Property Location",
                 }}
               />
@@ -347,7 +346,7 @@ const PropertyDetailPage = () => {
           </div>
         </section>
 
-        {/* Contact Form - Always visible */}
+        {/* Contact Form */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             Contact
@@ -394,13 +393,13 @@ const PropertyDetailPage = () => {
               <div className="text-center p-6">
                 <h4 className="text-xl font-semibold mb-4">Visit Our Office</h4>
                 <p className="text-gray-700 mb-4">
-                  {property.propertyLocation?.address ||
+                  {property?.location?.address ||
                     "Sector 56, Golf Course Road, Gurugram"}
                 </p>
                 <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                  {property.propertyMedia?.logo_image ? (
+                  {property?.media?.logo_image ? (
                     <img
-                      src={property.propertyMedia.logo_image}
+                      src={property.media.logo_image}
                       alt="Office Logo"
                       className="h-full object-contain"
                     />

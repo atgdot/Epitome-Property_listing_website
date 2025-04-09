@@ -18,8 +18,16 @@ import {
 
 const AdminProperty = () => {
   const dispatch = useDispatch();
-  const { properties, loading, error } = useSelector((state) => state.property);
+  const { properties, loading, error } = useSelector((state) => {
+    console.log("Redux State:", state);
+    console.log("Property State:", state.property);
+    return state.property;
+  });
 
+  // Log properties whenever they change
+  useEffect(() => {
+    console.log("Properties from Redux:", properties);
+  }, [properties]);
 
   // Modal & UI state
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,9 +65,9 @@ const AdminProperty = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
   // Fetch all properties on mount
   useEffect(() => {
+    console.log("Fetching properties...");
     dispatch(getAllProperties());
   }, [dispatch]);
 
@@ -204,35 +212,71 @@ const AdminProperty = () => {
     dispatch(clearError());
 
     // Prepare data
-    const payload = { ...formData };
+    const formDataToSend = new FormData();
 
-    // Clean up price
-    if (typeof payload.price === "string") {
-      payload.price = payload.price.replace("₹", "").trim();
+    // Add basic fields
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("subCategory", formData.subCategory);
+    formDataToSend.append("city", formData.city);
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("location", formData.location);
+    formDataToSend.append("sector", formData.sector);
+    formDataToSend.append("address", formData.address);
+    formDataToSend.append("pincode", formData.pincode);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("price", formData.price.replace("₹", "").trim());
+    formDataToSend.append("Rental_Yield", formData.Rental_Yield);
+    formDataToSend.append("current_Rental", formData.current_Rental);
+    formDataToSend.append("Area", formData.Area);
+    formDataToSend.append("Tenure", formData.Tenure);
+    formDataToSend.append("Tenant", formData.Tenant);
+
+    // Add single file fields
+    if (formData.property_Image) {
+      formDataToSend.append("property_Image", formData.property_Image);
+    }
+    if (formData.logo_image) {
+      formDataToSend.append("logo_image", formData.logo_image);
     }
 
-    // Remove empty media fields
-    [
-      "property_Image",
-      "logo_image",
-      "header_images",
-      "about_image",
-      "highlight_image",
-      "gallery_image",
-    ].forEach((f) => {
-      if (!payload[f] || payload[f].length === 0) delete payload[f];
-    });
+    // Add multiple file fields
+    if (formData.header_images) {
+      Array.from(formData.header_images).forEach(file => {
+        formDataToSend.append("header_images", file);
+      });
+    }
+    if (formData.about_image) {
+      Array.from(formData.about_image).forEach(file => {
+        formDataToSend.append("about_image", file);
+      });
+    }
+    if (formData.highlight_image) {
+      Array.from(formData.highlight_image).forEach(file => {
+        formDataToSend.append("highlight_image", file);
+      });
+    }
+    if (formData.gallery_image) {
+      Array.from(formData.gallery_image).forEach(file => {
+        formDataToSend.append("gallery_image", file);
+      });
+    }
 
-    // Remove empty floor_plans
-    if (!payload.floor_plans.length) delete payload.floor_plans;
+    // Add floor plans
+    formData.floor_plans.forEach((plan, index) => {
+      if (plan.image) {
+        formDataToSend.append("floor_plan_images", plan.image);
+        formDataToSend.append("floor_plan_descriptions", plan.description || "");
+        formDataToSend.append("floor_plan_areas", plan.area || "0");
+      }
+    });
 
     try {
       if (editingProperty) {
         await dispatch(
-          updateProperty({ id: editingProperty._id, propertyData: payload })
+          updateProperty({ id: editingProperty._id, propertyData: formDataToSend })
         ).unwrap();
       } else {
-        await dispatch(createProperty(payload)).unwrap();
+        await dispatch(createProperty(formDataToSend)).unwrap();
       }
       setShowModal(false);
       resetForm();
@@ -321,7 +365,7 @@ const AdminProperty = () => {
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((property) =>
-          property.category === "residential" ? (
+          property.category === "Residential" ? (
             <HighRiseCard
               key={property._id}
               property={property}

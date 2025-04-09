@@ -2,64 +2,34 @@ import React, { useContext, useState, useEffect } from 'react';
 import { TestimonialContext } from "../Context/TestimonialContext";
 
 const AdminReviews = () => {
-  const { testimonials, saveTestimonials } = useContext(TestimonialContext);
+  const { testimonials, saveTestimonials, loading: contextLoading, error: contextError, refreshTestimonials } = useContext(TestimonialContext);
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     designation: '',
     text: '',
     rating: 5,
-    image: ''
+    profile_photo: null,
+    imagePreview: ''
   });
 
-  // Fetch all reviews when component mounts
+  // Use context's loading state
   useEffect(() => {
-    fetchAllReviews();
-  }, []);
-
-  const fetchAllReviews = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('http://localhost:3000/api/v1/admin-dashboard/review/all', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Fetched reviews:', result);
-      
-      if (result.success && result.data) {
-        // Update testimonials in context
-        saveTestimonials(result.data);
-      }
-    } catch (error) {
-      console.error('Error fetching testimonials:', error);
-      setError('Failed to load testimonials. Please refresh the page.');
-    } finally {
-      setIsLoading(false);
+    if (contextError) {
+      setError(contextError);
     }
-  };
+  }, [contextError]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({
-          ...formData,
-          image: reader.result
-        });
-      };
-      reader.readAsDataURL(file);
+      setFormData(prev => ({
+        ...prev,
+        profile_photo: file,
+        imagePreview: URL.createObjectURL(file)
+      }));
     }
   };
 
@@ -71,50 +41,58 @@ const AdminReviews = () => {
   };
 
   const handleRatingChange = (newRating) => {
-    setFormData({
-      ...formData,
-      rating: newRating
-    });
+    setFormData(prev => ({
+      ...prev,
+      rating: parseInt(newRating)
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
-      // Make POST request to the API endpoint
+      const submitData = new FormData();
+      submitData.append('name', formData.name);
+      submitData.append('Designation', formData.designation);
+      submitData.append('Testimonial_text', formData.text);
+      submitData.append('rating', parseInt(formData.rating));
+
+      if (formData.profile_photo) {
+        submitData.append('profile_photo', formData.profile_photo);
+      }
+
       const response = await fetch('http://localhost:3000/api/v1/admin-dashboard/review/add', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: submitData,
       });
 
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Error: ${response.status}`);
       }
 
       const result = await response.json();
       console.log('Success:', result);
-      
-      // Refresh the testimonials list after adding new one
-      fetchAllReviews();
-      
+
+      // Refresh testimonials from the server
+      refreshTestimonials();
+
       // Reset form
       setFormData({
         name: '',
         designation: '',
         text: '',
         rating: 5,
-        image: ''
+        profile_photo: null,
+        imagePreview: ''
       });
       setEditingId(null);
-      
+
     } catch (error) {
       console.error('Error submitting testimonial:', error);
-      setError('Failed to submit testimonial. Please try again.');
+      setError(error.message || 'Failed to submit testimonial. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -126,37 +104,51 @@ const AdminReviews = () => {
   };
 
   const handleDelete = async (index) => {
-    // Assuming each testimonial has an _id from MongoDB
     const testimonialId = testimonials[index]._id;
-    
+
+    if (!testimonialId) {
+      setError('Cannot delete: Invalid testimonial ID');
+      return;
+    }
+
+    if (!window.confirm('Are you sure you want to delete this testimonial?')) {
+      return;
+    }
+
     try {
-      // Optional: Add API call to delete from backend
-      // const response = await fetch(`http://localhost:3000/api/v1/admin-dashboard/review/delete/${testimonialId}`, {
-      //   method: 'DELETE',
-      // });
-      // 
-      // if (!response.ok) {
-      //   throw new Error(`Error: ${response.status}`);
-      // }
-      
-      const newTestimonials = testimonials.filter((_, i) => i !== index);
-      saveTestimonials(newTestimonials);
+      const response = await fetch(`http://localhost:3000/api/v1/admin-dashboard/review/${testimonialId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Error: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Refresh testimonials from the server
+        refreshTestimonials();
+      } else {
+        throw new Error(result.message || 'Failed to delete testimonial');
+      }
     } catch (error) {
       console.error('Error deleting testimonial:', error);
-      setError('Failed to delete testimonial. Please try again.');
+      setError(error.message || 'Failed to delete testimonial. Please try again.');
     }
   };
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Manage Testimonials</h1>
-      
-      {error && (
+
+      {(error || contextError) && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
+          {error || contextError}
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit} className="mb-8 bg-white p-6 rounded-lg shadow-md">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -214,11 +206,11 @@ const AdminReviews = () => {
               onChange={handleImageUpload}
               className="w-full p-2 border rounded"
             />
-            {formData.image && (
+            {formData.imagePreview && (
               <div className="mt-2">
-                <img 
-                  src={formData.image} 
-                  alt="Preview" 
+                <img
+                  src={formData.imagePreview}
+                  alt="Preview"
                   className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
                 />
               </div>
@@ -228,16 +220,15 @@ const AdminReviews = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`mt-4 px-6 py-2 rounded ${
-            isSubmitting 
-              ? 'bg-blue-400 cursor-not-allowed' 
-              : 'bg-blue-600 hover:bg-blue-700 text-white'
-          }`}
+          className={`mt-4 px-6 py-2 rounded ${isSubmitting
+            ? 'bg-blue-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700 text-white'
+            }`}
         >
-          {isSubmitting 
-            ? 'Submitting...' 
-            : editingId !== null 
-              ? 'Update Testimonial' 
+          {isSubmitting
+            ? 'Submitting...'
+            : editingId !== null
+              ? 'Update Testimonial'
               : 'Add Testimonial'
           }
         </button>
@@ -245,7 +236,7 @@ const AdminReviews = () => {
 
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-4">Current Testimonials</h2>
-        {isLoading ? (
+        {contextLoading ? (
           <p className="text-gray-500">Loading testimonials...</p>
         ) : (
           <div className="space-y-4">
@@ -257,7 +248,7 @@ const AdminReviews = () => {
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       <img
-                        src={testimonial.image || '/placeholder-avatar.png'}
+                        src={testimonial.profile_photo || '/placeholder-avatar.png'}
                         alt={testimonial.name}
                         className="w-12 h-12 rounded-full object-cover mr-3"
                       />
