@@ -16,6 +16,7 @@ const PropertyDetailPage = () => {
   const property = useSelector(
     (state) => state.propertyDetail.selectedProperty
   );
+  console.log(property);
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
