@@ -103,7 +103,7 @@ export const createPropertyController = async (req, res) => {
     const getMultipleImagePaths = (fieldName) =>
       (files?.[fieldName] || []).map((file) => file.path);
 
-    // Create basic property (without processing images)
+    // Create basic property
     console.time("⏱ Create basic property");
     const property = await BasicProperty.create({
       category,
@@ -123,21 +123,24 @@ export const createPropertyController = async (req, res) => {
     console.timeEnd("⏱ Create basic property");
     logTime("✅ Property created:", property._id);
 
+    // Create location document
     let createdLocation = null;
-    if (location) {
+    if (location || address || pincode) {
       try {
         console.time("⏱ Create location");
-        // Create a location document with location, address, and pincode details.
         createdLocation = await PropertyLocation.create({
-          property: property._id, // Reference to the property document
-          location: location, // Example: "Whitefield"
-          address: address || "", // If address is provided in req.body, use it; otherwise default to an empty string
-          pincode: pincode || "", // Similarly, for pincode
+          property: property._id,
+          location: location || "",
+          address: address || "",
+          pincode: pincode || "",
+          city: city || "",
         });
+        // Update property with location reference
+        property.location = createdLocation._id;
+        await property.save();
         console.timeEnd("⏱ Create location");
         logTime("📍 Location created:", createdLocation._id);
       } catch (locErr) {
-        // Log the error but continue if location creation is not critical
         logTime("❌ Failed to create location:", locErr.message);
       }
     }
@@ -160,51 +163,36 @@ export const createPropertyController = async (req, res) => {
       });
     });
 
-    // Determine dynamic Cloudinary folder (set in multer)
-    // Note: CloudinaryStorage may not always attach a folder property to the file object.
-    // If not, compute it based on normalizedTitle.
-    // const dynamicFolder =
-    //   files?.property_Image?.[0]?.folder ||
-    //   `properties/${normalizedTitle}-${Date.now()}`;
-    // logTime("📁 Dynamic Cloudinary folder:", dynamicFolder);
-
-    // Enqueue a job for heavy image processing (example for logo_image)
-    // if (files.logo_image && files.logo_image.length > 0) {
-    //   logTime("📤 Attempting to enqueue image upload job...");
-    //   await uploadQueue.add('upload-image', {
-    //     fieldName: 'logo_image',
-    //     filePath: files.logo_image[0].path,
-    //     folder: dynamicFolder,
-    //   });
-    //   logTime("🚀 Enqueued logo image upload job");
-    // }
-
-    // Create media document with the available file paths
+    // Create media document
     console.time("⏱ Create media");
     const createdMedia = await PropertyMedia.create({
+      property: property._id,
       logo_image: getImagePath("logo_image"),
       header_images: getMultipleImagePaths("header_images"),
       about_image: getMultipleImagePaths("about_image"),
       highlight_image: getMultipleImagePaths("highlight_image"),
       gallery_image: getMultipleImagePaths("gallery_image"),
       floor_plans: floorPlans,
-      // folder_path: dynamicFolder, // Save folder path for future reference
-      property: property._id,
     });
+    
+    // Update property with media reference
+    property.media = createdMedia._id;
+    await property.save();
+    
     console.timeEnd("⏱ Create media");
     logTime("🎞️ Media created:", createdMedia._id);
+
+    // Fetch the complete property with populated data
+    const completeProperty = await BasicProperty.findById(property._id)
+      .populate('location')
+      .populate('media');
 
     console.timeEnd("⏱ Total request time");
     return res.status(201).json({
       success: true,
-      message:
-        "Property created successfully. Image processing is being handled asynchronously.",
+      message: "Property created successfully.",
       propertyId: property._id,
-      data: {
-        basicDetails: property,
-        locationDetails: createdLocation || {},
-        mediaDetails: createdMedia || {}
-      }
+      data: completeProperty
     });
 
   } catch (error) {
@@ -310,11 +298,20 @@ export const updatePropertyController = async (req, res) => {
 
 export const getAllPropertyController = async (req, res) => {
   try {
+    // Fetch properties with populated data
     const properties = await BasicProperty.find()
-      .populate('location', 'location address pincode')
-      .populate('media', 'logo_image header_images about_image highlight_image gallery_image floor_plans')
+      .populate({
+        path: 'location',
+        select: 'location address pincode city'
+      })
+      .populate({
+        path: 'media',
+        select: 'logo_image header_images about_image highlight_image gallery_image floor_plans'
+      })
       .sort({ createdAt: -1 });
-    console.log(properties);
+
+    console.log("Fetched properties:", JSON.stringify(properties, null, 2));
+    
     return res.status(200).json({
       success: true,
       count: properties.length,

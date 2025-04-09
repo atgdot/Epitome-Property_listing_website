@@ -20,11 +20,11 @@ const HighRiseCard = ({ property, editable = false, onEdit, onDelete }) => {
         <div className="flex-1">
           <h3 className="text-xl font-bold text-[#043268]">{property.title}</h3>
           <p className="text-gray-600 text-sm mt-1">
-            <span className="font-medium">Category:</span> {property.category}
+            <span className="font-medium">Location:</span> {property.location?.location || "N/A"}
           </p>
         </div>
         <span className="bg-[#043268]/10 text-[#043268] text-sm px-2 py-1 rounded-full whitespace-nowrap">
-          {property.city || "City"}
+          {property.city}
         </span>
       </div>
 
@@ -33,7 +33,7 @@ const HighRiseCard = ({ property, editable = false, onEdit, onDelete }) => {
         <img
           src={
             property.property_Image ||
-            property.propertyMedia?.logo_image ||
+            property.media?.logo_image ||
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSTWFa-5clKaN3zrnAriHY10BICdAFuXvTg&s"
           }
           alt={property.title}
@@ -46,7 +46,7 @@ const HighRiseCard = ({ property, editable = false, onEdit, onDelete }) => {
         <div className="space-y-1">
           <p className="text-gray-500 text-sm">Price</p>
           <div className="text-xl font-bold text-[#043268]">
-            {property.price}
+            ₹{property.price}
           </div>
         </div>
         <button
@@ -58,7 +58,7 @@ const HighRiseCard = ({ property, editable = false, onEdit, onDelete }) => {
       </div>
 
       {/* Additional Info */}
-      <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
+      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
         {property.Area && (
           <div>
             <p className="text-gray-500">Area</p>
@@ -69,7 +69,19 @@ const HighRiseCard = ({ property, editable = false, onEdit, onDelete }) => {
           <div>
             <p className="text-gray-500">Tenant</p>
             <p className="font-medium">{property.Tenant}</p>
-          </div>  
+          </div>
+        )}
+        {property.current_Rental && (
+          <div>
+            <p className="text-gray-500">Current Rental</p>
+            <p className="font-medium">₹{property.current_Rental}</p>
+          </div>
+        )}
+        {property.Rental_Yield && (
+          <div>
+            <p className="text-gray-500">Rental Yield</p>
+            <p className="font-medium">{property.Rental_Yield}%</p>
+          </div>
         )}
       </div>
 

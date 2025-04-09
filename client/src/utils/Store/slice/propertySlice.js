@@ -90,9 +90,12 @@ export const getAllProperties = createAsyncThunk(
   'property/getAllProperties',
   async (_, { rejectWithValue }) => {
     try {
+      console.log("Making API request to:", `${BASE_URL}/all`);
       const response = await axios.get(`${BASE_URL}/all`);
+      console.log("API Response:", response.data);
       return response.data;
     } catch (error) {
+      console.error("getAllProperties API Error:", error);
       return rejectWithValue(handleApiError(error));
     }
   }
@@ -203,10 +206,12 @@ const propertySlice = createSlice({
       })
       .addCase(getAllProperties.fulfilled, (state, action) => {
         state.loading = false;
+        console.log("getAllProperties.fulfilled - Received data:", action.payload);
         if (Array.isArray(action.payload.data)) {
           state.properties = action.payload.data;
+          console.log("Properties set in state:", state.properties);
         } else {
-          console.error('getAllProperties fulfilled received non-array payload:', action.payload);
+          console.error("getAllProperties.fulfilled - Received non-array payload:", action.payload);
           state.properties = [];
           state.error = { message: 'Received invalid property data from server.' };
         }
@@ -215,6 +220,7 @@ const propertySlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.properties = [];
+        console.error("getAllProperties.rejected - Error:", action.payload);
       });
   },
 });

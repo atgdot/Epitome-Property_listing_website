@@ -18,8 +18,16 @@ import {
 
 const AdminProperty = () => {
   const dispatch = useDispatch();
-  const { properties, loading, error } = useSelector((state) => state.property);
+  const { properties, loading, error } = useSelector((state) => {
+    console.log("Redux State:", state);
+    console.log("Property State:", state.property);
+    return state.property;
+  });
 
+  // Log properties whenever they change
+  useEffect(() => {
+    console.log("Properties from Redux:", properties);
+  }, [properties]);
 
   // Modal & UI state
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,9 +65,9 @@ const AdminProperty = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
   // Fetch all properties on mount
   useEffect(() => {
+    console.log("Fetching properties...");
     dispatch(getAllProperties());
   }, [dispatch]);
 
@@ -357,7 +365,7 @@ const AdminProperty = () => {
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((property) =>
-          property.category === "residential" ? (
+          property.category === "Residential" ? (
             <HighRiseCard
               key={property._id}
               property={property}

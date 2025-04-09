@@ -18,7 +18,7 @@ const CommercialProjects = () => {
 
   // Select state from Redux store
   const { properties, loading, error } = useSelector((state) => state.property);
-  console.log(properties);
+  
 
   // Fetch properties when component mounts if not already loaded
   useEffect(() => {

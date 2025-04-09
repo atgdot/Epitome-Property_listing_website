@@ -6,7 +6,7 @@ const DEFAULT_LOGO =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbWZ_IVJqoEqdL1luLXoO0d2VZQN2M-eVSZw&s";
 
 const PropertyHeader = ({ property }) => {
-  console.log(property);
+
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -19,7 +19,7 @@ const PropertyHeader = ({ property }) => {
 
   // Get logo from property data or use default
   const logo =
-     property?.media?.logo_image || DEFAULT_LOGO;
+     property?.mediaDetails?.logo_image || DEFAULT_LOGO;
 
   return (
     <>
