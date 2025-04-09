@@ -163,10 +163,10 @@ export const createPropertyController = async (req, res) => {
     // Determine dynamic Cloudinary folder (set in multer)
     // Note: CloudinaryStorage may not always attach a folder property to the file object.
     // If not, compute it based on normalizedTitle.
-    const dynamicFolder =
-      files?.property_Image?.[0]?.folder ||
-      `properties/${normalizedTitle}-${Date.now()}`;
-    logTime("📁 Dynamic Cloudinary folder:", dynamicFolder);
+    // const dynamicFolder =
+    //   files?.property_Image?.[0]?.folder ||
+    //   `properties/${normalizedTitle}-${Date.now()}`;
+    // logTime("📁 Dynamic Cloudinary folder:", dynamicFolder);
 
     // Enqueue a job for heavy image processing (example for logo_image)
     // if (files.logo_image && files.logo_image.length > 0) {
@@ -188,7 +188,7 @@ export const createPropertyController = async (req, res) => {
       highlight_image: getMultipleImagePaths("highlight_image"),
       gallery_image: getMultipleImagePaths("gallery_image"),
       floor_plans: floorPlans,
-      folder_path: dynamicFolder, // Save folder path for future reference
+      // folder_path: dynamicFolder, // Save folder path for future reference
       property: property._id,
     });
     console.timeEnd("⏱ Create media");
@@ -230,61 +230,6 @@ export const updatePropertyController = async (req, res) => {
       .json({ success: false, message: "Invalid property ID format" });
   }
 
-    const property = await BasicProperty.findById(id);
-    if (!property) {
-      return res.status(404).json({ success: false, message: "Property not found" });
-    }
-
-    // Delete associated records
-    await PropertyLocation.deleteMany({ property: id });
-    await PropertyMedia.deleteMany({ property: id });
-    await BasicProperty.findByIdAndDelete(id);
-
-    return res.status(200).json({
-      success: true,
-      message: "Property and associated data deleted successfully"
-    });
-  } catch (error) {
-    console.error("Delete property error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Error deleting property",
-      error: error.message
-    });
-  }
-};
-
-export const getAllPropertyController = async (req, res) => {
-  try {
-    const properties = await BasicProperty.find()
-      .populate('location', 'location address pincode')
-      .populate('media', 'logo_image header_images about_image highlight_image gallery_image floor_plans')
-      .sort({ createdAt: -1 });
-
-    return res.status(200).json({
-      success: true,
-      count: properties.length,
-      data: properties
-    });
-  } catch (error) {
-    console.error("Get all properties error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Error fetching properties",
-      error: error.message
-    });
-  }
-};
-
-export const getPropertiesByLocation = async (req, res) => {
-  try {
-    const { location } = req.body;
-    
-    if (!location) {
-      return res.status(400).json({
-        success: false,
-        message: "Location parameter is required"
-      });
   if (!errors.isEmpty()) {
     console.log("Validation Errors:", errors.array());
     return res.status(400).json({ success: false, errors: errors.array() });
@@ -363,197 +308,39 @@ export const getPropertiesByLocation = async (req, res) => {
   }
 };
 
-export const getPropertyDetailsController = async (req, res) => {
+export const getAllPropertyController = async (req, res) => {
   try {
-    const { id } = req.params;
-    console.log("📥 [DEBUG] Incoming GET Request for property ID:", id);
+    const properties = await BasicProperty.find()
+      .populate('location', 'location address pincode')
+      .populate('media', 'logo_image header_images about_image highlight_image gallery_image floor_plans')
+      .sort({ createdAt: -1 });
 
-    // Validate MongoDB ObjectId format
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      console.error("❌ [ERROR] Invalid property ID format:", id);
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid property ID format" });
-    }
-
-    // Fetch basic property details
-    const basicDetails = await BasicProperty.findById(id);
-    console.log("✅ [DEBUG] Basic Details:", basicDetails);
-
-    // Fetch location details
-    const locationDetails = await PropertyLocation.findOne({ property: id });
-    console.log("✅ [DEBUG] Location Details:", locationDetails);
-
-    // Fetch media details
-    const mediaDetails = await PropertyMedia.findOne({ property: id });
-    console.log("✅ [DEBUG] Media Details:", mediaDetails);
-
-    // Handle property not found
-    if (!basicDetails) {
-      console.warn("⚠️ [WARN] Property not found for ID:", id);
-      return res
-        .status(404)
-        .json({ success: false, message: "Property not found" });
-    }
-
-    // Return full response
-    const responseData = {
+    return res.status(200).json({
       success: true,
-      data: {
-        basicDetails,
-        locationDetails: locationDetails || {},
-        mediaDetails: mediaDetails || {},
-      },
-    };
-
-    console.log("📤 [DEBUG] Full Response:", responseData);
-    res.status(200).json(responseData);
+      count: properties.length,
+      data: properties
+    });
   } catch (error) {
-    console.error("Get property details error:", error);
+    console.error("Get all properties error:", error);
     return res.status(500).json({
       success: false,
-      message: "Error fetching property details",
+      message: "Error fetching properties",
       error: error.message
     });
   }
 };
 
-export const getAllPropertyController = async (req, res) => {
-  try {
-    const { category, subcategory } = req.body;
-
-    let matchStage = {};
-    if (category) matchStage.category = category;
-    if (subcategory) matchStage.subCategory = { $in: [subcategory] };
-
-    console.log("[DEBUG] Fetching properties with filter:", matchStage);
-
-    const properties = await BasicProperty.aggregate([
-      { $match: matchStage },
-
-      // Lookup media
-      {
-        $lookup: {
-          from: "propertymedia", // MongoDB collection name (always lowercase + plural)
-          localField: "_id",
-          foreignField: "property",
-          as: "media",
-        },
-      },
-
-      // Lookup location
-      {
-        $lookup: {
-          from: "propertylocations",
-          localField: "_id",
-          foreignField: "property",
-          as: "location",
-        },
-      },
-    ]);
-
-    if (!properties.length) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No properties found" });
-    }
-
-    console.log(`[DEBUG] Fetched ${properties.length} properties`);
-    res.status(200).json({ success: true, data: properties });
-  } catch (error) {
-    console.error("[ERROR] getAllPropertyController failed:", error.message);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-};
-
-export const searchPropertiesController = async (req, res) => {
-  try {
-    const { searchTerm } = req.params;
-
-    // Flexible search across multiple fields
-    const filter = {
-      $or: [
-        { category: { $regex: searchTerm, $options: "i" } },
-        { subCategory: { $regex: searchTerm, $options: "i" } },
-        { city: { $regex: searchTerm, $options: "i" } },
-        { title: { $regex: searchTerm, $options: "i" } },
-      ],
-    };
-
-    // Search only in the BasicProperty model
-    const properties = await BasicProperty.find(filter);
-
-    if (!properties.length) {
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: `No properties found for '${searchTerm}'`,
-        });
-    }
-
-    res.status(200).json({ success: true, data: properties });
-  } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Internal Server Error",
-        error: error.message,
-      });
-  }
-};
-
-//import { BasicProperty, PropertyLocation, PropertyMedia } from "../models/testpropertydb.js";
-
-export const deletePropertyController = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid property ID" });
-    }
-
-    // First find the document
-    const property = await BasicProperty.findById(id);
-
-    if (!property) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Property not found" });
-    }
-
-    // This will trigger the pre-remove hook if defined
-    await property.deleteOne(); // triggers pre('deleteOne') if defined with {document: true}
-
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Property and all related data deleted successfully",
-      });
-  } catch (error) {
-    console.error("Delete error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
-  }
-};
-
 export const getPropertiesByLocation = async (req, res) => {
-  const { location } = req.body;
-
-  if (!location) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Location is required" });
-  }
-
   try {
+    const { location } = req.body;
+    
+    if (!location) {
+      return res.status(400).json({
+        success: false,
+        message: "Location parameter is required"
+      });
+    }
+
     const properties = await BasicProperty.aggregate([
       // Join with PropertyLocation
       {
@@ -631,6 +418,139 @@ export const getPropertiesByLocation = async (req, res) => {
       success: false,
       message: "Server Error",
       error: error.message,
+    });
+  }
+};
+
+export const getPropertyDetailsController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("📥 [DEBUG] Incoming GET Request for property ID:", id);
+
+    // Validate MongoDB ObjectId format
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      console.error("❌ [ERROR] Invalid property ID format:", id);
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid property ID format" });
+    }
+
+    // Fetch basic property details
+    const basicDetails = await BasicProperty.findById(id);
+    console.log("✅ [DEBUG] Basic Details:", basicDetails);
+
+    // Fetch location details
+    const locationDetails = await PropertyLocation.findOne({ property: id });
+    console.log("✅ [DEBUG] Location Details:", locationDetails);
+
+    // Fetch media details
+    const mediaDetails = await PropertyMedia.findOne({ property: id });
+    console.log("✅ [DEBUG] Media Details:", mediaDetails);
+
+    // Handle property not found
+    if (!basicDetails) {
+      console.warn("⚠️ [WARN] Property not found for ID:", id);
+      return res
+        .status(404)
+        .json({ success: false, message: "Property not found" });
+    }
+
+    // Return full response
+    const responseData = {
+      success: true,
+      data: {
+        basicDetails,
+        locationDetails: locationDetails || {},
+        mediaDetails: mediaDetails || {},
+      },
+    };
+
+    console.log("📤 [DEBUG] Full Response:", responseData);
+    res.status(200).json(responseData);
+  } catch (error) {
+    console.error("Get property details error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching property details",
+      error: error.message
+    });
+  }
+};
+
+export const searchPropertiesController = async (req, res) => {
+  try {
+    const { searchTerm } = req.params;
+
+    // Flexible search across multiple fields
+    const filter = {
+      $or: [
+        { category: { $regex: searchTerm, $options: "i" } },
+        { subCategory: { $regex: searchTerm, $options: "i" } },
+        { city: { $regex: searchTerm, $options: "i" } },
+        { title: { $regex: searchTerm, $options: "i" } },
+      ],
+    };
+
+    // Search only in the BasicProperty model
+    const properties = await BasicProperty.find(filter);
+
+    if (!properties.length) {
+      return res
+        .status(404)
+        .json({
+          success: false,
+          message: `No properties found for '${searchTerm}'`,
+        });
+    }
+
+    res.status(200).json({ success: true, data: properties });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Internal Server Error",
+        error: error.message,
+      });
+  }
+};
+
+//import { BasicProperty, PropertyLocation, PropertyMedia } from "../models/testpropertydb.js";
+
+export const deletePropertyController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid property ID" });
+    }
+
+    // First find the document
+    const property = await BasicProperty.findById(id);
+
+    if (!property) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Property not found" });
+    }
+
+    // This will trigger the pre-remove hook if defined
+    await property.deleteOne(); // triggers pre('deleteOne') if defined with {document: true}
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Property and all related data deleted successfully",
+      });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
