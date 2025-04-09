@@ -26,6 +26,13 @@ const storage = new CloudinaryStorage({
         .replace(/\s+/g, '-')
         .replace(/[^\w\-]/g, '');
       folder = `reviews/${safeName}-${Date.now()}`;
+    } else if (file.fieldname === "license" || file.fieldname === "profileImage") {
+      if (req.body.email) {
+        const safeEmail = req.body.email.replace(/[^\w\-]/g, '');
+        folder = `users/${safeEmail}-${Date.now()}`;
+      } else {
+        folder = `users/unknown-${Date.now()}`;
+      }
     }
     
     // Store folder on request so you can access it in controller
@@ -40,14 +47,6 @@ const storage = new CloudinaryStorage({
         { fetch_format: 'auto' }
       ],
     };
-    } else if (file.fieldname === "license" || file.fieldname === "profileImage") {
-      if (req.body.email) {
-        const safeEmail = req.body.email.replace(/[^\w\-]/g, '');
-        folder = `users/${safeEmail}-${Date.now()}`;
-      } else {
-        folder = `users/unknown-${Date.now()}`;
-      }
-    }
   },
 });
 
