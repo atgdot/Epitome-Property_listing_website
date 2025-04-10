@@ -199,7 +199,6 @@ const PropertyDetailPage = () => {
             {property.title || "Property Title"}
           </h1>
           <p className="text-xl text-white mt-2">
-            {property.city || "City"},{" "}
             {property.location?.location || "Location"}
           </p>
         </div>
@@ -232,21 +231,24 @@ const PropertyDetailPage = () => {
           </div>
         </div>
 
-        {/* About Project with Image */}
+        {/* About Project with Image - Fixed Responsive Sizing */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             About Project
           </h2>
           <div className="flex flex-col lg:flex-row gap-8 items-center">
             <div className="w-full lg:w-1/2">
-              <img
-                src={
-                  aboutImage ||
-                  "https://via.placeholder.com/600x400?text=About+Project"
-                }
-                alt="About the project"
-                className="w-full h-auto rounded-lg shadow-md object-cover"
-              />
+              <div className="aspect-w-16 aspect-h-9 rounded-lg shadow-md overflow-hidden">
+                <img
+                  src={
+                    aboutImage ||
+                    "https://via.placeholder.com/800x450?text=About+Project"
+                  }
+                  alt="About the project"
+                  className="w-full h-full object-cover"
+                  style={{ maxHeight: "400px" }}
+                />
+              </div>
             </div>
             <div className="w-full lg:w-1/2 space-y-6">
               <h3 className="text-2xl font-semibold text-gray-800">
@@ -260,21 +262,24 @@ const PropertyDetailPage = () => {
           </div>
         </section>
 
-        {/* Highlights with Image */}
+        {/* Highlights with Image - Fixed Responsive Sizing */}
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 border-b-2 border-blue-100 pb-2 text-blue-800">
             Highlights
           </h2>
           <div className="flex flex-col lg:flex-row gap-8 items-center">
             <div className="w-full lg:w-1/2 order-1 lg:order-2">
-              <img
-                src={
-                  highlightsImage ||
-                  "https://via.placeholder.com/600x400?text=Project+Highlights"
-                }
-                alt="Project highlights"
-                className="w-full h-auto rounded-lg shadow-md object-cover"
-              />
+              <div className="aspect-w-16 aspect-h-9 rounded-lg shadow-md overflow-hidden">
+                <img
+                  src={
+                    highlightsImage ||
+                    "https://via.placeholder.com/800x450?text=Project+Highlights"
+                  }
+                  alt="Project highlights"
+                  className="w-full h-full object-cover"
+                  style={{ maxHeight: "400px" }}
+                />
+              </div>
             </div>
             <div className="w-full lg:w-1/2 space-y-6 order-2 lg:order-1">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

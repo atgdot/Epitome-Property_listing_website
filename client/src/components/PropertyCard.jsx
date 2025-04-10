@@ -19,18 +19,18 @@ const PropertyCard = ({
     navigate(`/property/${property._id}`);
   };
 
-  const formatCategory = (category) => {
-    if (!category) return "N/A";
-    return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
-  };
+  // const formatCategory = (category) => {
+  //   if (!category) return "N/A";
+  //   return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+  // };
 
   return (
     <div className="bg-white rounded-2xl border-2 border-gray-200 p-5 shadow-lg">
       <div className="mb-4">
         <div className="flex justify-between items-center font-bold">
-          <span className="text-[#043268]">
+          {/* <span className="text-[#043268]">
             {formatCategory(property.category)}
-          </span>
+          </span> */}
           <span className="text-gray-600">{property.city}</span>
         </div>
         <div className="h-[2px] bg-gray-300 my-2"></div>
@@ -83,7 +83,7 @@ const PropertyCard = ({
           {
             label: "Address:",
             value: property.location?.address || "N/A",
-          }
+          },
         ].map((item, index) => (
           <li key={index} className="flex justify-between text-sm">
             <span className="text-gray-600">{item.label}</span>
