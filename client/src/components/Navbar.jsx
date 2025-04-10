@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
+import { searchProperties } from "../utils/Store/slice/propertySlice";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,6 +17,30 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!query.trim()) {
+      console.log("Search query is empty");
+      return;
+    }
+
+    try {
+      console.log("Dispatching search for:", query);
+      const resultAction = await dispatch(searchProperties(query));
+
+      if (searchProperties.fulfilled.match(resultAction)) {
+        console.log("Search successful, navigating to results");
+        navigate(`/search?q=${encodeURIComponent(query)}`);
+      } else {
+        console.error("Search failed:", resultAction.error);
+        // Optionally show error to user
+      }
+    } catch (error) {
+      console.error("Search error:", error);
+      // Optionally show error to user
+    }
+  };
 
   return (
     <nav

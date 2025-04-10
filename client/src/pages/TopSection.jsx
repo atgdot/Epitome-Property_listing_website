@@ -6,30 +6,6 @@ import { getAllProperties } from "../utils/Store/slice/propertySlice";
 import { RecommendationContext } from "../Context/RecommendationContext";
 import AnimatedCard from "../components/AnimatedCard";
 
-// Flip Card Component that displays the image on the front and details on the back.
-const RecommendationFlipCard = ({ property }) => (
-  <div className="group relative h-96 w-full [perspective:1000px]">
-    <div className="absolute duration-1000 w-full h-full [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-      {/* Front Side: Show the image */}
-      <div className="absolute w-full h-full rounded-xl overflow-hidden [backface-visibility:hidden]">
-        <img
-          src={property.image}
-          alt={property.title}
-          className="w-full h-full object-cover"
-        />
-      </div>
-
-      {/* Back Side: Show details */}
-      <div className="absolute w-full h-full rounded-xl bg-gray-800 p-6 text-white [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col justify-center">
-        <h3 className="text-2xl font-bold mb-4">{property.title}</h3>
-        <p className="text-lg">
-          {property.address?.join(", ") || property.location}
-        </p>
-      </div>
-    </div>
-  </div>
-);
-
 const TopSection = () => {
   const { recommendations } = useContext(RecommendationContext);
   const dispatch = useDispatch();

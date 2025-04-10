@@ -60,6 +60,7 @@ import SprRoad from "./pages/SprRoad";
 // Styles
 import "./index.css";
 import Contact from "./components/Contact";
+import SearchResults from "./components/SearchResults";
 
 // Define routes where the Navbar or Footer should be hidden
 const HIDE_NAVBAR_PATTERNS = [
@@ -120,6 +121,7 @@ function Layout() {
           {/* Auth Routes */}
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/search" element={<SearchResults />} />
 
           {/* Protected Admin Routes */}
           <Route

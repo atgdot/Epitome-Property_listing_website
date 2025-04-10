@@ -13,6 +13,7 @@ const PropertyCard = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  console.log("PropertyCard", property);
 
   const handleViewDetails = () => {
     dispatch(setPropertyDetail(property));

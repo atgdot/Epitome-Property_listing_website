@@ -20,7 +20,7 @@ const PropertyDetailPage = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
-
+  console.log("PropertyDetailPage", property);
   // Default images if no data from backend
   const DEFAULT_IMAGES = [
     "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
