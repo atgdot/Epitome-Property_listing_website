@@ -18,10 +18,13 @@ const PreLeasedOfficesFull = () => {
   const preLeasedOffices = useMemo(() => {
     return (properties || []).filter((property) => {
       if (property.category !== "Commercial") return false;
-      const subCategory = Array.isArray(property.subCategory)
-        ? property.subCategory[0]
-        : property.subCategory;
-      return subCategory === "Pre-Leased Offices";
+      let subCategory = property.subCategory;
+      if (Array.isArray(subCategory)) subCategory = subCategory[0];
+      // Normalize by lowercasing and removing spaces & hyphens
+      const normalizedSubCategory = subCategory
+        ? subCategory.toLowerCase().replace(/[\s-]/g, "")
+        : "";
+      return normalizedSubCategory === "preleasedoffices";
     });
   }, [properties]);
 
@@ -55,7 +58,7 @@ const PreLeasedOfficesFull = () => {
               <PropertyCard key={property.id} property={property} />
             ))
           ) : (
-            <p className="text-center text-gray-600">
+            <p className="col-span-full text-center text-gray-600">
               No pre-leased offices available.
             </p>
           )}
