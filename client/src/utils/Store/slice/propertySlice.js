@@ -23,7 +23,7 @@ export const createProperty = createAsyncThunk(
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log('Property creation response:', response.data);
+     
       return response.data;
     } catch (error) {
       return rejectWithValue(handleApiError(error));
@@ -92,7 +92,7 @@ export const getAllProperties = createAsyncThunk(
     try {
       console.log("Making API request to:", `${BASE_URL}/all`);
       const response = await axios.get(`${BASE_URL}/all`);
-      console.log("API Response:", response.data);
+ 
       return response.data;
     } catch (error) {
       console.error("getAllProperties API Error:", error);
@@ -206,10 +206,10 @@ const propertySlice = createSlice({
       })
       .addCase(getAllProperties.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("getAllProperties.fulfilled - Received data:", action.payload);
+    
         if (Array.isArray(action.payload.data)) {
           state.properties = action.payload.data;
-          console.log("Properties set in state:", state.properties);
+        
         } else {
           console.error("getAllProperties.fulfilled - Received non-array payload:", action.payload);
           state.properties = [];

@@ -1,41 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { adminLogin, clearError } from "../utils/Store/slice/adminAuthSlice";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error, isAuthenticated } = useSelector((state) => state.adminAuth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [animation, setAnimation] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Check if user is already logged in
+  // Check if user is already authenticated
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       navigate("/admin-dashboard");
     }
-  }, [navigate]);
+  }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError("");
+    setAnimation(true);
 
-    // Check credentials
-    if (email === "epitomerealtors35@gmail.com" && password === "Epitome@25") {
-      setAnimation(true);
-
-      // Simulate loading
-      setTimeout(() => {
-        // Store login state in localStorage
-        localStorage.setItem("adminLoggedIn", "true");
-        navigate("/admin-dashboard");
-      }, 1500);
-    } else {
-      setIsLoading(false);
-      setError("Invalid email or password. Please try again.");
+    try {
+      await dispatch(adminLogin({ email, password })).unwrap();
+      // Navigation will be handled by the useEffect above when isAuthenticated changes
+    } catch (err) {
+      setAnimation(false);
     }
   };
 
@@ -46,9 +38,8 @@ const AdminLogin = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div
-        className={`bg-white p-8 rounded-lg shadow-xl w-full max-w-md transition-all duration-500 transform ${
-          animation ? "scale-105 opacity-0" : "scale-100 opacity-100"
-        }`}
+        className={`bg-white p-8 rounded-lg shadow-xl w-full max-w-md transition-all duration-500 transform ${animation ? "scale-105 opacity-0" : "scale-100 opacity-100"
+          }`}
       >
         <div className="flex justify-center mb-6">
           <img src="/logoblack.png" alt="Logo" className="h-16" />
@@ -144,12 +135,11 @@ const AdminLogin = () => {
           </div>
           <button
             type="submit"
-            disabled={isLoading}
-            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-              isLoading ? "opacity-75 cursor-not-allowed" : ""
-            }`}
+            disabled={loading}
+            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${loading ? "opacity-75 cursor-not-allowed" : ""
+              }`}
           >
-            {isLoading ? "Logging in..." : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </button>
           <div className="flex justify-center">
             <button

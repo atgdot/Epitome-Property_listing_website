@@ -226,7 +226,7 @@ export const updatePropertyController = async (req, res) => {
   try {
     const { category, subCategory, locationDetails, mediaDetails } = req.body;
 
-    console.log("Incoming Update Data:", req.body);
+   
 
     // ✅ Validate category if provided
     if (category && !allowedCategories.includes(category)) {
@@ -310,7 +310,7 @@ export const getAllPropertyController = async (req, res) => {
       })
       .sort({ createdAt: -1 });
 
-    console.log("Fetched properties:", JSON.stringify(properties, null, 2));
+    
     
     return res.status(200).json({
       success: true,

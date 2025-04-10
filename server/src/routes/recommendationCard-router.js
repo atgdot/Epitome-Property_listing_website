@@ -1,5 +1,6 @@
 import express from 'express';
 import { createRecommendationCard , deleteRecommendationCard} from '../controllers/recommendationCard-controller.js';
+import auth from '../middleware/authMiddlware.js'
 
 
 import { body, param } from "express-validator";
@@ -21,8 +22,8 @@ const validateRecommendation = [
 
 
    // routes
-  router.post("/addCard", validateRecommendation, createRecommendationCard);
+  router.post("/addCard", auth, validateRecommendation, createRecommendationCard);
   
-  router.delete("deleteCard/:id", validateRecommendationId, deleteRecommendationCard);
+  router.delete("deleteCard/:id", auth,validateRecommendationId, deleteRecommendationCard);
   
   export default router;

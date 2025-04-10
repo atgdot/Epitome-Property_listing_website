@@ -7,7 +7,8 @@ import {
   deleteUserById,
   getAllUsers,
 } from "../controllers/addUser-controllers.js";
-import parser from "../middleware/multer.js"; // ✅ Cloudinary-based multer parser
+import parser from "../middleware/multer.js"; //  Cloudinary-based multer parser
+import auth from '../middleware/authMiddlware.js'
 
 const router = express.Router();
 
@@ -34,7 +35,7 @@ router.get("/all", getAllUsers);
 
 // ✅ Create User Route (Cloudinary upload)
 router.post(
-  "/create",
+  "/create",auth,
   parser.fields([
     { name: "license", maxCount: 1 },
     { name: "profileImage", maxCount: 1 },
@@ -45,7 +46,7 @@ router.post(
 
 // ✅ Update User Route (Cloudinary upload)
 router.put(
-  "/update/:id",
+  "/update/:id",auth,
   parser.fields([
     { name: "license", maxCount: 1 },
     { name: "profileImage", maxCount: 1 },
@@ -58,6 +59,6 @@ router.put(
 router.get("/search", searchUserByName);
 
 // ✅ Delete User Route
-router.delete("/delete/:id", deleteUserById);
+router.delete("/delete/:id",auth, deleteUserById);
 
 export default router;

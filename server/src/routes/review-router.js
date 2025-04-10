@@ -2,11 +2,12 @@ import express from "express";
 import { createReview, getAllReview, deleteReviewById } from "../controllers/review-controller.js";
 import { check } from "express-validator";
 import parser from "../middleware/multer.js";
+import auth from '../middleware/authMiddlware.js'
 
 const router = express.Router();
 
 router.post(
-  "/add",
+  "/add",auth,
   parser.single('profile_photo'), // Use the Cloudinary parser instead of basic multer
   [
     check("name").notEmpty().withMessage("Name is required"),
@@ -19,6 +20,6 @@ router.post(
 
 router.get("/all", getAllReview);
 
-router.delete("/:id", deleteReviewById);
+router.delete("/:id",auth, deleteReviewById);
 
 export default router;
