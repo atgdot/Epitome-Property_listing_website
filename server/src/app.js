@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(morgan("tiny")); // Logging
 app.use(
   cors({
-    origin: "*", // Consider restricting this in production
+    origin: "http://localhost:5173", // Consider restricting this in production
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
