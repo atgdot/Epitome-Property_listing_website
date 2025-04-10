@@ -30,6 +30,9 @@ const AnimatedCard = ({ property }) => {
         <p className="text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
           {property.address?.join(", ")}
         </p>
+        <p className="text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+          {property.city} | {property.price}
+        </p>
         <button
           onClick={handleViewDetails}
           className="mt-3 cursor-pointer px-3 py-1.5 bg-blue-800 text-white text-xs font-semibold rounded-sm 

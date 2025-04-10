@@ -4,6 +4,7 @@ import HighRiseCard from "../components/HighRiseCard";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllProperties } from "../utils/Store/slice/propertySlice";
 import { RecommendationContext } from "../Context/RecommendationContext";
+import AnimatedCard from "../components/AnimatedCard";
 
 const TopSection = () => {
   const { recommendations } = useContext(RecommendationContext);
@@ -15,9 +16,9 @@ const TopSection = () => {
     if (typeof window !== "undefined") {
       if (window.innerWidth >= 1024) return 3; // lg: 3 columns
       if (window.innerWidth >= 768) return 2; // md: 2 columns
-      return 2; // sm: 2 columns 
+      return 2; // sm: 2 columns
     }
-    return 1; 
+    return 1;
   };
 
   const [columns, setColumns] = useState(getColumns());
@@ -26,10 +27,10 @@ const TopSection = () => {
     const handleResize = () => setColumns(getColumns());
     // Check if window exists before adding listener (important for SSR)
     if (typeof window !== "undefined") {
-        window.addEventListener("resize", handleResize);
-        // Set initial columns correctly after mount on client
-        handleResize();
-        return () => window.removeEventListener("resize", handleResize);
+      window.addEventListener("resize", handleResize);
+      // Set initial columns correctly after mount on client
+      handleResize();
+      return () => window.removeEventListener("resize", handleResize);
     }
   }, []);
 
@@ -57,24 +58,22 @@ const TopSection = () => {
       const mappedProperty = {
         ...property, // Spread original fields first
         // Correctly map specific fields, providing fallbacks
-        image: property.property_Image || property.image || null, 
+        image: property.property_Image || property.image || null,
         title: property.title || "Untitled Property",
         description: property.description || "",
         price: property.price || "Price Unavailable",
         city: property.city || "Unknown City",
         location: property.location || "",
         sector: property.sector || "",
-        
-        
+
         Rental_Yield: property.Rental_Yield,
         current_Rental: property.current_Rental,
         Area: property.Area,
         Tenure: property.Tenure,
         Tenant: property.Tenant,
-        _id: property._id, 
+        _id: property._id,
       };
 
-     
       const subCategory = property.subCategory || "";
       // --- CORRECTION END ---
 
@@ -83,9 +82,8 @@ const TopSection = () => {
         grouped.Trending.push(mappedProperty);
       } else if (property.category === "Featured") {
         grouped.Featured.push(mappedProperty);
-
       } else if (property.category === "Recommended") {
-       grouped.recommended.push(mappedProperty);
+        grouped.recommended.push(mappedProperty);
       } else if (property.category === "Commercial") {
         if (subCategory === "Pre Leased Offices") {
           grouped.preLeased.push(mappedProperty);
@@ -94,8 +92,7 @@ const TopSection = () => {
         } else if (subCategory === "SCO") {
           grouped.sco.push(mappedProperty);
         } else {
-            
-            // grouped.Commercial.push(mappedProperty); 
+          // grouped.Commercial.push(mappedProperty);
         }
       } else if (property.category === "Residential") {
         if (subCategory === "Luxury Project") {
@@ -106,8 +103,7 @@ const TopSection = () => {
           // Group High Rise with Upcoming or create a new category if desired
           grouped.UpcomingProjects.push(mappedProperty);
         } else {
-            
-             grouped.luxury.push(mappedProperty); 
+          grouped.luxury.push(mappedProperty);
         }
       }
     });
@@ -118,7 +114,7 @@ const TopSection = () => {
   // Update navigation buttons to match exact category keys used in grouping
   const navButtons = [
     { label: "Trending", category: "Trending" },
-    { label: "Upcoming", category: "UpcomingProjects" },  
+    { label: "Upcoming", category: "UpcomingProjects" },
     { label: "Pre-Leased", category: "preLeased" },
     { label: "Featured", category: "Featured" },
     { label: "Recommended", category: "recommended" }, // Add back if 'recommended' is used
@@ -127,7 +123,9 @@ const TopSection = () => {
     { label: "Luxury", category: "luxury" },
   ];
 
-  const [selectedCategory, setSelectedCategory] = useState(navButtons[0].category); // Default to first button
+  const [selectedCategory, setSelectedCategory] = useState(
+    navButtons[0].category
+  ); // Default to first button
   let propertiesList = propertiesByCategory[selectedCategory] || [];
 
   // Limit the number of properties displayed per category
@@ -162,17 +160,22 @@ const TopSection = () => {
     <div className="min-h-screen lg:max-w-7xl mx-auto p-4 md:p-10">
       {/* RECOMMENDATIONS SECTION */}
       {recommendations?.properties?.length > 0 && ( // Check if recommendations exist
-         <div className="mb-10">
-             <div className="text-center mb-6">
-             <h2 className="text-3xl font-semibold">RECOMMENDED</h2>
-             </div>
-             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-             {/* Ensure recommendations are mapped correctly if structure differs */}
-             {recommendations.properties.slice(0, 4).map((recProperty, index) => (
-                 <AnimatedCard key={recProperty._id || index} property={recProperty} />
-             ))}
-             </div>
-         </div>
+        <div className="mb-10">
+          <div className="text-center mb-6">
+            <h2 className="text-3xl font-semibold">RECOMMENDED</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {/* Ensure recommendations are mapped correctly if structure differs */}
+            {recommendations.properties
+              .slice(0, 4)
+              .map((recProperty, index) => (
+                <AnimatedCard
+                  key={recProperty._id || index}
+                  property={recProperty}
+                />
+              ))}
+          </div>
+        </div>
       )}
 
       {/* PROPERTY CATEGORY NAVIGATION */}
@@ -200,7 +203,8 @@ const TopSection = () => {
         <div>
           <h3 className="text-2xl font-semibold text-center mb-6 capitalize">
             {navButtons.find((btn) => btn.category === selectedCategory)
-              ?.label || selectedCategory.replace(/([A-Z])/g, ' $1').trim()}{" "}
+              ?.label ||
+              selectedCategory.replace(/([A-Z])/g, " $1").trim()}{" "}
             Properties
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -226,7 +230,9 @@ const TopSection = () => {
       ) : (
         <p className="text-center text-gray-600 mt-10">
           No properties currently available in the{" "}
-          {navButtons.find((btn) => btn.category === selectedCategory)?.label || selectedCategory} category.
+          {navButtons.find((btn) => btn.category === selectedCategory)?.label ||
+            selectedCategory}{" "}
+          category.
         </p>
       )}
     </div>
