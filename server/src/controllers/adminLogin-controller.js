@@ -77,9 +77,7 @@ export const adminAuthController = async (req, res) => {
 //logout controller
 export const adminLogoutController = (req, res) => {
   try {
-    const adminId = req.adminId; // ensures it's a verified request
-    console.log("Logging out admin:", adminId);
-
+    // Clear the token cookie
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,
@@ -91,9 +89,11 @@ export const adminLogoutController = (req, res) => {
       message: "Logged out successfully",
     });
   } catch (error) {
+    console.error("Logout Error:", error);
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Error during logout",
+      error: error.message,
     });
   }
 };

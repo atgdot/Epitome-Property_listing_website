@@ -59,7 +59,7 @@ export const adminLogout = createAsyncThunk(
   "adminAuth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post(BASE_URL+"/api/v1/admin/logout");
+      await axios.post(BASE_URL+"/api/v1/admin/logout",null,{withCredentials:true});
       
       // Clear the token from localStorage
       localStorage.removeItem("adminToken");

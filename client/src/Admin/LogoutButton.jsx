@@ -1,14 +1,22 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { adminLogout } from "../utils/Store/slice/adminAuthSlice";
 
 const LogoutButton = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    // Remove the admin login state
-    localStorage.removeItem("adminLoggedIn");
-    // Redirect to home page
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      // Dispatch the adminLogout action which handles the API call and state cleanup
+      await dispatch(adminLogout()).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if the API call fails, we'll still redirect
+      navigate("/");
+    }
   };
 
   return (
