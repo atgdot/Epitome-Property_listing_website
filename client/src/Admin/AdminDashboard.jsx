@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   BarChart,
   Bar,
@@ -23,6 +24,7 @@ import { FiMenu } from "react-icons/fi";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.adminAuth);
   const [selectedTab, setSelectedTab] = useState("Dashboard");
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -30,13 +32,12 @@ const AdminDashboard = () => {
 
   // Check if user is logged in
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
-    if (!isLoggedIn) {
+    if (!isAuthenticated) {
       navigate("/admin-login");
     } else {
       setIsLoading(false);
     }
-  }, [navigate]);
+  }, [navigate, isAuthenticated]);
 
   // Handle window resize for mobile detection
   useEffect(() => {
@@ -217,9 +218,8 @@ const AdminDashboard = () => {
       </button>
       {/* Sidebar */}
       <aside
-        className={`${
-          isSidebarCollapsed ? "w-[200px] md:w-64" : "w-[200px] md:w-64"
-        } 
+        className={`${isSidebarCollapsed ? "w-[200px] md:w-64" : "w-[200px] md:w-64"
+          } 
     bg-blue-900 text-white p-4 md:p-6 fixed h-[650px] md:h-full transition-all duration-300
     ${isMobileMenuOpen ? "left-0" : "-left-full md:left-0"} z-40`}
       >
@@ -239,9 +239,8 @@ const AdminDashboard = () => {
                 setSelectedTab(item);
                 setIsMobileMenuOpen(false);
               }}
-              className={`w-full text-left p-3 flex items-center gap-2 hover:bg-blue-700 rounded-lg transition ${
-                selectedTab === item ? "bg-blue-700" : ""
-              }`}
+              className={`w-full text-left p-3 flex items-center gap-2 hover:bg-blue-700 rounded-lg transition ${selectedTab === item ? "bg-blue-700" : ""
+                }`}
             >
               {item}
             </button>
@@ -254,9 +253,8 @@ const AdminDashboard = () => {
 
       {/* Main content */}
       <main
-        className={`flex-1 p-4 md:p-8 transition-all duration-300 ${
-          isSidebarCollapsed ? "ml-0 md:ml-64" : "ml-64"
-        }`}
+        className={`flex-1 p-4 md:p-8 transition-all duration-300 ${isSidebarCollapsed ? "ml-0 md:ml-64" : "ml-64"
+          }`}
       >
         {renderContent()}
       </main>
