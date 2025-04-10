@@ -10,7 +10,7 @@ const features = [
   {
     id: 2,
     image: "/faruknagar.webp.png",  // Replace with actual image path
-    text: "150+ Residential Projects",
+    text: "150+ Residential oProjects",
     description: "Balcony",
   },
   {
