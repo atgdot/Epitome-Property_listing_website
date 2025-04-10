@@ -8,6 +8,7 @@ import {
   getAllPropertyController,
   getPropertiesByLocation,
 } from "../controllers/addproperty-controller.js";
+import auth from '../middleware/authMiddlware.js'
 
 const router = express.Router();
 import parser from "../middleware/multer.js"; // your custom multer config
@@ -23,11 +24,11 @@ router.post('/create', parser.fields([
   { name: 'floor_plan_images', maxCount: 10 }, // Used below
 ]),createPropertyController);
 
-router.patch("/:id",  updatePropertyController);
-router.get("/detail/:id", getPropertyDetailsController); 
+router.patch("/:id", auth, updatePropertyController);
+router.get("/detail/:id",auth, getPropertyDetailsController); 
 router.get("/all", getAllPropertyController); 
-router.get("/search/:searchTerm", searchPropertiesController);
-router.delete("/delete/:id", deletePropertyController);
+router.get("/search/:searchTerm",auth, searchPropertiesController);
+router.delete("/delete/:id" ,auth, deletePropertyController);
 router.get("/location", getPropertiesByLocation);
 
 export default router;

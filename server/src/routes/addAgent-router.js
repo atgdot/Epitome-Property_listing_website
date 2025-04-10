@@ -8,6 +8,7 @@ import {
   getAllAgents
 } from "../controllers/addAgent-controller.js";
 import parser from "../middleware/multer.js";
+import auth from '../middleware/authMiddlware.js'
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ const agentValidationRules = [
 router.get("/all", getAllAgents);
 
 router.post(
-  "/create",
+  "/create",auth,
   parser.fields([
     { name: "license", maxCount: 1 },
     { name: "profileImage", maxCount: 1 },
@@ -40,7 +41,7 @@ router.post(
 );
 
 router.patch(
-  "/update/:id",
+  "/update/:id",auth,
   parser.fields([
     { name: "license", maxCount: 1 },
     { name: "profileImage", maxCount: 1 },
@@ -49,8 +50,8 @@ router.patch(
   updateAgent
 );
 
-router.get("/search/:searchTerm", searchAgentByName);
+router.get("/search/:searchTerm",auth, searchAgentByName);
 
-router.delete("/delete/:id", deleteAgentById);
+router.delete("/delete/:id", auth,deleteAgentById);
 
 export default router;
