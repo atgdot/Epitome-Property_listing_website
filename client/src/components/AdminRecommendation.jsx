@@ -1,167 +1,209 @@
 import React, { useContext, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { RecommendationContext } from "../Context/RecommendationContext";
+import { getAllProperties } from "../utils/Store/slice/propertySlice";
 
 const AdminRecommendation = () => {
+  const dispatch = useDispatch();
+  // Fetch properties state from Redux
+  const { properties, loading: propertyLoading } = useSelector(
+    (state) => state.property
+  );
+
+  // Access Recommendation Context
   const { recommendations, updateRecommendations } = useContext(
     RecommendationContext
   );
-  const [formData, setFormData] = useState({ properties: [] });
+  // Local state for recommendations (array of property objects)
+  const [recommendedList, setRecommendedList] = useState([]);
+  // Local state for the property selected for details view
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
-  // Initialize state with context data
+  // Update local recommendations when context changes
   useEffect(() => {
-    setFormData(recommendations);
+    if (recommendations && recommendations.properties) {
+      setRecommendedList(recommendations.properties);
+    }
   }, [recommendations]);
 
-  // Handle text input changes
-  const handlePropertyChange = (index, field, value) => {
-    const updatedProperties = formData.properties.map((property, i) =>
-      i === index ? { ...property, [field]: value } : property
-    );
-    setFormData((prev) => ({ ...prev, properties: updatedProperties }));
-  };
+  // Ensure properties are fetched on mount
+  useEffect(() => {
+    dispatch(getAllProperties());
+  }, [dispatch]);
 
-  // Handle address updates
-  const handleAddressChange = (propIndex, addrIndex, value) => {
-    const updatedProperties = formData.properties.map((property, i) => {
-      if (i === propIndex) {
-        const updatedAddress = [...property.address];
-        updatedAddress[addrIndex] = value;
-        return { ...property, address: updatedAddress };
-      }
-      return property;
-    });
-    setFormData((prev) => ({ ...prev, properties: updatedProperties }));
-  };
-
-  // Handle image upload
-  const handleImageUpload = (index, file) => {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      handlePropertyChange(index, "image", reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Delete a recommendation card
-  const handleDelete = (index) => {
-    const updatedProperties = formData.properties.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, properties: updatedProperties }));
-    updateRecommendations({ properties: updatedProperties });
-  };
-
-  // Add a new recommendation card
-  const handleAdd = () => {
-    const newCard = { title: "", address: [""], image: "" };
-    const updatedProperties = [...formData.properties, newCard];
-    setFormData((prev) => ({ ...prev, properties: updatedProperties }));
-    updateRecommendations({ properties: updatedProperties });
-  };
-
-  // Submit and update context
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add default price if not set
-    const propertiesWithPrice = formData.properties.map((property) => ({
-      ...property,
+  // Add property details to the recommendation list
+  const handleAddFromProperty = (property) => {
+    const newCard = {
+      _id: property._id,
+      title: property.title,
+      address: property.address ? [property.address] : [""],
+      image: property.property_Image || property.logo_image || "",
+      city: property.city || "",
+      description: property.description || "",
       price: property.price || "Price on request",
-    }));
-    updateRecommendations({
-      ...formData,
-      properties: propertiesWithPrice,
-    });
-    alert("Recommendations updated!");
+    };
+
+    // Prevent duplicate recommendations
+    const exists = recommendedList.find((rec) => rec._id === property._id);
+    if (exists) {
+      alert("This property is already added as a recommendation.");
+      return;
+    }
+
+    const updatedRecommendations = [...recommendedList, newCard];
+    setRecommendedList(updatedRecommendations);
+    updateRecommendations({ properties: updatedRecommendations });
+    alert("Property added to recommendations!");
+  };
+
+  // Remove a property recommendation
+  const handleRemoveRecommendation = (propertyId) => {
+    const updatedList = recommendedList.filter((rec) => rec._id !== propertyId);
+    setRecommendedList(updatedList);
+    updateRecommendations({ properties: updatedList });
+  };
+
+  // View full property details in a modal
+  const handleViewDetails = (property) => {
+    setSelectedProperty(property);
+  };
+
+  // Close details modal
+  const closeModal = () => {
+    setSelectedProperty(null);
   };
 
   return (
     <div className="max-w-5xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Edit Recommendation Cards</h1>
-      <form onSubmit={handleSubmit} className="mb-8">
-        {formData.properties.map((property, index) => (
-          <div key={index} className="border p-4 mb-4 rounded-lg shadow-sm">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-xl font-semibold">Card {index + 1}</h2>
-              <button
-                type="button"
-                onClick={() => handleDelete(index)}
-                className="bg-red-500 text-white px-2 py-1 rounded"
-              >
-                Delete
-              </button>
-            </div>
-            <input
-              type="text"
-              value={property.title}
-              onChange={(e) =>
-                handlePropertyChange(index, "title", e.target.value)
-              }
-              className="border p-2 w-full mb-2"
-              placeholder="Enter property title"
-            />
-            {property.address.map((addr, addrIndex) => (
-              <input
-                key={addrIndex}
-                type="text"
-                value={addr}
-                onChange={(e) =>
-                  handleAddressChange(index, addrIndex, e.target.value)
-                }
-                className="border p-2 w-full mb-2"
-                placeholder={`Address ${addrIndex + 1}`}
-              />
-            ))}
-            <input
-              type="text"
-              value={property.image}
-              onChange={(e) =>
-                handlePropertyChange(index, "image", e.target.value)
-              }
-              className="border p-2 w-full mb-2"
-              placeholder="Image URL"
-            />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(index, e.target.files[0])}
-              className="border p-2 w-full"
-            />
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={handleAdd}
-          className="bg-green-500 text-white px-4 py-2 rounded"
-        >
-          Add New Card
-        </button>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded ml-4"
-        >
-          Save Changes
-        </button>
-      </form>
+      <h1 className="text-2xl font-bold mb-4">Admin Recommendations</h1>
 
-      <h2 className="text-2xl font-bold mb-4">Current Recommendations</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {recommendations.properties.map((property, index) => (
-          <div key={index} className="border p-4 rounded-lg shadow-lg">
-            {property.image && (
-              <img
-                src={property.image}
-                alt={property.title}
-                className="w-full h-40 object-cover mb-2 rounded"
-              />
+      {/* Section 1: All Created Properties */}
+      <div className="mb-8">
+        <h2 className="text-xl font-bold mb-4">All Created Properties</h2>
+        {propertyLoading ? (
+          <div>Loading properties...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {properties && properties.length > 0 ? (
+              properties.map((property) => (
+                <div
+                  key={property._id}
+                  className="border p-4 rounded-lg shadow-lg flex flex-col"
+                >
+                  {property.property_Image ? (
+                    <img
+                      src={property.property_Image}
+                      alt={property.title}
+                      className="w-full h-40 object-cover mb-2 rounded"
+                    />
+                  ) : (
+                    <div className="w-full h-40 bg-gray-200 mb-2 flex items-center justify-center">
+                      No Image
+                    </div>
+                  )}
+                  <h3 className="text-xl font-semibold mb-2">
+                    {property.title}
+                  </h3>
+                  <p className="text-gray-600 mb-2">{property.city}</p>
+                  <div className="mt-auto flex space-x-2">
+                    <button
+                      onClick={() => handleAddFromProperty(property)}
+                      className="bg-green-500 text-white px-2 py-1 rounded text-sm flex-1"
+                    >
+                      Add to Recommendation
+                    </button>
+                    <button
+                      onClick={() => handleViewDetails(property)}
+                      className="bg-blue-500 text-white px-2 py-1 rounded text-sm flex-1"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div>No properties available.</div>
             )}
-            <h3 className="text-xl font-semibold">{property.title}</h3>
-            {property.address.map((addr, addrIndex) => (
-              <p key={addrIndex} className="text-gray-600">
-                {addr}
-              </p>
+          </div>
+        )}
+      </div>
+
+      {/* Section 2: Current Recommendations Preview */}
+      <div>
+        <h2 className="text-2xl font-bold mb-4">Current Recommendations</h2>
+        {recommendedList && recommendedList.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {recommendedList.map((rec) => (
+              <div
+                key={rec._id}
+                className="border p-4 rounded-lg shadow-lg flex flex-col"
+              >
+                {rec.image && (
+                  <img
+                    src={rec.image}
+                    alt={rec.title}
+                    className="w-full h-40 object-cover mb-2 rounded"
+                  />
+                )}
+                <h3 className="text-xl font-semibold">{rec.title}</h3>
+                <p className="text-gray-600">{rec.city}</p>
+                {Array.isArray(rec.address) &&
+                  rec.address.map((addr, idx) => (
+                    <p key={idx} className="text-gray-600">
+                      {addr}
+                    </p>
+                  ))}
+                <p className="text-gray-700 mt-2">{rec.description}</p>
+                <p className="text-gray-900 font-bold mt-2">{rec.price}</p>
+                <button
+                  onClick={() => handleRemoveRecommendation(rec._id)}
+                  className="bg-red-500 text-white px-2 py-1 rounded text-sm mt-2"
+                >
+                  Remove Recommendation
+                </button>
+              </div>
             ))}
           </div>
-        ))}
+        ) : (
+          <div>No recommendations added yet.</div>
+        )}
       </div>
+
+      {/* Modal for Viewing Property Details */}
+      {selectedProperty && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full relative">
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+            >
+              &#x2715;
+            </button>
+            {selectedProperty.property_Image ? (
+              <img
+                src={selectedProperty.property_Image}
+                alt={selectedProperty.title}
+                className="w-full h-40 object-cover mb-4 rounded"
+              />
+            ) : (
+              <div className="w-full h-40 bg-gray-200 mb-4 flex items-center justify-center">
+                No Image
+              </div>
+            )}
+            <h3 className="text-xl font-semibold mb-2">
+              {selectedProperty.title}
+            </h3>
+            <p className="text-gray-600 mb-2">{selectedProperty.city}</p>
+            {selectedProperty.address && (
+              <p className="text-gray-600 mb-2">{selectedProperty.address}</p>
+            )}
+            <p className="text-gray-700 mb-2">{selectedProperty.description}</p>
+            <p className="text-gray-900 font-bold mb-2">
+              {selectedProperty.price || "Price on request"}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
