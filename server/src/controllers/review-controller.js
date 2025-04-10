@@ -15,9 +15,7 @@ export const createReview = async (req, res) => {
     }
 
     // Log the received data
-    console.log('Received form data:', req.body);
-    console.log('Received file:', req.file);
-
+ 
     const {
       name,
       Designation,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,7 +7,7 @@ import {
   matchPath,
   Navigate,
 } from "react-router-dom";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "./utils/Store/store";
 
 // Context Providers
@@ -48,14 +48,14 @@ import ScoProjectsFull from "./pages/ScoProjectsFull";
 import AdminDashboard from "./Admin/AdminDashboard";
 import AdminLogin from "./Admin/AdminLogin";
 
-// *** Dedicated Pages for Each Location ***
-import GolfCourseRoad from "./pages/GolfCourseRoad";
-import GolfCourseExtRoad from "./pages/GolfCourseExtRoad";
-import MgRoad from "./pages/MgRoad";
-import Nh48 from "./pages/Nh48";
-import SohnaRoad from "./pages/SohnaRoad";
-import HudaCityMetro from "./pages/HudaCityMetro";
-import SprRoad from "./pages/SprRoad";
+// Lazy loaded Location Pages
+const GolfCourseRoad = lazy(() => import("./pages/GolfCourseRoad"));
+const GolfCourseExtRoad = lazy(() => import("./pages/GolfCourseExtRoad"));
+const MgRoad = lazy(() => import("./pages/MgRoad"));
+const Nh48 = lazy(() => import("./pages/Nh48"));
+const SohnaRoad = lazy(() => import("./pages/SohnaRoad"));
+const HudaCityMetro = lazy(() => import("./pages/HudaCityMetro"));
+const SprRoad = lazy(() => import("./pages/SprRoad"));
 
 // Styles
 import "./index.css";
@@ -81,14 +81,29 @@ const HIDE_FOOTER_PATTERNS = [
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
-  const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
+  const { isAuthenticated, loading } = useSelector((state) => state.adminAuth);
 
-  if (!isLoggedIn) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
     return <Navigate to="/admin-login" replace />;
   }
 
   return children;
 };
+
+// Loading component
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+);
 
 function Layout() {
   const location = useLocation();
@@ -109,93 +124,95 @@ function Layout() {
       {!shouldHideNavbar && <Navbar />}
 
       <main className="flex-1">
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/indiabulls" element={<IndiaBulls />} />
-          <Route path="/property" element={<Property />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/PropertyListing" element={<PropertyListing />} />
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/indiabulls" element={<IndiaBulls />} />
+            <Route path="/property" element={<Property />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/PropertyListing" element={<PropertyListing />} />
 
-          {/* Auth Routes */}
-          <Route path="/admin-login" element={<AdminLogin />} />
-          <Route path="/contact" element={<Contact />} />
+            {/* Auth Routes */}
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/contact" element={<Contact />} />
 
-          {/* Protected Admin Routes */}
-          <Route
-            path="/admin-dashboard/*"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/user-management"
-            element={
-              <ProtectedRoute>
-                <UserManagement />
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected Admin Routes */}
+            <Route
+              path="/admin-dashboard/*"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/user-management"
+              element={
+                <ProtectedRoute>
+                  <UserManagement />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Property Details Routes */}
-          <Route
-            path="/PropertyDetails"
-            element={
-              <div className="min-h-screen">
-                <PropertyDetails />
-                <Recommendations />
-              </div>
-            }
-          />
-          <Route path="/property/:_id" element={<PropertyDetailPage />} />
-
-          {/* Residential Routes */}
-          <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />
-          <Route
-            path="/residential/upcoming"
-            element={<UpcomingProjectsFull />}
-          />
-          <Route
-            path="/residential/highrise"
-            element={<HighRiseApartmentsFull />}
-          />
-
-          {/* Commercial Routes */}
-          <Route path="/commercial/offices" element={<OfficesFull />} />
-          <Route
-            path="/commercial/preleased"
-            element={<PreLeasedOfficesFull />}
-          />
-          <Route path="/commercial/prerented" element={<PreRentedFull />} />
-          <Route path="/commercial/sco" element={<ScoProjectsFull />} />
-
-          {/* Other Routes */}
-          <Route path="/subsections" element={<Subsections />} />
-
-          {/* Dedicated Location Pages */}
-          <Route path="/golf-course-road" element={<GolfCourseRoad />} />
-          <Route path="/golf-course-ext-road" element={<GolfCourseExtRoad />} />
-          <Route path="/mg-road" element={<MgRoad />} />
-          <Route path="/nh-48" element={<Nh48 />} />
-          <Route path="/sohna-road" element={<SohnaRoad />} />
-          <Route path="/huda-city-metro" element={<HudaCityMetro />} />
-          <Route path="/spr-road" element={<SprRoad />} />
-
-          {/* 404 Route */}
-          <Route
-            path="*"
-            element={
-              <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                  <h1 className="text-4xl font-bold mb-4">404</h1>
-                  <p className="text-xl">Page not found</p>
+            {/* Property Details Routes */}
+            <Route
+              path="/PropertyDetails"
+              element={
+                <div className="min-h-screen">
+                  <PropertyDetails />
+                  <Recommendations />
                 </div>
-              </div>
-            }
-          />
-        </Routes>
+              }
+            />
+            <Route path="/property/:_id" element={<PropertyDetailPage />} />
+
+            {/* Residential Routes */}
+            <Route path="/residential/luxury" element={<LuxuryProjectsFull />} />
+            <Route
+              path="/residential/upcoming"
+              element={<UpcomingProjectsFull />}
+            />
+            <Route
+              path="/residential/highrise"
+              element={<HighRiseApartmentsFull />}
+            />
+
+            {/* Commercial Routes */}
+            <Route path="/commercial/offices" element={<OfficesFull />} />
+            <Route
+              path="/commercial/preleased"
+              element={<PreLeasedOfficesFull />}
+            />
+            <Route path="/commercial/prerented" element={<PreRentedFull />} />
+            <Route path="/commercial/sco" element={<ScoProjectsFull />} />
+
+            {/* Other Routes */}
+            <Route path="/subsections" element={<Subsections />} />
+
+            {/* Dedicated Location Pages */}
+            <Route path="/golf-course-road" element={<GolfCourseRoad />} />
+            <Route path="/golf-course-ext-road" element={<GolfCourseExtRoad />} />
+            <Route path="/mg-road" element={<MgRoad />} />
+            <Route path="/nh-48" element={<Nh48 />} />
+            <Route path="/sohna-road" element={<SohnaRoad />} />
+            <Route path="/huda-city-metro" element={<HudaCityMetro />} />
+            <Route path="/spr-road" element={<SprRoad />} />
+
+            {/* 404 Route */}
+            <Route
+              path="*"
+              element={
+                <div className="min-h-screen flex items-center justify-center">
+                  <div className="text-center">
+                    <h1 className="text-4xl font-bold mb-4">404</h1>
+                    <p className="text-xl">Page not found</p>
+                  </div>
+                </div>
+              }
+            />
+          </Routes>
+        </Suspense>
       </main>
 
       {!shouldHideFooter && <Footer />}

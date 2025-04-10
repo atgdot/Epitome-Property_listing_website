@@ -3,6 +3,7 @@ import propertyReducer from "./slice/propertySlice";
 import propertyDetailReducer from "./slice/propertyDetailSlice";
 import userReducer from "./slice/userSlice"; // Fixed variable name
 import agentReducer from "./slice/agentSlice";
+import adminAuthReducer from "./slice/adminAuthSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     propertyDetail: propertyDetailReducer,
     user: userReducer,
     agent: agentReducer,
+    adminAuth: adminAuthReducer,
   },
 });
 
