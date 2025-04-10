@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,8 +7,10 @@ import {
   matchPath,
   Navigate,
 } from "react-router-dom";
-import { Provider, useSelector } from "react-redux";
-import store from "./utils/Store/store";
+import { Provider, useSelector, useDispatch } from "react-redux";
+import store, { persistor } from "./utils/Store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { verifyToken } from "./utils/Store/slice/adminAuthSlice";
 
 // Context Providers
 import { TestimonialProvider } from "./Context/TestimonialContext";
@@ -228,23 +230,39 @@ function Layout() {
   );
 }
 
-function App() {
+// Separate component for the authenticated app content
+const AppContent = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(verifyToken());
+  }, [dispatch]);
+
   return (
     <ErrorBoundary>
-      <Provider store={store}>
-        <PropertyProvider>
-          <TestimonialProvider>
-            <RecommendationProvider>
-              <PhotoProvider>
-                <Router>
-                  <Layout />
-                </Router>
-              </PhotoProvider>
-            </RecommendationProvider>
-          </TestimonialProvider>
-        </PropertyProvider>
-      </Provider>
+      <PropertyProvider>
+        <TestimonialProvider>
+          <RecommendationProvider>
+            <PhotoProvider>
+              <Router>
+                <Layout />
+              </Router>
+            </PhotoProvider>
+          </RecommendationProvider>
+        </TestimonialProvider>
+      </PropertyProvider>
     </ErrorBoundary>
+  );
+};
+
+// Main App component that provides the Redux store
+function App() {
+  return (
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <AppContent />
+      </PersistGate>
+    </Provider>
   );
 }
 

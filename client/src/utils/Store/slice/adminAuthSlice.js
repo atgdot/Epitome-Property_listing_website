@@ -7,67 +7,38 @@ const BASE_URL = "http://localhost:3000"
 export const adminLogin = createAsyncThunk(
   'adminAuth/login',
   async (userData, { rejectWithValue }) => {
-      try {
-          const response = await fetch(`${BASE_URL}/api/v1/admin/login`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              credentials: 'include',
-              body: JSON.stringify(userData),
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-              return rejectWithValue(data.message || 'Login failed');
-          }
-
-          return data;
-      } catch (error) {
-          return rejectWithValue(error.message);
-      }
+    try {
+      const response = await axios.post(`${BASE_URL}/api/v1/admin/login`, userData, {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: "Login failed" });
+    }
   }
 );
 
-// export const adminLogin = createAsyncThunk(
-//   "adminAuth/login",
-//   async (credentials, { rejectWithValue }) => {
-//     try {
-//       const response = await axios.post(BASE_URL+"/api/v1/admin/login", 
-//         credentials,
-//       {withCredentials: true});
-//       const { token, admin } = response.data;
-//       console.log(response.data);
-      
-//       // Store the token in localStorage
-      
-//       localStorage.setItem("adminLoggedIn", "true");
-      
-//       // Set the token in axios defaults for future requests
-//       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-//       return { token, admin };
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data || { message: "Login failed" });
-//     }
-//   }
-// );
+// Add verifyToken thunk
+export const verifyToken = createAsyncThunk(
+  'adminAuth/verifyToken',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/v1/admin/verify-token`, {
+        withCredentials: true
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: "Token verification failed" });
+    }
+  }
+);
 
 // Create async thunk for admin logout
 export const adminLogout = createAsyncThunk(
   "adminAuth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post(BASE_URL+"/api/v1/admin/logout",null,{withCredentials:true});
-      
-      // Clear the token from localStorage
-      localStorage.removeItem("adminToken");
-      localStorage.removeItem("adminLoggedIn");
-      
-      // Remove the token from axios defaults
-      delete axios.defaults.headers.common['Authorization'];
-      
+      await axios.post(`${BASE_URL}/api/v1/admin/logout`, null, { withCredentials: true });
       return null;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: "Logout failed" });
@@ -107,6 +78,21 @@ const adminAuthSlice = createSlice({
       .addCase(adminLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Login failed";
+      })
+      // Verify token cases
+      .addCase(verifyToken.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyToken.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.admin = action.payload.admin;
+        state.error = null;
+      })
+      .addCase(verifyToken.rejected, (state) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.admin = null;
       })
       // Logout cases
       .addCase(adminLogout.fulfilled, (state) => {

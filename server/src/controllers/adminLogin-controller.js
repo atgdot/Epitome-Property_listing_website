@@ -98,6 +98,24 @@ export const adminLogoutController = (req, res) => {
   }
 };
 
+export const verifyTokenController = async (req, res) => {
+  try {
+    // The token is automatically verified by the verifyToken middleware
+    // If we reach here, the token is valid
+    res.status(200).json({
+      success: true,
+      message: "Token is valid",
+      admin: req.admin // This is set by the verifyToken middleware
+    });
+  } catch (error) {
+    console.error("Token verification error:", error);
+    res.status(401).json({
+      success: false,
+      message: "Invalid or expired token"
+    });
+  }
+};
+
 
 
 
