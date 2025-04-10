@@ -42,7 +42,7 @@ const storage = new CloudinaryStorage({
       folder,
       format: 'webp',
       transformation: [
-        { width: 'auto', height: 'auto', crop: 'fill' }, // Add specific transformation for profile photos
+        { width: 200, height: 200, crop: 'fill' }, // Set reasonable dimensions for profile photos
         { quality: 'auto' }, 
         { fetch_format: 'auto' }
       ],
