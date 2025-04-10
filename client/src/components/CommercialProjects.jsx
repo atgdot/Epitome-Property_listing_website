@@ -18,7 +18,6 @@ const CommercialProjects = () => {
 
   // Select state from Redux store
   const { properties, loading, error } = useSelector((state) => state.property);
-  
 
   // Fetch properties when component mounts if not already loaded
   useEffect(() => {
@@ -43,17 +42,22 @@ const CommercialProjects = () => {
           sector: property.location,
         };
 
-        const subCategory = Array.isArray(property.subCategory)
-          ? property.subCategory[0]
-          : property.subCategory;
+        let subCategory = property.subCategory;
+        if (Array.isArray(subCategory)) {
+          subCategory = subCategory[0];
+        }
+        // Normalize subCategory: remove spaces and hyphens and convert to lower case.
+        const normalizedSubCategory = subCategory
+          ? subCategory.toLowerCase().replace(/[\s-]/g, "")
+          : "";
 
-        if (subCategory === "Offices") {
+        if (normalizedSubCategory === "offices") {
           grouped.offices.push(mappedProperty);
-        } else if (subCategory === "Pre-Leased Offices") {
+        } else if (normalizedSubCategory === "preleasedoffices") {
           grouped.preLeasedOffices.push(mappedProperty);
-        } else if (subCategory === "Pre-Rented") {
+        } else if (normalizedSubCategory === "prerented") {
           grouped.preRented.push(mappedProperty);
-        } else if (subCategory === "SCO") {
+        } else if (normalizedSubCategory === "sco") {
           grouped.sco.push(mappedProperty);
         }
       });
@@ -69,13 +73,13 @@ const CommercialProjects = () => {
       id: 1,
       title: "PRE LEASED",
       imageUrl: "https://i.ibb.co/hFFDQrXC/01bef475fa70b91b2561c1cad9b7a92f.jpg",
-      route: "/commercial/preleased",
+      route: "/residential/upcoming",
     },
     {
       id: 2,
       title: "OFFICE LEASE",
       imageUrl: "https://i.ibb.co/PZfXwZYG/329aa8999bf0e843299b5570492f960b.jpg",
-      route: "/commercial/preleased",
+      route: "/commercial/offices",
     },
     {
       id: 3,
@@ -109,38 +113,27 @@ const CommercialProjects = () => {
     infinite: false,
     speed: 500,
     slidesToShow: 3,
-    slidesToScroll: 1, // Change to scroll one property at a time
+    slidesToScroll: 1,
     swipeToSlide: true,
     responsive: [
       {
         breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
+        settings: { slidesToShow: 3, slidesToScroll: 1 },
       },
       {
         breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
+        settings: { slidesToShow: 2, slidesToScroll: 1 },
       },
       {
         breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
+        settings: { slidesToShow: 1, slidesToScroll: 1 },
       },
     ],
   };
 
   // Handle Loading State
   if (loading && (!properties || properties.length === 0)) {
-    return (
-      <div className="my-8 text-center">Loading Commercial Projects...</div>
-    );
+    return <div className="my-8 text-center">Loading Commercial Projects...</div>;
   }
 
   // Handle Error State
