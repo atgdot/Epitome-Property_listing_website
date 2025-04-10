@@ -4,21 +4,24 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setPropertyDetail } from "../utils/Store/slice/propertyDetailSlice";
 
-const PropertyCard = ({
-  property,
-  editable = false,
-  onEdit,
-  onDelete,
-  onViewDetails,
-}) => {
+const PropertyCard = ({ property, editable = false, onEdit, onDelete }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   console.log("PropertyCard", property);
 
   const handleViewDetails = () => {
+    if (!property?._id) {
+      console.error("Property ID is missing");
+      return;
+    }
     dispatch(setPropertyDetail(property));
     navigate(`/property/${property._id}`);
   };
+
+  // Format price with commas and handle null/undefined cases
+  const formattedPrice = property?.price
+    ? `₹ ${property.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+    : "Price on request";
 
   // const formatCategory = (category) => {
   //   if (!category) return "N/A";
@@ -32,40 +35,40 @@ const PropertyCard = ({
           {/* <span className="text-[#043268]">
             {formatCategory(property.category)}
           </span> */}
-          <span className="text-gray-600">{property.city}</span>
+          <span className="text-gray-600">{property?.city || "N/A"}</span>
         </div>
         <div className="h-[2px] bg-gray-300 my-2"></div>
       </div>
 
-      {property.property_Image && (
+      {property?.property_Image && (
         <div className="mb-4">
           <img
             src={property.property_Image}
-            alt={property.title}
+            alt={property?.title || "Property Image"}
             className="w-full h-48 object-cover rounded-xl"
           />
         </div>
       )}
 
       <div className="text-sm font-semibold text-[#043268] mb-2">
-        {property.status}
+        {property?.status || "Available"}
       </div>
 
       <h3 className="text-xl font-bold mb-2">
-        {property.title || "Untitled Property"}
+        {property?.title || "Untitled Property"}
       </h3>
 
       <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-        {property.description}
+        {property?.description || "No description available"}
       </p>
 
       <div className="flex justify-between items-start mb-4">
-        <div className="text-[17px] font-bold">₹{property.price}</div>
+        <div className="text-[17px] font-bold">{formattedPrice}</div>
         <div className="text-right">
           <div className="text-[13px] text-gray-600 font-medium">
             Avg. Rental Yield:{" "}
             <span className="text-[17px] font-bold text-[#043268]">
-              {property.Rental_Yield}%
+              {property?.Rental_Yield || "N/A"}%
             </span>
           </div>
         </div>
@@ -73,17 +76,17 @@ const PropertyCard = ({
 
       <ul className="space-y-2 mb-4">
         {[
-          { label: "Area:", value: property.Area },
-          { label: "Current Rental:", value: property.current_Rental },
-          { label: "Tenure:", value: property.Tenure },
-          { label: "Tenant:", value: property.Tenant },
+          { label: "Area:", value: property?.Area || "N/A" },
+          { label: "Current Rental:", value: property?.current_Rental || "N/A" },
+          { label: "Tenure:", value: property?.Tenure || "N/A" },
+          { label: "Tenant:", value: property?.Tenant || "N/A" },
           {
             label: "Location:",
-            value: property.location?.location || "N/A",
+            value: property?.location?.location || property?.location || "N/A",
           },
           {
             label: "Address:",
-            value: property.location?.address || "N/A",
+            value: property?.location?.address || property?.address || "N/A",
           },
         ].map((item, index) => (
           <li key={index} className="flex justify-between text-sm">

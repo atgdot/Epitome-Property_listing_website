@@ -10,7 +10,7 @@ export const PropertyProvider = ({ children }) => {
   const { properties, loading, error } = useSelector((state) => state.property);
 
   useEffect(() => {
-    dispatch(getAllProperties());
+    dispatch(getAllProperties()).unwrap();
   }, [dispatch]);
 
   return (
