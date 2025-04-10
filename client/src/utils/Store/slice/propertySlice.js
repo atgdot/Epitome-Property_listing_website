@@ -18,7 +18,8 @@ export const createProperty = createAsyncThunk(
   async (propertyData, { rejectWithValue }) => {
     try {
       // propertyData is already FormData, no need to transform it
-      const response = await axios.post(`${BASE_URL}/create`, propertyData, {
+      const response = await axios.post(`${BASE_URL}/create`, propertyData,
+        {withCredentials:true}, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -38,7 +39,8 @@ export const updateProperty = createAsyncThunk(
       //const response = await axios.patch(`${BASE_URL}/update/${id}`, propertyData);
       const response = await axios.patch(
         `${BASE_URL}/update/${id}`,
-        propertyData
+        propertyData,
+        {withCredentials:true}
       );
       return response.data;
     } catch (error) {
@@ -77,7 +79,9 @@ export const deleteProperty = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       console.log('Deleting property with ID:', id); // Add this line
-      await axios.delete(`${BASE_URL}/delete/${id}`);
+      await axios.delete(`${BASE_URL}/delete/${id}`,
+        {withCredentials:true}
+      );
       return id;
     } catch (error) {
       console.error('Delete property error:', error); // Log the error

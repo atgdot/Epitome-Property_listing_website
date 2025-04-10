@@ -66,6 +66,7 @@ const AdminReviews = () => {
       const response = await fetch('http://localhost:3000/api/v1/admin-dashboard/review/add', {
         method: 'POST',
         body: submitData,
+        credentials:true
       });
 
       if (!response.ok) {
@@ -118,6 +119,7 @@ const AdminReviews = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/v1/admin-dashboard/review/${testimonialId}`, {
         method: 'DELETE',
+        credentials:true
       });
 
       if (!response.ok) {

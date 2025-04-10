@@ -16,7 +16,10 @@ export const createAgent = createAsyncThunk(
   'agent/createAgent',
   async (agentData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/create`, agentData);
+      const response = await axios.post(`${BASE_URL}/create`, agentData
+        ,
+        {withCredentials:true}
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(handleApiError(error));
@@ -55,7 +58,10 @@ export const updateAgent = createAsyncThunk(
   'agent/updateAgent',
   async ({ id, agentData }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${BASE_URL}/update/${id}`, agentData);
+      const response = await axios.put(`${BASE_URL}/update/${id}`, agentData
+        ,
+        {withCredentials:true}
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(handleApiError(error));
@@ -68,7 +74,10 @@ export const deleteAgent = createAsyncThunk(
   'agent/deleteAgent',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`${BASE_URL}/delete/${id}`);
+      const response = await axios.delete(`${BASE_URL}/delete/${id}`
+        ,
+        {withCredentials:true}
+      );
       return { id, message: response.data.message }; // Returning ID to remove from store
     } catch (error) {
       return rejectWithValue(handleApiError(error));
