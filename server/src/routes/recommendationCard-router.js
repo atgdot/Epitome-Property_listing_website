@@ -1,29 +1,28 @@
 import express from 'express';
-import { createRecommendationCard , deleteRecommendationCard} from '../controllers/recommendationCard-controller.js';
-import auth from '../middleware/authMiddlware.js'
+import {
+  createRecommendationCard,
+  deleteRecommendationCard,
+  getAllRecommendations,
+} from '../controllers/recommendationCard-controller.js';
+import auth from '../middleware/authMiddlware.js';
+import { body, param } from 'express-validator';
 
-
-import { body, param } from "express-validator";
 const router = express.Router();
 
-
-// validation 
+// Validation
 const validateRecommendation = [
-  body("property_Title").notEmpty().withMessage("Property title is required"),
-  body("Address").notEmpty().withMessage("Address is required"),
-  body("Image_url").optional().isURL().withMessage("Invalid image URL"),
-  body("upload_image").optional().isURL().withMessage("Invalid upload image URL"),
-  ];
+  body("propertyId").isMongoId().withMessage("Valid property ID is required"),
+];
 
-  const validateRecommendationId = [
-    param("id").isMongoId().withMessage("Invalid recommendation ID"),
-  ];
-  
+const validateRecommendationId = [
+  param("id").isMongoId().withMessage("Invalid recommendation ID"),
+];
 
+// Routes
+router.post("/add", auth, validateRecommendation, createRecommendationCard);
 
-   // routes
-  router.post("/addCard", auth, validateRecommendation, createRecommendationCard);
-  
-  router.delete("deleteCard/:id", auth,validateRecommendationId, deleteRecommendationCard);
-  
-  export default router;
+router.get("/all", auth, getAllRecommendations);
+
+router.delete("/delete/:id", auth, validateRecommendationId, deleteRecommendationCard);
+
+export default router;

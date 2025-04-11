@@ -1,25 +1,18 @@
-import mongoose from'mongoose';
+// models/recommendationCard-model.js
+import mongoose from 'mongoose';
+import {
+  BasicProperty,
+  PropertyLocation,
+  PropertyMedia,
+} from "../models/addproperty-model.js";
 
 const RecommendationSchema = new mongoose.Schema({
-  property_Title: {
-    type: String,
+  property: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BasicProperty',
     required: true
-  },
-  Address: {
-    type: String,
-    required: true
-  },
-  Image_url:{
-    type: String,
-    default: null
-
-  },
-  upload_image: {
-    type: String,
-    default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQFyOawV-vkbcs93PoP0SVuygYoFDmLVLNeA&s"
-  },
-
-},{timestamps: true})
+  }
+}, { timestamps: true });
 
 const Recommendation = mongoose.model('Recommendation', RecommendationSchema);
 

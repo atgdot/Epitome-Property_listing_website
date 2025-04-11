@@ -1,31 +1,52 @@
 import Recommendation from "../models/recommendationCard-model.js";
+import {
+  BasicProperty,
+  PropertyLocation,
+  PropertyMedia,
+} from "../models/addproperty-model.js";
 import { validationResult } from "express-validator";
 
-
-
-// Get all recommendations
+// Create Recommendation (store only property ID)
 export const createRecommendationCard = async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { property_Title, Address, Image_url, upload_image } = req.body;
+    const { propertyId } = req.body;
 
-    // ✅ Create and save the recommendation
-    const recommendation = await Recommendation.create({
-      property_Title,
-      Address,
-      Image_url: Image_url || null,
-      upload_image: upload_image || null,
+    // Check if property exists
+    const property = await BasicProperty.findById(propertyId);
+    if (!property) {
+      return res.status(404).json({ success: false, message: "Property not found" });
+    }
+
+    const recommendation = await Recommendation.create({ property: propertyId });
+
+    res.status(201).json({
+      success: true,
+      message: "Recommendation created successfully",
+      data: recommendation
     });
 
-    res.status(201).json({ 
-      success: true, 
-      message: "Recommendation created successfully", 
-      data: recommendation 
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// View all recommendations (with selected property fields)
+export const getAllRecommendations = async (req, res) => {
+  try {
+    const recommendations = await Recommendation.find()
+      .populate({
+        path: 'Property',
+        select: 'title address location image price'
+      });
+
+    res.status(200).json({
+      success: true,
+      data: recommendations
     });
 
   } catch (error) {
