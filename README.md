@@ -165,9 +165,5 @@ This project is licensed under the ISC License.
 
 ## 👥 Authors
 
-- Your Name - Initial work
+- Ayush Raj
 
-## 🙏 Acknowledgments
-
-- All the open-source libraries and tools used in this project
-- The development community for their continuous support 
